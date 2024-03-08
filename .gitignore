@@ -1,0 +1,21 @@
+###IDEs###
+.idea
+.settings
+.buildpath
+.project
+
+.DS_Store
+*.swp
+*~.nib
+._*
+.svn/
+
+src/View/Compiled/**
+!src/View/Compiled/.gitkeep
+src/Config/Settings.json
+
+# Composer files
+composer.lock
+composer.phar
+vendor/
+node_modules/

@@ -1,0 +1,18 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /
+
+#Header set Access-Control-Allow-Origin "*"
+
+AddDefaultCharset UTF-8
+
+RewriteCond %{REQUEST_URI} !pagespeed
+RewriteCond %{REQUEST_URI} !\.[[:alnum:]]+$
+RewriteRule ^(.+[^/])$ /$1/ [R=301,QSA,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule  ^(.+)$   index.php?link=$1 [L]
+
+RewriteRule  ^$   index.php?link=front

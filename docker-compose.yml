@@ -1,0 +1,39 @@
+version: '3.3'
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: wbengine_skeleton_app
+        image: wbengine_skeleton_app
+        hostname: webskeleton
+        restart: always
+        depends_on:
+            - db
+        networks:
+            - front
+            - backend
+        ports:
+            - 8082:80
+        volumes:
+            # - ./:/var/www/html/
+    db:
+        container_name: wbengine_skeleton_mysql
+        image: mysql:latest
+        command:
+            --default-authentication-plugin=mysql_native_password
+        restart: always
+        networks:
+            - backend
+        volumes:
+            - ./schemas/wbengine_skeletone_app_mysql_template.sql:/docker-entrypoint-initdb.d/wbengine_skeletone_app_mysql_template.sql
+        environment:
+            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: wbengine_skeleton_app
+            MYSQL_USER: dev_user
+            MYSQL_PASSWORD: dev_password
+        ports:
+            - 33067:3306
+networks:
+    backend:
+    front:

@@ -1,0 +1,28 @@
+{
+  "timeZone": "Europe/Prague",
+  "codePage": "utf8",
+  "minimizeHtml": true,
+  "minimizeCss": true,
+  "debug": false,
+  "cdnPath": "",
+  "renderer": {
+    "adapterName": "Smarty",
+    "templatesDir": "/View/",
+    "compiledDir": "Compiled/",
+    "configDir": "/Config/"
+  },
+  "dbAdapterDefinition": {
+    "adapterName": "Mysqli",
+    "database": "wbengine_skeleton_app",
+    "charset": "utf8",
+    "port": "3306",
+    "hostname": "db",
+    "username": "dev_user",
+    "password": "dev_password"
+  },
+  "cssFiles": [
+    "/public/Css/default.css"
+  ],
+    "adminIPs": [
+  ]
+}

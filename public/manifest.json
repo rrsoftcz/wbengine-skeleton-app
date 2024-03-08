@@ -1,0 +1,21 @@
+{
+  "name": "Wbengine Skeleton App",
+  "short_name": "Wbengine",
+  "icons": [
+    {
+      "src": "/Assets/192x192.jpg",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/Assets/512x512.jpg",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./",
+  "background_color": "#2C2C2C",
+  "theme_color": "#3F51B5",
+  "display": "standalone",
+  "orientation": "portrait"
+}
