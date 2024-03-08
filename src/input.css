@@ -23,7 +23,7 @@
     @apply bg-white rounded-lg p-4 mt-14 shadow-xl md:p-8 md:mt-28;
 }
 .btn-primary {
-    @apply p-3 px-6 text-center text-white bg-blue-700 rounded-md hover:bg-blue-600 hover:text-blue-100;
+    @apply p-3 px-6 text-center no-underline text-white bg-blue-700 rounded-md hover:bg-blue-600 hover:text-blue-100;
 }
 
 .btn-white {
@@ -32,4 +32,3 @@
 a.active {
     @apply border-b-slate-100;
 }
-

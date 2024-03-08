@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="/manifest.json">
     <link rel="author" href="https://github.com/Bajtlamer">
-    <link rel="StyleSheet" type="text/css" href="/Css/output.css">
+    <link rel="StyleSheet" type="text/css" href="/Css/output.min.css">
     <title>{$meta.title}</title>
     <link rel="icon" type="image/png" href="/Assets/favicon.ico">
 </head>
@@ -23,17 +23,17 @@
 <body class="bg-slate-200">
     <div class="">
         <nav
-            class="bg-blue-700 text-slate-100 fixed w-full z-20 top-0 start-0 border-b border-gray-200">
+            class="bg-blue-700 text-slate-100 fixed w-full z-20 top-0 start-0 border-b border-gray-800 shadow-md">
             <div class="max-w-screen-lg flex flex-wrap items-center justify-between mx-auto p-4">
-                <a href="/" class="flex items-center text-slate-200 space-x-3 rtl:space-x-reverse">
+                <a href="/" class="flex items-center text-slate-200 space-x-3 rtl:space-x-reverse no-underline">
                     <img src="/Assets/logo.svg" class="h-10" alt="WBengine Logo">
                     <span class="self-center text-2xl font-semibold whitespace-nowrap">WBengine</span>
                 </a>
                 <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                    <button type="button"
-                        class="btn-white">Sign In</button>
-                    <button data-collapse-toggle="navbar-sticky" type="button"
-                        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    <button type="button" class="btn-white">Sign In</button>
+
+                    <button id="toggle-menu" data-collapse-toggle="navbar-sticky" type="button"
+                        class="bg-gray-200 inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-100"
                         aria-controls="navbar-sticky" aria-expanded="false">
                         <span class="sr-only">Open main menu</span>
                         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -46,6 +46,15 @@
                 <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
                     <ul
                         class="flex flex-col p-3 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
+                        {foreach $menu as $m}
+                            <li>
+                                <a class="p-2 no-underline border-b-2 text-gray-100 border-blue-700 hover:border-blue-400 {$m->active()}" href="{$m->link}" title="{$m->description}">{$m->name}</a>
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+                <div class="mt-4 border-t-1 border-gray-100 items-center justify-between hidden w-full md:hidden" id="navbar">
+                    <ul class="flex flex-row mt-2 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
                         {foreach $menu as $m}
                             <li>
                                 <a class="p-2 no-underline border-b-2 text-gray-100 border-blue-700 hover:border-blue-400 {$m->active()}" href="{$m->link}" title="{$m->description}">{$m->name}</a>
@@ -74,5 +83,5 @@
         {$debug->show()}
     {/if}
 </body>
-
+<script src="/menu.js"></script>
 </html>

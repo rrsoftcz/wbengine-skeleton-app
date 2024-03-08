@@ -15,8 +15,8 @@ services:
             - backend
         ports:
             - 8082:80
-        volumes:
-            # - ./:/var/www/html/
+        # volumes:
+        #     - ./:/var/www/html/
     db:
         container_name: wbengine_skeleton_mysql
         image: mysql:latest
