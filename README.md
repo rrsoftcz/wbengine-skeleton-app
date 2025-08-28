@@ -66,7 +66,12 @@ Now just create Apache vhost pointed to Public directory:
 chmod 777 App/Cache/Renderer
 ```
 
-The WBengine Library project you can found at https://github.com/Bajtlamer/wbengine
+## TailwindCSS implementation
+
+
+```
+npx tailwindcss -i ./src/input.css -o ./public/css/output.min.css --watch --minify
+```
 
 ## Contributing
 
@@ -74,6 +79,8 @@ Please read [CONTRIBUTING.md](https://github.com/Bajtlamer/wbengine-skeleton-app
 
 ## Improving this Sample
 WBengine as wbengine-skeleton-application is an open source project and a volunteer effort. RRsoft does not have human resources fully dedicated to the mainteniance of this software. If you want something to be improved or you want a new feature please submit a Pull Request.
+
+The WBengine Library project you can found at https://github.com/Bajtlamer/wbengine
 
 ## License
 WBengine is open-sourced software licensed under the New BSD License.

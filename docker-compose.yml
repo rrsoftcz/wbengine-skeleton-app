@@ -1,39 +1,41 @@
-version: '3.3'
+
 services:
     web:
+        volumes:
+            - ./:/var/www/html/
+            - ./etc/cert/:/etc/cert/
+            - ./etc/apache2/sites-available/wbengine.conf:/etc/apache2/sites-available/wbengine.conf
         build:
             context: .
             dockerfile: Dockerfile
-        container_name: wbengine_skeleton_app
-        image: wbengine_skeleton_app
-        hostname: webskeleton
+        container_name: php8.3-apache2
         restart: always
         depends_on:
             - db
-        networks:
-            - front
-            - backend
         ports:
-            - 8082:80
-        # volumes:
-        #     - ./:/var/www/html/
+            - 443:443
     db:
-        container_name: wbengine_skeleton_mysql
-        image: mysql:latest
-        command:
-            --default-authentication-plugin=mysql_native_password
+        container_name: mysql-8.4
+        image: mysql:8.4
+        # image: mariadb:10.9.4
         restart: always
-        networks:
-            - backend
         volumes:
-            - ./schemas/wbengine_skeletone_app_mysql_template.sql:/docker-entrypoint-initdb.d/wbengine_skeletone_app_mysql_template.sql
+            - ./Schemas/wbengine_skeletone_app_mysql_template.sql:/docker-entrypoint-initdb.d/wbengine_skeletone_app_mysql_template.sql
+            - ./etc/mysql/config.cnf:/etc/mysql/conf.d/custom.cnf
         environment:
             MYSQL_ROOT_PASSWORD: root_password
             MYSQL_DATABASE: wbengine_skeleton_app
             MYSQL_USER: dev_user
             MYSQL_PASSWORD: dev_password
         ports:
-            - 33067:3306
-networks:
-    backend:
-    front:
+            - 3306:3306
+        security_opt:
+            - seccomp:unconfined
+
+    # adminer:
+    #     image: dockette/adminer:dg  # use latest tag for latest version
+    #     restart: always
+    #     ports:
+    #         - 8080:80
+        # volumes:
+        #     - ./adminer/adminer.css:/var/www/html/adminer.css:ro

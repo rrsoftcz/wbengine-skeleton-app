@@ -30,7 +30,15 @@
                     <span class="self-center text-2xl font-semibold whitespace-nowrap">WBengine</span>
                 </a>
                 <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                    <button type="button" class="btn-white">Sign In</button>
+                {if $user && $user->isLogged() === true}
+                    <a class="nav-link a-login" href="/login/?a=logout" title="Přihlásit se do systému">
+                        <button type="button" class="btn-white">Logout</button>
+                    </a>
+                {else}
+                    <a class="nav-link a-login" href="/login/" title="Přihlásit se do systému">
+                        <button type="button" class="btn-white">Sign In</button>
+                    </a>
+                {/if}
 
                     <button id="toggle-menu" data-collapse-toggle="navbar-sticky" type="button"
                         class="bg-gray-200 inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-100"
@@ -69,19 +77,19 @@
         {$header}
         {$central}
     </div>
-    </div>
+
     <div class="m-auto max-w-screen-lg">
         <div class="text-center">
             <p>Powered by <a href="https://packagist.org/packages/wbengine/wbengine">WBengine</a>, {$server}, MySQL
                 {$dbinfo}
-                and PHP {phpversion()}, Hosted By <a href="https://www.rrsoft.cz">RRsoft</a> &copy; 2008 - 2024 All
+                and PHP {$phpversion}, Hosted By <a href="https://www.rrsoft.cz">RRsoft</a> &copy; 2008 - 2024 All
                 Rights
                 Reserved</p>
         </div>
     </div>
-    {if $debug->enabled}
+    {if ($debug)}
         {$debug->show()}
     {/if}
 </body>
-<script src="/menu.js"></script>
+<script src="./menu.js"></script>
 </html>
