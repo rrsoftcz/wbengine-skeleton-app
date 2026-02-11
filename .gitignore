@@ -19,3 +19,13 @@ composer.lock
 composer.phar
 vendor/
 node_modules/
+
+# SSL Certificates (managed externally per environment)
+etc/cert/*.cer
+etc/cert/*.crt
+etc/cert/*.key
+etc/cert/*.pem
+
+# Development-specific configs
+etc/apache2/sites-available/wbengine.local.conf
+docker-compose.override.yml

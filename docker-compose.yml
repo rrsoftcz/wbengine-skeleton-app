@@ -5,6 +5,7 @@ services:
             - ./:/var/www/html/
             - ./etc/cert/:/etc/cert/
             - ./etc/apache2/sites-available/wbengine.conf:/etc/apache2/sites-available/wbengine.conf
+            - ./etc/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
         build:
             context: .
             dockerfile: Dockerfile
