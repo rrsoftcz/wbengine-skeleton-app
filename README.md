@@ -1,86 +1,117 @@
-# wbengine-skeleton-application
-This is a skeleton application using the WBengine Library layer and module systems. This skeleton application is meant to be used as a starting place for those looking to get their feet wet with WBengine.
+# wbengine-skeleton-app
 
-## Installation from Github
-There is several ways how to install wbengine-skeleton-application. You can just simply clone it from Github repository by command:
+A minimal application built on the [WBengine](https://packagist.org/packages/wbengine/wbengine) PHP framework. Use it as a starting point for a website or a backend: it shows a static page, a database driven blog article, a login, a user profile and the REST API.
 
-```
-git clone git@bitbucket.org:rrsoft/wbengine-skeleton-app.git
-```
-then run commands:
+## Requirements
+
+* PHP 8.3 or newer (8.4 recommended) with the `mysqli` extension
+* MySQL 8 or MariaDB 10.6+
+* Apache with `mod_rewrite` and `AllowOverride All` for `public/` (or an equivalent Nginx rewrite to `public/index.php`)
+* Composer
+* Docker (optional, the quickest way to try it)
+
+## Quick start with Docker
+
 ```bash
-cd wbengine-skeleton-application
-php composer.phar install
-```
-If you don't have Composer already installed, then please install it by typing a command:
-```
-curl -s http://getcomposer.org/installer | php
-```
+git clone <this repository> wbengine-skeleton-app
+cd wbengine-skeleton-app
 
-## Installation by Composer
-
-The most easist way how to install a wbengine-skeleton-application project is to use Composer:
-
-```
-php composer.phar create-project wbengine-skeleton-application/wbengine-skeleton-application --stability=dev --keep-vcs
+docker compose up -d --build          # web on http://localhost:8080, MySQL seeded from schemas/
+docker compose exec web sh bin/setup.sh
 ```
 
-This command will download wbengine-skeleton-application directly from the packagist repository and install all required dependencies at once.
+`bin/setup.sh` creates `src/Config/Settings.json` from `settings.json.default` with new random JWT keys, makes `src/View/Compiled` writable and runs `composer install`.
 
-#### Requirements
+Open http://localhost:8080 and sign in with the demo account:
 
-To run this application on your machine, you need at least:
+| E-mail | Password |
+|--------|----------|
+| `admin@example.com` | `changeme` |
 
-* >= PHP v5.6.*
-* >= WBengine v1.2.2
-* Apache Web Server with `mod_rewrite enabled`, and `AllowOverride Options` (or `All`) in your `httpd.conf` or Nginx Web Server
-* MySQL / MariaDB >= 5.* compatible
+Change this password before the application is reachable by anyone else.
 
-### Prepare MySQL database:
-```
-echo 'CREATE DATABASE wbengine' | mysql -u root -p
-```
-and import schema with startup tables configuration:
-```
-cat Schemas/wbengine-skeleton-application.sql | mysql -u root -p wbengine
-```
-Don´t forget to edit configuration file located at (App/Config/...) and update the database section access part.
+## Manual installation
 
-Now just create Apache vhost pointed to Public directory:
+1. `composer install`
+2. `sh bin/setup.sh` (or copy `src/Config/settings.json.default` to `src/Config/Settings.json` and replace both `CHANGE_ME` JWT keys with random strings of at least 32 characters, for example `openssl rand -hex 32`)
+3. Create a database and import `schemas/wbengine_skeletone_app_mysql_template.sql`
+4. Edit `dbAdapterDefinition` in `src/Config/Settings.json`
+5. Point the web server document root at `public/`
 
-```
- <VirtualHost *:80>
-     ServerName wbengine.localhost
-     DocumentRoot /path/to/wbengine/Public
-     <Directory /path/to/wbengine/Public>
-         DirectoryIndex index.php
-         AllowOverride All
-         Order allow,deny
-         Allow from all
-     </Directory>
- </VirtualHost>
-```
- and set "Write" access rights to "App/Cache/Renderer" directory:
+Upgrading an existing database: run the scripts in `schemas/migrations/` once. Passwords are stored with `password_hash()`; old MD5 hashes keep working and are upgraded on each user's next login once the column is widened.
+
+## How it works
+
+The page you see is assembled from database rows:
 
 ```
-chmod 777 App/Cache/Renderer
+Site (cms_sites, matched by URL)
+  Sections (cms_sections: header, central, api)
+    Boxes (cms_boxes: module + method)
+      static box  : renders a template only
+      dynamic box : loads data through a Model, then renders a template
 ```
 
-## TailwindCSS implementation
-
+A `cms_boxes` row selects a PHP class and method: module `blog`, method `story`, section `central` runs `App\Box\Central\Blog::Story()`. The method returns HTML, which is placed into the layout (`src/View/site.tpl`) as `{$central}`, `{$header}` and so on. The `sites` column holds the site ids where the box is shown, `shared = 1` shows it on every site.
 
 ```
-npx tailwindcss -i ./src/input.css -o ./public/css/output.min.css --watch --minify
+public/index.php          entry point (about ten lines)
+public/.htaccess          routes everything to index.php
+src/Config/               Settings.json (not committed), settings.json.default
+src/Box/<Section>/        box classes, e.g. Central/Blog.php, Central/Profile.php
+src/Box/Api/Restapi.php   REST API box
+src/View/                 Smarty templates: site.tpl layout, <Section>/<Method>.tpl per box
+src/View/Compiled/        template cache, must be writable
+schemas/                  database schema and demo data, migrations/
+bin/setup.sh              first-time setup
 ```
 
-## Contributing
+Examples to read first: `StaticBoxes::About` (static box), `Blog::LocalStoryBox` with `Article/Model.php` (dynamic box with a model), `Profile` (box that uses the logged in user).
 
-Please read [CONTRIBUTING.md](https://github.com/Bajtlamer/wbengine-skeleton-application/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+## Adding a page
 
-## Improving this Sample
-WBengine as wbengine-skeleton-application is an open source project and a volunteer effort. RRsoft does not have human resources fully dedicated to the mainteniance of this software. If you want something to be improved or you want a new feature please submit a Pull Request.
+1. Insert a row into `cms_sites` (the URL) and optionally `cms_menu` (the navigation entry).
+2. Create `src/Box/Central/Hello.php`:
 
-The WBengine Library project you can found at https://github.com/Bajtlamer/wbengine
+   ```php
+   namespace App\Box\Central;
+
+   use Wbengine\Box\WbengineBoxAbstract;
+
+   class Hello extends WbengineBoxAbstract
+   {
+       public function Hello()
+       {
+           return $this->getRenderer()->render($this->getBoxTemplatePath());
+       }
+   }
+   ```
+3. Create `src/View/Central/Hello.tpl`.
+4. Insert a `cms_boxes` row: module `hello`, method `hello`, section 1 (central), `sites` `["<your site_id>"]`.
+
+Always pass values to SQL as bound parameters: `Db::fetchAssoc('SELECT * FROM cms_articles WHERE id = ?', [$id])`.
+
+## REST API
+
+Served under `/api/`. Obtain a token, then send it as a bearer token:
+
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+     -d '{"username":"admin@example.com","password":"changeme"}' \
+     http://localhost:8080/api/auth/login
+
+curl -H "Authorization: Bearer <token>" http://localhost:8080/api/sections
+```
+
+Every route except `/api/auth/login` needs a valid token. Currently available: `auth` (login, logout, identify, revalidate), `users` (list, get, create, patch, delete), `sections` (CRUD).
+
+## Security notes
+
+* The JWT keys and reCAPTCHA secret live in `Settings.json` (or the environment variables `WBENGINE_JWT_KEY`, `WBENGINE_JWT_REFRESH_KEY`, `WBENGINE_RECAPTCHA_SECRET`). Never commit them. `Settings.json` is ignored by git.
+* Keep `"debug": false` in production: debug mode prints SQL and error details.
+* Any valid token can currently use every API route. Add a role check before exposing the API to more than administrators.
+* Do not commit TLS certificates or private keys; terminate TLS in front of the application.
 
 ## License
-WBengine is open-sourced software licensed under the New BSD License.
+
+MIT

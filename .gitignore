@@ -19,3 +19,9 @@ composer.lock
 composer.phar
 vendor/
 node_modules/
+
+# Secrets and local environment: never commit
+.env
+etc/cert/
+*.key
+*.pem

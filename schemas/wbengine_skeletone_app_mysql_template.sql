@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.21, for osx10.13 (x86_64)
 --
--- Host: localhost    Database: wb_skeleton_app
+-- Host: localhost    Database: wbengine_skeleton_app
 -- ------------------------------------------------------
 -- Server version	5.7.21
 
@@ -281,7 +281,7 @@ CREATE TABLE `cms_sites` (
 
 LOCK TABLES `cms_sites` WRITE;
 /*!40000 ALTER TABLE `cms_sites` DISABLE KEYS */;
-INSERT INTO `cms_sites` VALUES (1,1,1,0,1,1,'/','Wbengine','Wbengine','This is Wbengine skeleton application example','wbengine,php,oop',0),(2,1,4,5,1,1,'/blog/','Simple Blog','The Simple Blog','This is a simple blog example','simple,blog',0),(3,1,4,5,1,1,'/about/','About box','The About box example','This is an about static html box example','about,box',0),(7,0,0,0,1,1,'/login/','Login','Login','Login','login',0),(8,1,1,1,0,1,'/api/','API','Api','Api','Api',1),(9,1,1,1,1,1,'/profile/','User\'s Profile','User\'s Profile','User\'s Profile','user,profile',1);
+INSERT INTO `cms_sites` VALUES (1,1,1,0,1,1,'/','Wbengine','Wbengine','This is Wbengine skeleton application example','wbengine,php,oop',0),(2,1,4,5,1,1,'/blog/','Simple Blog','The Simple Blog','This is a simple blog example','simple,blog',0),(3,1,4,5,1,1,'/about/','About box','The About box example','This is an about static html box example','about,box',0),(7,0,0,0,1,1,'/login/','Login','Login','Login','login',0),(8,1,1,1,0,1,'/api/','API','Api','Api','Api',0),(9,1,1,1,1,1,'/profile/','User\'s Profile','User\'s Profile','User\'s Profile','user,profile',1);
 /*!40000 ALTER TABLE `cms_sites` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,7 +332,7 @@ CREATE TABLE `cms_users` (
   `username` varchar(150) COLLATE utf8_czech_ci NOT NULL,
   `firstname` varchar(45) COLLATE utf8_czech_ci DEFAULT NULL,
   `lastname` varchar(150) COLLATE utf8_czech_ci DEFAULT NULL,
-  `password` varchar(50) COLLATE utf8_czech_ci NOT NULL DEFAULT '0',
+  `password` varchar(255) COLLATE utf8_czech_ci NOT NULL DEFAULT '0',
   `email` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
   `age` int(10) DEFAULT '0',
   `sex` tinyint(1) DEFAULT '0',
@@ -358,7 +358,7 @@ CREATE TABLE `cms_users` (
 
 LOCK TABLES `cms_users` WRITE;
 /*!40000 ALTER TABLE `cms_users` DISABLE KEYS */;
-INSERT INTO `cms_users` VALUES (0,0,1,'ANONYMOUS','Anonymní','Uživatel','0',NULL,0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,1),(1,2,0,'Bajtlamer','Radek','Roža','89d808f87913189d092ff58e16149c3e','bajt@volny.cz',0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,0);
+INSERT INTO `cms_users` VALUES (0,0,1,'ANONYMOUS','Anonymní','Uživatel','0',NULL,0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,1),(1,2,0,'admin','Admin','User','$2y$12$uTfIo1wmJXJcvcHF.abWvuF3VHxn8kUe.yLcMGo.xfA26iE.NEdGa','admin@example.com',0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,0);
 /*!40000 ALTER TABLE `cms_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

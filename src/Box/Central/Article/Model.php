@@ -42,11 +42,10 @@ class Model extends ModelAbstract
                           a.views, 
                           a.source  
                         FROM %s a
-                        WHERE  site_id = %d LIMIT 1;"
+                        WHERE  site_id = ? LIMIT 1;"
             ,S_TABLE_ARTICLES
-            ,$this->site->getSiteId()
         );
-        return Db::fetchObject($sql);
+        return Db::fetchObject($sql, array((int)$this->site->getSiteId()));
     }
 
     /**
@@ -57,10 +56,7 @@ class Model extends ModelAbstract
      */
     Public function updateViews($box)
     {
-        $sql = sprintf("UPDATE %s SET views = views + 1 WHERE site_id = %d;",
-            S_TABLE_ARTICLES,
-            $box->getSite()->getSiteId()
-        );
-        return Db::query($sql);
+        $sql = sprintf("UPDATE %s SET views = views + 1 WHERE site_id = ?;", S_TABLE_ARTICLES);
+        return Db::query($sql, array((int)$box->getSite()->getSiteId()));
     }
 }

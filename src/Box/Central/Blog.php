@@ -33,7 +33,7 @@ class Blog extends WbengineBoxAbstract
      */
     public function LocalStoryBox()
     {
-        $story = $this->getModel(__CLASS__)->getArticleRow();
+        $story = $this->getModel('App\Box\Central\Article')->getArticleRow();
         return $this->getRenderer()->render($this->getBoxTemplatePath(), $story);
     }
 }
