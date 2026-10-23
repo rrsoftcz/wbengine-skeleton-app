@@ -78,7 +78,7 @@ The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` 
 4. Edit `dbAdapterDefinition` in `src/Config/Settings.json`
 5. Point the web server document root at `public/`
 
-Upgrading an existing database: run the scripts in `schemas/migrations/` once. Passwords are stored with `password_hash()`; old MD5 hashes keep working and are upgraded on each user's next login once the column is widened.
+Upgrading an existing database: run the scripts in `schemas/migrations/` once. The translation tables of 005 are optional: without them the site stays in the default language. Passwords are stored with `password_hash()`; old MD5 hashes keep working and are upgraded on each user's next login once the column is widened.
 
 ## How it works
 
@@ -110,7 +110,7 @@ Examples to read first: `StaticBoxes::About` (static box), `Blog::LocalStoryBox`
 
 ## Languages
 
-The skeleton is available in English and Czech. `/` is English, `/cs/` is Czech, `/en/...` redirects to the unprefixed URL, and the browser's `Accept-Language` and a cookie that remembers your last choice are used for the unprefixed URLs. The texts live in `src/Locale/en.php` and `src/Locale/cs.php`, the templates use `{t 'key'}`, menu links use `|lurl`, and the layout has a language switcher and `hreflang` links. Add a language by listing it in the `i18n.locales` setting and adding `src/Locale/<code>.php`. Only the user interface is translated: the articles, menu names and site titles come from the database and are not. See the framework README (Internationalisation).
+The skeleton is available in English and Czech. `/` is English, `/cs/` is Czech, `/en/...` redirects to the unprefixed URL, and the browser's `Accept-Language` and a cookie that remembers your last choice are used for the unprefixed URLs. The texts live in `src/Locale/en.php` and `src/Locale/cs.php`, the templates use `{t 'key'}`, menu links use `|lurl`, and the layout has a language switcher and `hreflang` links. Add a language by listing it in the `i18n.locales` setting and adding `src/Locale/<code>.php`. The content from the database is translated too: site titles and meta tags, menu names and the article live in `cms_site_translations`, `cms_menu_translations` and `cms_article_translations` (demo Czech rows are in the schema), the original tables hold the default language, and a field without a translation falls back to it. `Article/Model.php` shows the one line a box with its own query needs (`ContentTranslations::overlayRow('article', $row)`); the site and the menu are translated by the framework. Editors manage the translations with `GET`, `PUT` and `DELETE /api/translations/{site|menu|article}/{id}[/{locale}]`. An existing database needs `schemas/migrations/005-content-translations.sql`. See the framework README (Internationalisation).
 
 ## Templates
 
@@ -159,7 +159,7 @@ curl -X POST -H 'Content-Type: application/json' \
 curl -H "Authorization: Bearer <token>" http://localhost:8080/api/sections
 ```
 
-Every route except `/api/auth/login` needs a valid token. Currently available: `auth` (login, logout, identify, revalidate), `users` (list, get, create, patch, delete), `sections` (CRUD).
+Every route except `/api/auth/login` needs a valid token. Currently available: `auth` (login, logout, identify, revalidate), `users` (list, get, create, patch, delete), `sections` (CRUD), `translations` (content translations, editor role), `cache/flush`.
 
 ## Security notes
 
