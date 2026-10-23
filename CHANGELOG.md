@@ -46,5 +46,4 @@
   any key that was committed), the PHP 7.0 Dockerfile and its Apache snippet,
   `Exception.html`.
 
-Requires WBengine 3.1 or newer (`composer.json` still points at `~3.0` until it
-is released).
+Requires WBengine 3.1 or newer (`composer.json` requires `^3.1` and PHP 8.3 or newer).
