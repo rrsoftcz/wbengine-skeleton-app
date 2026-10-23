@@ -30,6 +30,10 @@ Open http://localhost:8080 and sign in with the demo account:
 
 Change this password before the application is reachable by anyone else.
 
+## Nginx
+
+`etc/nginx/wbengine.conf` is the equivalent of `public/.htaccess` for Nginx with PHP-FPM: pages get a trailing slash (a 301 redirect), the API is exempt (a redirect would turn a POST into a GET), every request that is not a file goes to `index.php`, and `src/`, `vendor/`, `schemas/`, `bin/` and `etc/` are never served. It was tested with Nginx 1.30, PHP 8.4 FPM and MariaDB 11.4. Adjust `fastcgi_pass` and `root` to your setup.
+
 ## Manual installation
 
 1. `composer install`
