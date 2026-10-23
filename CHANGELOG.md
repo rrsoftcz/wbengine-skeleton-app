@@ -17,6 +17,8 @@
 
 ### Added
 
+- `cms_refresh_tokens`: server side refresh tokens for the REST API. Existing
+  databases: run `schemas/migrations/003-add-refresh-tokens.sql`.
 - `cms_users.role` (`user`, `editor`, `admin`): the REST API now authorizes by role.
   Existing databases: run `schemas/migrations/002-add-user-role.sql` and promote
   your administrators, otherwise the API answers 403 to everybody.
