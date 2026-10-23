@@ -13,4 +13,14 @@ class StaticBoxes extends WbengineBoxAbstract
     {
         return $this->getRenderer()->render($this->getBoxTemplatePath());
     }
+
+    /**
+     * The feature overview of the home page.
+     * @return string
+     * @throws \Wbengine\Exception\RuntimeException
+     */
+    public function Features()
+    {
+        return $this->getRenderer()->render($this->getBoxTemplatePath());
+    }
 }
