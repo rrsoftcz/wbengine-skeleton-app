@@ -1,16 +1,9 @@
-<!-- START STORY BOX -->
-<div class="story">
+{* A dynamic box of the application itself: data from a model, then a template. *}
+<article class="story">
     {if $LocalStoryBox->title}
         <h1>{$LocalStoryBox->title}</h1>
     {/if}
-    {if $LocalStoryBox->author}
-        <p><i>Author:</i> <b><a href="#">{$LocalStoryBox->author}</a></b>, <i>Source:</i> <a href="{$LocalStoryBox->source}"> {$LocalStoryBox->source}</a></p>
-    {/if}
-    <!-- story box content start -->
     {* Article text is HTML written by administrators: trusted, printed as is. *}
-    {$LocalStoryBox->introtext|raw}
-    {$LocalStoryBox->bodytext|raw}
-    <!-- story box content end -->
-    <p>&nbsp;</p>
-</div>
-<!-- END STORY BOX -->
+    <div class="lead">{$LocalStoryBox->introtext|raw}</div>
+    <div class="doc mt-6">{$LocalStoryBox->bodytext|raw}</div>
+</article>

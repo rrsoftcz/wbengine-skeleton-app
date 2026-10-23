@@ -426,23 +426,3 @@ CREATE TABLE IF NOT EXISTS `cms_article_translations` (
   `bodytext` text,
   PRIMARY KEY (`article_id`,`locale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-
-INSERT INTO `cms_site_translations` (`site_id`,`locale`,`title`,`html_title`,`html_description`,`html_keywords`) VALUES
-(1,'cs','Wbengine','Wbengine','Toto je ukázková aplikace postavená na kostře Wbengine','wbengine,php,oop'),
-(2,'cs','Jednoduchý blog','Jednoduchý blog','Toto je příklad jednoduchého blogu','jednoduchý,blog'),
-(3,'cs','Box O nás','Příklad boxu O nás','Toto je příklad statického HTML boxu','o nás,box');
-
-INSERT INTO `cms_menu_translations` (`menu_id`,`locale`,`name`,`description`) VALUES
-(1,'cs','Domů','Domů'),
-(2,'cs','Blog','Jednoduchý blog'),
-(3,'cs','O nás','Stránka O nás');
-
-INSERT INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`) VALUES
-(1,'cs','Ukázka blogu','<p>Zde je krátký úvod českého článku. Tento text je uložen v tabulce překladů a nahrazuje výchozí anglický úvod.</p>','<h2>Ukázkový blog webu</h2>
-
-<p><strong>Tělo článku</strong> je přeložené stejně jako nadpis. Kdyby některé pole překlad nemělo, zobrazí se místo něj výchozí text, takže rozpracovaný překlad nikdy nezanechá prázdné místo.</p>
-<ul class="list-group">
-   <li>Překlady spravuje REST API pod <code>/api/translations/</code>.</li>
-   <li>Výchozí jazyk zůstává v původních tabulkách.</li>
-   <li>Každý jazyk má vlastní kopii v mezipaměti stránek.</li>
-</ul>');

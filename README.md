@@ -80,6 +80,30 @@ The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` 
 
 Upgrading an existing database: run the scripts in `schemas/migrations/` once. The translation tables of 005 are optional: without them the site stays in the default language. Passwords are stored with `password_hash()`; old MD5 hashes keep working and are upgraded on each user's next login once the column is widened.
 
+## The demo site
+
+The skeleton is a working site that explains WBengine with itself. Every documentation page has an article that describes a feature and a live box under it that shows the feature on that very request.
+
+| Page | Feature | Live demonstration |
+|------|---------|--------------------|
+| `/` | `Header\Jumbotron` (a header section box) and `StaticBoxes::Features` | two boxes in two sections of one site |
+| `/docs/` | getting started: install, first page | |
+| `/docs/architecture/` | sites, sections, boxes, request lifecycle | the `cms_boxes` rows that built the page (`Demo::Structure`) |
+| `/docs/boxes/` | static and dynamic boxes, models, the `cms_boxes` columns | |
+| `/docs/templates/` | native engine syntax, escaping, moving from Smarty | template source next to its output (`Demo::Templates`) |
+| `/docs/languages/` | language detection, catalogs, plurals, translated content | the detected locale, plural forms, number and date formats (`Demo::Languages`) |
+| `/docs/caching/` | data cache, page cache, invalidation | build time, query count and the `X-WBengine-Cache` header (`Demo::Caching`) |
+| `/docs/security/` | the defences, the `acl` of a site | `/profile/` redirects to the login |
+| `/docs/rest-api/` | endpoints, roles, conventions | a console that calls the API (`Demo::Api`) |
+| `/blog/` | the framework's `Article` box | |
+| `/about/` | a static box | |
+
+The documentation text is content, not code: each page is a `cms_sites` row, a `cms_articles` row and a `cms_boxes` row for the reusable `Docs::Page` box (which adds the sidebar). The Czech text is in `cms_article_translations`, the menu names in `cms_menu_translations`. The demo content lives in `schemas/wbengine_skeletone_app_mysql_template_content.sql`, imported after the schema.
+
+To add a documentation page: insert the three rows (copy one of the seeded pages), add the url and a catalog key to `Docs::PAGES` for the sidebar, translate it with `PUT /api/translations/article/{id}/cs`, and rebuild the stylesheet (see TailwindCSS below), because the article HTML uses Tailwind classes and the build scans the SQL files.
+
+The default `settings.json.default` switches the data cache and the page cache on (file driver, 60 seconds for pages), so the caching page is meaningful. While you edit templates, set `cache.enabled` to `false` or call `POST /api/cache/flush`, otherwise you see the stored copy for up to a minute.
+
 ## How it works
 
 The page you see is assembled from database rows:
@@ -176,6 +200,8 @@ The stylesheet is built from `src/input.css` with Tailwind (`tailwind.config.js`
 npm install
 npx tailwindcss -i ./src/input.css -o ./public/Css/output.min.css --watch --minify
 ```
+
+Without a local Node, use Docker: `docker run --rm -v "$PWD":/app -w /app node:22-alpine sh -c "npm install && npx tailwindcss -i ./src/input.css -o ./public/Css/output.min.css --minify"`. `tailwind.config.js` scans the templates, the framework's own box templates and `schemas/**/*.sql` (the article HTML in the seed uses classes).
 
 ## Contributing
 
