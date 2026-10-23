@@ -24,6 +24,8 @@
 
 ### Added
 
+- `etc/nginx/wbengine.conf`: an Nginx configuration equivalent to `.htaccess`. The
+  skeleton was run end to end on Nginx with PHP-FPM and MariaDB 11.4.
 - `cms_refresh_tokens`: server side refresh tokens for the REST API. Existing
   databases: run `schemas/migrations/003-add-refresh-tokens.sql` and then
   `004-refresh-token-family-start.sql` (absolute lifetime of a login).
