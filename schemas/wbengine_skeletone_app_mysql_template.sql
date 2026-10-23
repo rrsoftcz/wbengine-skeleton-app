@@ -345,6 +345,7 @@ CREATE TABLE `cms_users` (
   `ac_active` int(10) unsigned DEFAULT '0',
   `user_ip` varchar(45) COLLATE utf8_czech_ci DEFAULT NULL,
   `locale` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `role` varchar(20) COLLATE utf8_czech_ci NOT NULL DEFAULT 'user',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_id` (`user_id`),
   KEY `user_type` (`user_type`),
@@ -358,7 +359,7 @@ CREATE TABLE `cms_users` (
 
 LOCK TABLES `cms_users` WRITE;
 /*!40000 ALTER TABLE `cms_users` DISABLE KEYS */;
-INSERT INTO `cms_users` VALUES (0,0,1,'ANONYMOUS','Anonymní','Uživatel','0',NULL,0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,1),(1,2,0,'admin','Admin','User','$2y$12$uTfIo1wmJXJcvcHF.abWvuF3VHxn8kUe.yLcMGo.xfA26iE.NEdGa','admin@example.com',0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,0);
+INSERT INTO `cms_users` VALUES (0,0,1,'ANONYMOUS','Anonymní','Uživatel','0',NULL,0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,1,'user'),(1,2,0,'admin','Admin','User','$2y$12$uTfIo1wmJXJcvcHF.abWvuF3VHxn8kUe.yLcMGo.xfA26iE.NEdGa','admin@example.com',0,0,0,NULL,NULL,NULL,NULL,0,0,NULL,0,'admin');
 /*!40000 ALTER TABLE `cms_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
