@@ -32,7 +32,7 @@
                 <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                 {if $user && $user->isLogged() === true}
                     <a class="nav-link a-login" href="/login/?a=logout" title="Přihlásit se do systému">
-                        <button type="button" class="btn-white">Logout</button>
+                        <button type="button" class="btn-white">Logout ({$user->getUserEmail()})</button>
                     </a>
                 {else}
                     <a class="nav-link a-login" href="/login/" title="Přihlásit se do systému">
@@ -74,21 +74,25 @@
         </nav>
     </div>
     <div class="m-auto max-w-screen-lg">
-        {$header}
-        {$central}
+        {* The sections are HTML built by the boxes: trusted, printed as is. *}
+        {$header|raw}
+        {$central|raw}
     </div>
 
     <div class="m-auto max-w-screen-lg">
         <div class="text-center">
-            <p>Powered by <a href="https://packagist.org/packages/wbengine/wbengine">WBengine</a>, {$server}, MySQL
-                {$dbinfo}
-                and PHP {$phpversion}, Hosted By <a href="https://www.rrsoft.cz">RRsoft</a> &copy; 2008 - 2024 All
-                Rights
-                Reserved</p>
+            <p>Powered by 
+            <a href="https://packagist.org/packages/wbengine/wbengine">WBengine</a>, 
+            {$server}, 
+            MySQL {$dbinfo} 
+            and PHP {$phpversion}, 
+            Hosted By 
+            <a href="https://www.rrsoft.cz">RRSOFT</a> 
+            &copy; 2008 - 2025 All Rights Reserved</p>
         </div>
     </div>
     {if ($debug)}
-        {$debug->show()}
+        {$debug->show()|raw}
     {/if}
 </body>
 <script src="./menu.js"></script>

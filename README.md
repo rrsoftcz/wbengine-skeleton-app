@@ -68,6 +68,18 @@ bin/setup.sh              first-time setup
 
 Examples to read first: `StaticBoxes::About` (static box), `Blog::LocalStoryBox` with `Article/Model.php` (dynamic box with a model), `Profile` (box that uses the logged in user).
 
+## Templates
+
+The skeleton uses WBengine's native template engine with automatic escaping: `{$value}` is HTML-escaped, so a menu name or an e-mail address containing markup is shown as text, not run. Print trusted HTML (the sections built by the boxes, formatted article text) with `|raw`:
+
+```smarty
+<title>{$meta.title}</title>          {* escaped *}
+{$central|raw}                        {* HTML built by the boxes *}
+{$LocalStoryBox->bodytext|raw}        {* article HTML written by administrators *}
+```
+
+The syntax is a subset of Smarty (`{if}`, `{foreach}`, `{include}`, modifiers, `{cache}` for fragment caching), see the framework README. Templates written with explicit `|raw` and `|escape` also work with Smarty: set `"adapterName": "SmartyRenderer"` in `Settings.json` to switch back.
+
 ## Adding a page
 
 1. Insert a row into `cms_sites` (the URL) and optionally `cms_menu` (the navigation entry).

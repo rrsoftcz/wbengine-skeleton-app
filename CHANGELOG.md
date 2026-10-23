@@ -15,6 +15,13 @@
 - `public/.htaccess` no longer redirects `/api` to add a trailing slash.
 - The blog box and its model use bound parameters.
 
+### Changed (templates)
+
+- The skeleton now uses the native template engine with automatic escaping
+  (`"adapterName": "NativeRenderer"`, `"autoEscape": true`). Trusted HTML is marked
+  `|raw` in `site.tpl` and `LocalStoryBox.tpl`; everything else is escaped. The
+  pages are identical to the Smarty ones. The templates also work with Smarty.
+
 ### Added
 
 - `cms_refresh_tokens`: server side refresh tokens for the REST API. Existing
