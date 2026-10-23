@@ -6,7 +6,8 @@
   "debug": false,
   "cdnPath": "",
   "renderer": {
-    "adapterName": "SmartyRenderer",
+    "adapterName": "NativeRenderer",
+    "autoEscape": true,
     "templatesDir": "/View/",
     "compiledDir": "Compiled/",
     "configDir": "/Config/"

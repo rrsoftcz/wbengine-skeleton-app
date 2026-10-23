@@ -7,8 +7,9 @@
         <p><i>Author:</i> <b><a href="#">{$LocalStoryBox->author}</a></b>, <i>Source:</i> <a href="{$LocalStoryBox->source}"> {$LocalStoryBox->source}</a></p>
     {/if}
     <!-- story box content start -->
-    {$LocalStoryBox->introtext}
-    {$LocalStoryBox->bodytext}
+    {* Article text is HTML written by administrators: trusted, printed as is. *}
+    {$LocalStoryBox->introtext|raw}
+    {$LocalStoryBox->bodytext|raw}
     <!-- story box content end -->
     <p>&nbsp;</p>
 </div>
