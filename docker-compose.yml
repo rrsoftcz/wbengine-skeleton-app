@@ -8,6 +8,8 @@ services:
             - "8080:80"
         volumes:
             - ./:/var/www/html/
+            # Development PHP settings (error reporting without deprecations from legacy packages)
+            - ./etc/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     db:
         container_name: wbengine-skeleton-db
         image: mysql:8.4

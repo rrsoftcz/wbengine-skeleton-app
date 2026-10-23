@@ -1,0 +1,12 @@
+# HTTPS for local development with mkcert certificates (see the README).
+#
+#   docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+#
+# Then open https://wbengine.local
+services:
+    web:
+        ports:
+            - "443:443"
+        volumes:
+            - ./etc/cert/:/etc/cert/:ro
+            - ./etc/apache2/sites-available/wbengine-https.conf:/etc/apache2/sites-enabled/wbengine-https.conf:ro

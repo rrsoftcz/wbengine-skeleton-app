@@ -15,6 +15,15 @@
 - `public/.htaccess` no longer redirects `/api` to add a trailing slash.
 - The blog box and its model use bound parameters.
 
+### Changed (Docker and HTTPS)
+
+- Plain HTTP on port 8080 is the zero-setup default. The mkcert HTTPS development
+  setup (https://wbengine.local) is kept as an optional override:
+  `docker compose -f docker-compose.yml -f docker-compose.https.yml up -d`, with
+  the vhost `etc/apache2/sites-available/wbengine-https.conf`. The production vhost
+  is `wbengine-production.conf`. Certificates are still never committed
+  (`etc/cert/README.md`). `etc/php/custom.ini` (development PHP settings) is mounted.
+
 ### Changed (templates)
 
 - The skeleton now uses the native template engine with automatic escaping

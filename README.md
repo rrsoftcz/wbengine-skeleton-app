@@ -34,6 +34,42 @@ Change this password before the application is reachable by anyone else.
 
 `etc/nginx/wbengine.conf` is the equivalent of `public/.htaccess` for Nginx with PHP-FPM: pages get a trailing slash (a 301 redirect), the API is exempt (a redirect would turn a POST into a GET), every request that is not a file goes to `index.php`, and `src/`, `vendor/`, `schemas/`, `bin/` and `etc/` are never served. It was tested with Nginx 1.30, PHP 8.4 FPM and MariaDB 11.4. Adjust `fastcgi_pass` and `root` to your setup.
 
+## HTTPS development with mkcert (optional)
+
+The quick start above uses plain HTTP on port 8080. To develop against `https://wbengine.local` with a locally trusted certificate:
+
+1. Install mkcert: `brew install mkcert` (macOS) or `sudo apt install mkcert` (Ubuntu or Debian).
+2. Install its local certificate authority, once per machine: `mkcert -install`.
+3. Add the hostname: `echo "127.0.0.1 wbengine.local" | sudo tee -a /etc/hosts`.
+4. Generate the certificates in `etc/cert`:
+
+   ```bash
+   cd etc/cert
+   mkcert -cert-file fullchain.cer -key-file wbengine.local.key wbengine.local localhost 127.0.0.1 ::1
+   ```
+
+5. Start Docker with the HTTPS override and open https://wbengine.local:
+
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+   ```
+
+The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` read only and enables the vhost `etc/apache2/sites-available/wbengine-https.conf`. If you prefer your own setup, a git-ignored `docker-compose.override.yml` and `etc/apache2/sites-available/wbengine.local.conf` are loaded the usual way and stay out of the repository.
+
+| | Development | Production |
+|---|---|---|
+| Hostname | `wbengine.local` | `wbengine.rrsoft.cz` |
+| Certificates | mkcert (local, valid about 27 months) | Let's Encrypt (certbot, renewed automatically) |
+| Apache config | `wbengine-https.conf` | `wbengine-production.conf` |
+
+**Certificates are never committed.** Production certificates are managed by certbot and renewed automatically, development ones are generated locally by mkcert, and a private key does not belong in version control. See `etc/cert/README.md` for details.
+
+**Troubleshooting**
+
+* SSL certificate error: run `mkcert -install` again, regenerate the certificates (step 4) and restart with `docker compose ... down` and `up -d`.
+* `wbengine.local` does not resolve: check `cat /etc/hosts | grep wbengine`.
+* Port 443 is already in use: find the process with `lsof -i :443`.
+
 ## Manual installation
 
 1. `composer install`
@@ -128,6 +164,23 @@ Every route except `/api/auth/login` needs a valid token. Currently available: `
 * Any valid token can currently use every API route. Add a role check before exposing the API to more than administrators.
 * Do not commit TLS certificates or private keys; terminate TLS in front of the application.
 
+## TailwindCSS
+
+The stylesheet is built from `src/input.css` with Tailwind (`tailwind.config.js`):
+
+```bash
+npm install
+npx tailwindcss -i ./src/input.css -o ./public/Css/output.min.css --watch --minify
+```
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the code of conduct and the process for submitting pull requests.
+
+## Improving this sample
+
+The WBengine library and this sample application are open source and a volunteer effort. RRsoft does not have people fully dedicated to maintaining them. If you want something improved or a new feature, please submit a pull request. The library lives at https://github.com/rrsoftcz/wbengine.
+
 ## License
 
-MIT
+See [LICENSE.md](LICENSE.md). `composer.json` declares the MIT license.

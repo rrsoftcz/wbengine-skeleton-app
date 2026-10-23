@@ -22,6 +22,15 @@ node_modules/
 
 # Secrets and local environment: never commit
 .env
-etc/cert/
 *.key
 *.pem
+
+# SSL certificates are managed per environment, never committed
+etc/cert/*.cer
+etc/cert/*.crt
+etc/cert/*.key
+etc/cert/*.pem
+
+# Developer-specific configuration
+etc/apache2/sites-available/wbengine.local.conf
+docker-compose.override.yml
