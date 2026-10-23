@@ -3,6 +3,7 @@ namespace App\Box\Central\Article;
 use App\Box\Central\Blog;
 use Wbengine\Box\BoxTemplate;
 use Wbengine\Db;
+use Wbengine\I18n\ContentTranslations;
 use Wbengine\Model\ModelAbstract;
 use Wbengine\Site;
 
@@ -45,7 +46,8 @@ class Model extends ModelAbstract
                         WHERE  site_id = ? LIMIT 1;"
             ,S_TABLE_ARTICLES
         );
-        return Db::fetchObject($sql, array((int)$this->site->getSiteId()));
+        // Title, intro and body in the visitor's language, field by field, default when untranslated.
+        return ContentTranslations::overlayRow('article', Db::fetchObject($sql, array((int)$this->site->getSiteId())));
     }
 
     /**

@@ -393,3 +393,56 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2018-07-10 20:35:18
+
+--
+-- Content translations (see schemas/migrations/005-content-translations.sql)
+--
+
+SET NAMES utf8;
+
+CREATE TABLE IF NOT EXISTS `cms_site_translations` (
+  `site_id` int(10) unsigned NOT NULL,
+  `locale` varchar(10) NOT NULL,
+  `title` varchar(120) DEFAULT NULL,
+  `html_title` varchar(120) DEFAULT NULL,
+  `html_description` varchar(170) DEFAULT NULL,
+  `html_keywords` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`site_id`,`locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
+CREATE TABLE IF NOT EXISTS `cms_menu_translations` (
+  `menu_id` int(10) unsigned NOT NULL,
+  `locale` varchar(10) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `description` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`menu_id`,`locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
+CREATE TABLE IF NOT EXISTS `cms_article_translations` (
+  `article_id` int(10) unsigned NOT NULL,
+  `locale` varchar(10) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `introtext` text,
+  `bodytext` text,
+  PRIMARY KEY (`article_id`,`locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
+INSERT INTO `cms_site_translations` (`site_id`,`locale`,`title`,`html_title`,`html_description`,`html_keywords`) VALUES
+(1,'cs','Wbengine','Wbengine','Toto je ukázková aplikace postavená na kostře Wbengine','wbengine,php,oop'),
+(2,'cs','Jednoduchý blog','Jednoduchý blog','Toto je příklad jednoduchého blogu','jednoduchý,blog'),
+(3,'cs','Box O nás','Příklad boxu O nás','Toto je příklad statického HTML boxu','o nás,box');
+
+INSERT INTO `cms_menu_translations` (`menu_id`,`locale`,`name`,`description`) VALUES
+(1,'cs','Domů','Domů'),
+(2,'cs','Blog','Jednoduchý blog'),
+(3,'cs','O nás','Stránka O nás');
+
+INSERT INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`) VALUES
+(1,'cs','Ukázka blogu','<p>Zde je krátký úvod českého článku. Tento text je uložen v tabulce překladů a nahrazuje výchozí anglický úvod.</p>','<h2>Ukázkový blog webu</h2>
+
+<p><strong>Tělo článku</strong> je přeložené stejně jako nadpis. Kdyby některé pole překlad nemělo, zobrazí se místo něj výchozí text, takže rozpracovaný překlad nikdy nezanechá prázdné místo.</p>
+<ul class="list-group">
+   <li>Překlady spravuje REST API pod <code>/api/translations/</code>.</li>
+   <li>Výchozí jazyk zůstává v původních tabulkách.</li>
+   <li>Každý jazyk má vlastní kopii v mezipaměti stránek.</li>
+</ul>');
