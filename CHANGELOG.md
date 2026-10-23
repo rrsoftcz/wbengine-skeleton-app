@@ -15,6 +15,13 @@
 - `public/.htaccess` no longer redirects `/api` to add a trailing slash.
 - The blog box and its model use bound parameters.
 
+### Languages
+
+- English and Czech (`src/Locale/en.php`, `cs.php`) with the `i18n` setting enabled in
+  `settings.json.default`: `/cs/` URLs, a language switcher, `hreflang` links, translated
+  layout, profile and jumbotron, localized menu and login URLs (`|lurl`).
+  Requires WBengine 3.2 (`composer.json` requires `^3.2`).
+
 ### Changed (Docker and HTTPS)
 
 - Plain HTTP on port 8080 is the zero-setup default. The mkcert HTTPS development

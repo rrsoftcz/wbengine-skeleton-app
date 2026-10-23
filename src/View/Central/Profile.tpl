@@ -1,8 +1,8 @@
 <div class="story">
-    <h1 class="hero-header">Profile</h1>
+    <h1 class="hero-header">{t 'profile.title'}</h1>
     {if $Profile.logged}
-        <p>You are signed in as <b>{$Profile.email|escape}</b>.</p>
+        <p>{t 'profile.signed_in' email=$Profile.email raw}</p>
     {else}
-        <p>You are not signed in.</p>
+        <p>{t 'profile.anonymous'}</p>
     {/if}
 </div>

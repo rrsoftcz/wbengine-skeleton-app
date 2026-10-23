@@ -28,6 +28,11 @@
   "recaptcha": {
     "secretKey": ""
   },
+  "i18n": {
+    "enabled": true,
+    "default": "en",
+    "locales": ["en", "cs"]
+  },
   "cssFiles": [],
   "ipAdmins": []
 }

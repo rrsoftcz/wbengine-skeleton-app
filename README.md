@@ -108,6 +108,10 @@ bin/setup.sh              first-time setup
 
 Examples to read first: `StaticBoxes::About` (static box), `Blog::LocalStoryBox` with `Article/Model.php` (dynamic box with a model), `Profile` (box that uses the logged in user).
 
+## Languages
+
+The skeleton is available in English and Czech. `/` is English, `/cs/` is Czech, `/en/...` redirects to the unprefixed URL, and the browser's `Accept-Language` and a cookie that remembers your last choice are used for the unprefixed URLs. The texts live in `src/Locale/en.php` and `src/Locale/cs.php`, the templates use `{t 'key'}`, menu links use `|lurl`, and the layout has a language switcher and `hreflang` links. Add a language by listing it in the `i18n.locales` setting and adding `src/Locale/<code>.php`. Only the user interface is translated: the articles, menu names and site titles come from the database and are not. See the framework README (Internationalisation).
+
 ## Templates
 
 The skeleton uses WBengine's native template engine with automatic escaping: `{$value}` is HTML-escaped, so a menu name or an e-mail address containing markup is shown as text, not run. Print trusted HTML (the sections built by the boxes, formatted article text) with `|raw`:
