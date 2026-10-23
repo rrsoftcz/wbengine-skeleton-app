@@ -17,6 +17,9 @@
 
 ### Added
 
+- `cms_users.role` (`user`, `editor`, `admin`): the REST API now authorizes by role.
+  Existing databases: run `schemas/migrations/002-add-user-role.sql` and promote
+  your administrators, otherwise the API answers 403 to everybody.
 - `bin/setup.sh`: creates `Settings.json` with random JWT keys, prepares the
   template cache and runs `composer install`.
 - `Profile` box and template, `schemas/migrations/`.
