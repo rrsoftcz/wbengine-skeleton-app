@@ -187,4 +187,4 @@ The WBengine library and this sample application are open source and a volunteer
 
 ## License
 
-See [LICENSE.md](LICENSE.md). `composer.json` declares the MIT license.
+MIT, see [LICENSE.md](LICENSE.md).

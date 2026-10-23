@@ -1,12 +1,12 @@
 <div class="story alert-danger">
-    <h1 class="display-3">ERROR 404 - Page not found</h1>
-    <p class="lead">We're so sorry, but requested web page not found.</p>
+    <h1 class="display-3">{t 'error404.title'}</h1>
+    <p class="lead">{t 'error404.lead'}</p>
     <hr class="my-4">
-    <h4>Possible reasons:</h4>
+    <h4>{t 'error404.reasons'}</h4>
     <ul>
-        <li>The page content has been deleted or disabled by administrator</li>
-        <li>Reference sites or resources have been removed</li>
-        <li>The article ID does not exist</li>
+        <li>{t 'error404.r1'}</li>
+        <li>{t 'error404.r2'}</li>
+        <li>{t 'error404.r3'}</li>
     </ul>
     <p>&ensp;</p>
 </div>

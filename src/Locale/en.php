@@ -18,4 +18,10 @@ return [
     'profile.title'    => 'Profile',
     'profile.signed_in' => 'You are signed in as <b>%email%</b>.',
     'profile.anonymous' => 'You are not signed in.',
+    'error404.title' => 'ERROR 404 - Page not found',
+    'error404.lead' => 'We\'re so sorry, but the requested web page was not found.',
+    'error404.reasons' => 'Possible reasons:',
+    'error404.r1' => 'The page content has been deleted or disabled by an administrator',
+    'error404.r2' => 'Reference sites or resources have been removed',
+    'error404.r3' => 'The article ID does not exist',
 ];
