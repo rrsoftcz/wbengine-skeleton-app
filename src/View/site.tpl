@@ -14,7 +14,8 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="{$meta.title}">
     <meta property="og:description" content="{$meta.description}">
-    {foreach $alternates as $code => $url}
+    {* hreflang URLs must be absolute: $hreflangs holds them, with x-default *}
+    {foreach $hreflangs as $code => $url}
     <link rel="alternate" hreflang="{$code}" href="{$url}">
     {/foreach}
     <link rel="manifest" href="/manifest.json">
@@ -45,7 +46,7 @@
                 {* Language switcher: the same page in every language *}
                 <ul class="m-0 flex list-none items-center rounded-lg bg-slate-100 p-0.5 text-xs font-semibold" aria-label="{t 'nav.language'}">
                     {foreach $alternates as $code => $url}
-                    <li><a class="block rounded-md px-2.5 py-1 no-underline {if $code == $locale}bg-white text-indigo-700 shadow-sm{else}text-slate-500 hover:text-slate-900{/if}" href="{$url}" hreflang="{$code}" lang="{$code}">{$code|upper}</a></li>
+                    <li><a class="block rounded-md px-2.5 py-1 no-underline {if $code == $locale}bg-white text-indigo-700 shadow-sm{else}text-slate-600 hover:text-slate-900{/if}" href="{$url}" hreflang="{$code}" lang="{$code}">{$code|upper}</a></li>
                     {/foreach}
                 </ul>
                 {if $user && $user->isLogged() === true}
@@ -87,10 +88,10 @@
                     <span class="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-sm font-extrabold text-white">W</span>
                     <span class="font-bold text-slate-900">WBengine</span>
                 </div>
-                <p class="mt-3 max-w-md text-sm text-slate-500">{t 'footer.about'}</p>
+                <p class="mt-3 max-w-md text-sm text-slate-600">{t 'footer.about'}</p>
             </div>
             <div>
-                <h3 class="mb-3 mt-0 text-sm font-semibold uppercase tracking-wider text-slate-900">{t 'footer.docs'}</h3>
+                <h2 class="mb-3 mt-0 text-sm font-semibold uppercase tracking-wider text-slate-900">{t 'footer.docs'}</h2>
                 <ul class="m-0 list-none space-y-2 p-0 text-sm">
                     <li><a class="no-underline hover:underline" href="{'/docs/'|lurl}">{t 'doc.getting_started'}</a></li>
                     <li><a class="no-underline hover:underline" href="{'/docs/architecture/'|lurl}">{t 'doc.architecture'}</a></li>
@@ -99,7 +100,7 @@
                 </ul>
             </div>
             <div>
-                <h3 class="mb-3 mt-0 text-sm font-semibold uppercase tracking-wider text-slate-900">{t 'footer.project'}</h3>
+                <h2 class="mb-3 mt-0 text-sm font-semibold uppercase tracking-wider text-slate-900">{t 'footer.project'}</h2>
                 <ul class="m-0 list-none space-y-2 p-0 text-sm">
                     <li><a class="no-underline hover:underline" href="https://github.com/rrsoftcz/wbengine">GitHub</a></li>
                     <li><a class="no-underline hover:underline" href="https://packagist.org/packages/wbengine/wbengine">Packagist</a></li>
@@ -108,7 +109,7 @@
             </div>
         </div>
         <div class="border-t border-slate-100">
-            <div class="container-page flex flex-col gap-2 py-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+            <div class="container-page flex flex-col gap-2 py-4 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between">
                 <span>{t 'footer.rights'} &middot; &copy; 2008&ndash;2026 RRSOFT</span>
                 <span>{$server} &middot; MySQL {$dbinfo} &middot; PHP {$phpversion}</span>
             </div>
