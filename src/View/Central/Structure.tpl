@@ -20,5 +20,5 @@
             </tbody>
         </table>
     </div>
-    <p class="py-0 pt-3 text-xs text-slate-500">{t 'demo.structure.note'}</p>
+    <p class="py-0 pt-3 text-xs text-slate-600">{t 'demo.structure.note'}</p>
 </section>

@@ -27,13 +27,13 @@
         <nav class="mt-12 grid grid-cols-1 gap-4 border-t border-slate-200 pt-6 sm:grid-cols-2" aria-label="{t 'doc.pager'}">
             {if $Page.prev}
             <a class="card no-underline hover:border-indigo-300" href="{$Page.prev.link|lurl}">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">&larr; {t 'doc.prev'}</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">&larr; {t 'doc.prev'}</span>
                 <span class="mt-1 block font-semibold text-slate-900">{$Page.prev.key|t}</span>
             </a>
             {else}<span></span>{/if}
             {if $Page.next}
             <a class="card text-right no-underline hover:border-indigo-300" href="{$Page.next.link|lurl}">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">{t 'doc.next'} &rarr;</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">{t 'doc.next'} &rarr;</span>
                 <span class="mt-1 block font-semibold text-slate-900">{$Page.next.key|t}</span>
             </a>
             {/if}

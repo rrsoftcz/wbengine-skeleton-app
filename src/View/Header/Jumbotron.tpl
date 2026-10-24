@@ -34,7 +34,7 @@
 {
     <span class="text-fuchsia-300">public function</span> <span class="text-sky-300">Hello</span>()
     {
-        <span class="text-slate-500">// a row in cms_boxes points here</span>
+        <span class="text-slate-400">// a row in cms_boxes points here</span>
         <span class="text-fuchsia-300">return</span> $this-&gt;<span class="text-sky-300">getRenderer</span>()-&gt;<span class="text-sky-300">render</span>(
             $this-&gt;<span class="text-sky-300">getBoxTemplatePath</span>(),
             [<span class="text-emerald-300">'name'</span> =&gt; <span class="text-emerald-300">'World'</span>]
