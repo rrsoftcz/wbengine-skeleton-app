@@ -36,6 +36,7 @@ class Model extends ModelAbstract
         $sql = sprintf("SELECT 
                           a.introtext, 
                           a.bodytext, 
+                          a.content_format,
                           a.id, 
                           a.title, 
                           a.published, 
