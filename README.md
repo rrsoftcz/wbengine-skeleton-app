@@ -247,3 +247,16 @@ public API v2 discovery and unchanged API v1 authorization. CI executes the same
 workflow against the framework development branch.
 
 [Migration checkpoint and remaining work](plan-wbengine-4.0-migration.md).
+
+
+## Izolovaný CMS benchmark WBengine 4.0
+
+Po přípravě stejného smoke prostředí lze spustit:
+
+```sh
+docker compose -p wbengine-skeleton-modernization -f compose.smoke.yml run --rm tools php tests/benchmark-cms.php
+```
+
+Runner vyžaduje WBENGINE_SMOKE marker a vlastní existující seed DB. Spustí pouze svůj čtyřprocesový HTTP server na interním loopback8081, použije skutečné CSRF přihlášení a DB sessions. Mění pouze konfiguraci jednotlivých testovacích requestů a čistí jen vlastní náhodný cache adresář před každou kohortou; hlavní konfiguraci ani server nemění. Testovací router přidává měřicí hlavičky pouze zde, ne v produkci.
+
+Výsledek tests/benchmark-cms-result.json obsahuje 15 kombinací cache/identity,20vzorků každé,p50/p95,throughput,HTTPerrors,SQL/spojení/paměť a skutečné HIT počty. Cookies ani hesla ve výsledku nejsou. Měření na malé lokální fixture není záruka produkčního výkonu. Throughput zahrnuje fork a sběr klientských procesů, paměť je vrchol alokovaných bajtů serveru, OPcacheCLI byl při uloženém běhu vypnutý.

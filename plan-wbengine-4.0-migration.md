@@ -18,3 +18,12 @@ Postup opakování je v README. Tests setup/seed se odmítnou spustit bez marker
 Rollback aplikačních změn: obnovit odpovídající public bootstrap, App služby, layout a Composer verzi, vyčistit kompilované/page/fragment/externí HTML cache. Samotné přepnutí adaptéru nestačí pro native-only set/t syntax. SQL obsahové migrace mají vlastní plán a originály; tento checkpoint je nespouští.
 
 Kontrolní bod TPL-03: dependency-profile a reset-smoke-cache odmítají běh mimo označené izolované prostředí. CI provádí obě kontroly před HTTP sadou. Následuje MD-04 čerstvá instalace bez Texy a izolovaný obsahový pilot.
+
+
+## DX-03 a MD-04 kontrolní bod 2026-10-26
+
+Čerstvá instalace bez Smarty/Texy má pouze JWT a WBengine.20HTTPgreen, obě skutečné Composer bin proxy fungují. CI nově kontroluje i tento profil. Example apiV2.enabled=true používá časné API předCMS; obsahové endpointy vyžadují explicitní SQL002/003/005, produkční migrace se tímto neprovádí.
+
+Skutečná CMS matice dokončena:300requestů/0chyb,15kohort,konkurence4,PHP8.4.27/MySQL8.4.13,14stránek/9článků/20boxů/2uživatelé,OPcacheCLI0. Off veřejný request6SQL/1spojení,datováwarm1SQL/1spojení,pagewarm20/20HIT a0SQL/0spojení. Privátní profile a customAPI nikdysharedHIT. Přesné naměřené latence, metodika a omezení v benchmark-cms-result.json. Reálný adminformlogin+CSRF a DBsession ověřeny, konfigurace a hlavní server bezezměn.
+
+Další krok společný HTTPSAPI/adminpilot v samostatném prostředí a finálníreleasegate.
