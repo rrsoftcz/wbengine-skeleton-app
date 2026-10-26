@@ -43,7 +43,8 @@
   "i18n": {
     "enabled": true,
     "default": "en",
-    "locales": ["en", "cs"]
+    "locales": ["en", "cs"],
+    "detect": ["url"]
   },
   "cssFiles": [],
   "ipAdmins": []
