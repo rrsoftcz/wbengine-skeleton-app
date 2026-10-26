@@ -1,6 +1,6 @@
 # Migrace vzorové aplikace na WBengine 4.0
 
-Stav 2026-10-26. Pracovní větev codex/wbengine-4.0, výchozí čistý main d22281f. Framework se vyvíjí v samostatném repozitáři a [draft PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Původní checkout ani jeho databáze nebyly změněny.
+Stav 2026-10-26. Pracovní větev codex/wbengine-4.0, výchozí čistý main d22281f. Framework je vydán jako v4.0.0 v samostatném repozitáři a [sloučené PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Původní checkout ani jeho databáze nebyly změněny.
 
 - [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
 - [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
@@ -38,3 +38,8 @@ Zdrojové SQL obsahuje skutečné HTML fragmenty a escapované HTML ukázky. Zm�
 Jde o validní původníHTML mimo konzervativní převodní subset, nikoli vadnádata. Jeho zachování jako legacy_html je vědomá bezpečná migrační volba. Pokud provozovatel zvolí převod i těchto záznamů, musí jednotlivé layoutové/HTML konstrukce ručně přepracovat a znovu zkontrolovat render; nic se automaticky nebo ztrátově nepřepíše. Nové standardní texty používajíMarkdown. CI spouští stejné ověření předHTTPsmoke.
 
 Finální technickábrána jádra i centrály prošla na dvou nezávislých HTTPS webech včetně revokace/výpadků a skutečného dump/restore. Zbývá sloučení a zveřejnění nové verze, aktuální společný stav v plan-framework-improvements.md jádra.
+
+
+## Publikace
+
+2026-10-26: Jádro bylo sloučeno do master jako cf710e5adbc25809868a864e615f8b9fc62a7489 a tag v4.0.0 ukazuje na tento commit. Následuje aktualizace CI závislosti na tag a sloučení vzorové aplikace a administrace. GitHub release ještě nebyl vytvořen. Produkční nasazení nebylo provedeno.
