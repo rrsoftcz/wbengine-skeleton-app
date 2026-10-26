@@ -34,3 +34,6 @@ etc/cert/*.pem
 # Developer-specific configuration
 etc/apache2/sites-available/wbengine.local.conf
 docker-compose.override.yml
+
+# Isolated smoke-test dependency lock
+composer.smoke.lock

@@ -1,0 +1,42 @@
+name: WBengine 4.0 HTTP smoke
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      WBENGINE_FRAMEWORK_PATH: ${{ github.workspace }}/framework
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: app
+      - uses: actions/checkout@v7
+        with:
+          repository: rrsoftcz/wbengine
+          ref: codex/wbengine-4.0
+          path: framework
+      - name: Build test PHP image
+        run: docker compose -p wbengine-modernization -f framework/docker-compose.yml build php
+      - name: Prepare isolated test application
+        working-directory: app
+        run: |
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/setup-smoke.php
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools composer install --no-dev --no-interaction --prefer-dist
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/seed-smoke.php
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml up -d --wait web
+      - name: Exercise real HTTP requests
+        working-directory: app
+        run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml exec -T web php tests/http-smoke.php
+      - name: Server logs
+        if: failure()
+        working-directory: app
+        run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml logs --tail 60 web
+      - name: Stop only the smoke environment
+        if: always()
+        working-directory: app
+        run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml down --remove-orphans

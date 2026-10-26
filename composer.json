@@ -1,13 +1,13 @@
 {
-	"autoload": {
-		"psr-4": {
-			"App\\": "src"
-		}
-	},
-	"name": "app/wbengine-skeleton-app",
-	"license": "MIT",
-	"require": {
-		"php": ">=8.3",
-		"wbengine/wbengine": "^3.5"
-	}
+  "autoload": {
+    "psr-4": {
+      "App\\": "src"
+    }
+  },
+  "name": "app/wbengine-skeleton-app",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.3",
+    "wbengine/wbengine": "^4.0"
+  }
 }

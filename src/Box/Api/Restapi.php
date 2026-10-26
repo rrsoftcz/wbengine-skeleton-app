@@ -9,7 +9,8 @@ use Wbengine\Box\WbengineBoxAbstract;
  * REST API box (section "api", site "/api/").
  *
  * The framework registers and dispatches the API modules (auth, users, sections).
- * Every route except /api/auth/login requires a valid JWT bearer token.
+ * V1 protected resources require JWT. V2 exposes minimal discovery and uses
+ * scoped integration keys for remote administration.
  */
 class Restapi extends WbengineBoxAbstract
 {
