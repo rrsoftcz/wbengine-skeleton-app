@@ -100,6 +100,18 @@ does not touch other articles. Passwords are stored with `password_hash()`; old
 MD5 hashes keep working and are upgraded on each user's next login once the column
 is widened.
 
+For an existing Docker database, make a backup before applying pending scripts.
+For example, to update the live Getting started page after the earlier migrations
+are already applied:
+
+```sh
+docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-install-guide.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/008-docker-installation-guide.sql
+```
+
+The database image runs files under `schemas/` only when its data volume is first
+created. Rebuilding the web image does not rerun schema initialization scripts.
+
 ## The demo site
 
 The skeleton is a working site that explains WBengine with itself. Every documentation page has an article that describes a feature and a live box under it that shows the feature on that very request.
