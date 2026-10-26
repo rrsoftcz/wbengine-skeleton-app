@@ -260,3 +260,6 @@ docker compose -p wbengine-skeleton-modernization -f compose.smoke.yml run --rm 
 Runner vyžaduje WBENGINE_SMOKE marker a vlastní existující seed DB. Spustí pouze svůj čtyřprocesový HTTP server na interním loopback8081, použije skutečné CSRF přihlášení a DB sessions. Mění pouze konfiguraci jednotlivých testovacích requestů a čistí jen vlastní náhodný cache adresář před každou kohortou; hlavní konfiguraci ani server nemění. Testovací router přidává měřicí hlavičky pouze zde, ne v produkci.
 
 Výsledek tests/benchmark-cms-result.json obsahuje 15 kombinací cache/identity,20vzorků každé,p50/p95,throughput,HTTPerrors,SQL/spojení/paměť a skutečné HIT počty. Cookies ani hesla ve výsledku nejsou. Měření na malé lokální fixture není záruka produkčního výkonu. Throughput zahrnuje fork a sběr klientských procesů, paměť je vrchol alokovaných bajtů serveru, OPcacheCLI byl při uloženém běhu vypnutý.
+
+
+`tests/content-migration-smoke.php` ověřuje skutečné demo HTML články a překlady na dočasných kopiích:18suchýchplánů,8vratných bezpečných převodů a10 případů k ručnímu rozhodnutí. Původní obsah a schéma zůstávají bezezměn. Spusťte ve stejném smoke prostředí přes tools stejně jako benchmark; kompletní stav a důvody jsou v plan-wbengine-4.0-migration.md.

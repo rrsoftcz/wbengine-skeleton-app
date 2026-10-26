@@ -29,6 +29,9 @@ jobs:
           docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools composer install --no-dev --no-interaction --prefer-dist
           docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/seed-smoke.php
           docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml up -d --wait web
+      - name: Verify reversible content migration on temporary source copies
+        working-directory: app
+        run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/content-migration-smoke.php
       - name: Verify dependency profile and clear smoke caches
         working-directory: app
         run: |
