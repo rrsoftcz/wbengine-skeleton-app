@@ -91,7 +91,10 @@ translation tables; `006-markdown-content-format.sql` adds `content_format`
 for WBengine 4.0; `007-markdown-documentation.sql` refreshes the Markdown guide
 and removes obsolete template-engine notes; `008-docker-installation-guide.sql`
 updates the English and Czech Get started articles with the current installer and
-exception diagnostics. Apply 005 before 006, then 007 and 008. If the framework migration
+exception diagnostics; `009-repair-czech-installation-guide-encoding.sql` repairs
+Czech text if migration 008 was run with a `latin1` connection. Apply 005 before
+006, then 007 and 008. Run 009 only if Czech characters are corrupted. The guide
+migrations set their SQL connection to `utf8mb4`. If the framework migration
 `migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
 never apply both. Existing article text is preserved and defaults to `legacy_html`;
 the 006 schema migration does not convert or overwrite content. Migration 007 is a
@@ -110,7 +113,12 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 ```
 
 The database image runs files under `schemas/` only when its data volume is first
-created. Rebuilding the web image does not rerun schema initialization scripts.
+created. Rebuilding the web image does not rerun schema initialization scripts. If
+the Czech guide contains text such as `Å˜eÅ¡enÃ­`, back it up and run:
+
+```sh
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/009-repair-czech-installation-guide-encoding.sql
+```
 
 ## The demo site
 

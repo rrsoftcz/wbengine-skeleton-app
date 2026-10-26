@@ -1,5 +1,7 @@
 -- Refresh the existing Getting started article with the real Docker installer flow.
 -- Safe to re-run: command replacements are idempotent and the guide section has a marker.
+SET NAMES utf8mb4;
+
 UPDATE `cms_articles`
 SET `bodytext` = REPLACE(
     REPLACE(
