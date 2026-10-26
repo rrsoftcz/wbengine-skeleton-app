@@ -1,6 +1,6 @@
 # Migrace vzorové aplikace na WBengine 4.0
 
-Stav 2026-10-26. Migrační základ je sloučený na main jako 19fde667; místní checkout byl fast-forward aktualizován a pokračuje ve větvi codex/skeleton-app-v4-composer-lock. Framework je vydán jako v4.0.0 v samostatném repozitáři a [sloučené PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Databáze skeletonu ani produkční data nebyly změněny.
+Stav 2026-10-26. Migrační základ je sloučený na main jako 19fde667; místní checkout je synchronizován s main na commit b1c3034. Framework je vydán jako v4.0.0 v samostatném repozitáři a [sloučené PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Databáze skeletonu ani produkční data nebyly změněny.
 
 - [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
 - [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
@@ -51,4 +51,4 @@ Finální technickábrána jádra i centrály prošla na dvou nezávislých HTTP
 
 Běžná `composer validate` odhalila, že commit aplikace změnil constraint na `^4.0`, ale nepřepočítal `composer.lock`, který stále obsahoval framework v3.5.0. CI tuto zastaralou lokální lock kopii nemohla zachytit, protože `composer.lock` je v `.gitignore`; její smoke workflow navíc používalo pouze alternativní `composer.smoke.json` s path repository. Lokální lock byl aktualizován Composerem na vydaný tag v4.0.0, bez Smarty/Texy; `composer validate --no-check-publish --strict` a skutečný produkční `composer install --no-dev` prošly. Místní vendor byl aktualizován; databáze a produkční data nebyla změněna.
 
-Přidána regresní kontrola běžného `composer.json` a locku do CI před instalací odděleného smoke profilu. Následující krok: ověřit nový CI běh a sloučit opravu CI i tohoto plánu. Produkční nasazení ani úprava databáze nebyly provedeny.
+Přidána regresní kontrola běžného `composer.json` a locku do CI před instalací odděleného smoke profilu. Ověřeno a dokončeno: PR #2 sloučeno jako b1c303460565cfbaa6023de3530a3a396b4c278d; CI main run 40390173093 úspěšně prošlo. Produkční nasazení ani úprava databáze nebyly provedeny.
