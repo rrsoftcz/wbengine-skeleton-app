@@ -3,14 +3,14 @@
 -- The documentation pages are articles stored in the database: the Tailwind build scans this file.
 SET NAMES utf8;
 
-UPDATE `cms_sites` SET `title`='WBengine', `html_title`='WBengine', `html_description`='A fast, database driven PHP framework: sites, sections and boxes, native templates, caching, REST API and translated content.', `html_keywords`='wbengine,php,framework,cms' WHERE `site_id`=1;
+UPDATE `cms_sites` SET `title`='WBengine', `html_title`='WBengine', `html_description`='A fast, database driven PHP framework: sites, sections and boxes, native templates, Markdown, caching and a REST API.', `html_keywords`='wbengine,php,framework,cms' WHERE `site_id`=1;
 UPDATE `cms_sites` SET `title`='Blog', `html_title`='Blog', `html_description`='An article shown by the bundled Article box, with translations and a view counter.', `html_keywords`='blog,article,box' WHERE `site_id`=2;
 UPDATE `cms_sites` SET `title`='About', `html_title`='About', `html_description`='About WBengine and a static box example.', `html_keywords`='about,static box' WHERE `site_id`=3;
 INSERT INTO `cms_sites` (`site_id`,`parent_id`,`left_id`,`right_id`,`strict`,`visible`,`link`,`title`,`html_title`,`html_description`,`html_keywords`,`acl`) VALUES
 (10,1,0,0,1,1,'/docs/','Getting started','Getting started','Install the WBengine skeleton, sign in and add your first page in two minutes.','getting started,install,docker',0),
 (11,1,0,0,1,1,'/docs/architecture/','Architecture','Architecture','How WBengine turns a URL into a page: sites, sections, boxes and the request lifecycle.','architecture,site,section,box',0),
 (12,1,0,0,1,1,'/docs/boxes/','Boxes','Boxes','Static and dynamic boxes, models and the cms_boxes table.','boxes,model,cms_boxes',0),
-(13,1,0,0,1,1,'/docs/templates/','Templates','Templates','The native template engine: syntax, automatic escaping, security model and moving from Smarty.','templates,escaping,smarty',0),
+(13,1,0,0,1,1,'/docs/templates/','Templates','Templates','Native templates, automatic escaping, direct Markdown sources, and compiled rendering.','templates,escaping,markdown',0),
 (14,1,0,0,1,1,'/docs/languages/','Languages','Languages','Languages in WBengine: URL, cookie and header detection, catalogs, plurals and translated database content.','i18n,languages,translations',0),
 (15,1,0,0,1,1,'/docs/caching/','Caching','Caching','The data cache and the page cache: what is stored, when, and how to invalidate it.','cache,performance,apcu',0),
 (16,1,0,0,1,1,'/docs/security/','Security','Security','Bound parameters, escaping, password hashing, sessions, tokens, roles and rate limiting.','security,jwt,roles',0),
@@ -21,97 +21,184 @@ UPDATE `cms_menu` SET `order`=3, `description`='Articles with the bundled box' W
 UPDATE `cms_menu` SET `order`=4, `description`='About WBengine' WHERE `menu_id`=3;
 INSERT INTO `cms_menu` (`menu_id`,`site_id`,`type`,`name`,`description`,`visible`,`order`,`parent`) VALUES (4,10,1,'Documentation','Guides and live demos',1,2,0);
 
-UPDATE `cms_articles` SET `title`='Articles with the bundled box', `introtext`='<p>This page is shown by <code>Wbengine\\Box\\Article</code>, a box that ships with the framework. It reads the article of the site from <code>cms_articles</code> and renders it with its own template, so you get a blog page without writing a line of PHP.</p>', `bodytext`='<h2>What the box gives you</h2><ul><li>The title, the intro text and the body of the article, written as HTML or formatted with Texy.</li><li>An author and source line, translated with the rest of the interface.</li><li>Translations per language: <code>cms_article_translations</code> holds the Czech title and text, and any field left empty falls back to English.</li><li>An optional batched view counter, which turns one <code>UPDATE</code> per view into one per 50 views.</li><li>Full page caching for anonymous visitors, with a separate copy per language.</li></ul><h2>Add an article</h2><pre><code>INSERT INTO cms_articles (site_id, title, introtext, bodytext, published, author)
-VALUES (&lt;site_id&gt;, \'My title\', \'&lt;p&gt;Intro&lt;/p&gt;\', \'&lt;p&gt;Body&lt;/p&gt;\', UNIX_TIMESTAMP(), \'Me\');</code></pre><p>Then add a <code>cms_boxes</code> row with module <code>blog</code> and method <code>story</code> for the site. The documentation pages use their own box, <code>Docs::Page</code>, to add a sidebar, see <a href="/docs/boxes/">Boxes</a>.</p>', `author`='Radek Roža', `source`='https://github.com/rrsoftcz/wbengine' WHERE `id`=1;
-INSERT INTO `cms_articles` (`id`,`site_id`,`grouped`,`futured`,`c_enabled`,`views`,`title`,`introtext`,`bodytext`,`published`,`author`,`source`) VALUES
-(2,10,0,0,0,0,'Getting started','<p>Install the skeleton, sign in with the demo account and add your first page. It takes about two minutes with Docker.</p>','<h2>Requirements</h2><ul><li>PHP 8.3 or newer (8.4 recommended) with the <code>mysqli</code> extension</li><li>MySQL 8 or MariaDB 10.6 and newer</li><li>Apache with <code>mod_rewrite</code>, or Nginx with PHP-FPM (a ready configuration is in <code>etc/nginx/</code>)</li><li>Composer, and Docker if you want the quickest start</li></ul><h2>Run it</h2><pre><code>git clone https://github.com/rrsoftcz/wbengine-skeleton-app
+UPDATE `cms_articles` SET `title`='Articles with the bundled box', `introtext`='WBengine 4.0 renders article content through the bundled Article box. New articles can use safe Markdown, while existing HTML stays explicitly marked as legacy HTML.', `bodytext`='## What the Article box does
+
+The framework box reads the article attached to the current site, applies its declared content format, and renders the result through its own template. Translated fields live in `cms_article_translations`; each translation has its own `content_format`.
+
+New text should use Markdown. WBengine parses it without an extra package, escapes raw HTML, and permits only safe link schemes. Existing records default to `legacy_html` and are not converted automatically.
+
+## Add an article
+
+Store the Markdown source and label it explicitly:
+
+```sql
+INSERT INTO cms_articles (site_id, title, introtext, bodytext, content_format, published, author)
+VALUES (18, ''A new page'', ''A short introduction.'', ''## Details
+
+Write the body in Markdown.'', ''markdown'', UNIX_TIMESTAMP(), ''Editor'');
+```
+
+Use bound parameters for application queries. Add the matching `cms_boxes` row to select the bundled `blog` box, then clear the page cache after publishing. See [Boxes](/docs/boxes/) for the page tree.', `content_format`='markdown', `author`='RRSOFT', `source`='https://github.com/rrsoftcz/wbengine' WHERE `id`=1;
+INSERT INTO `cms_articles` (`id`,`site_id`,`grouped`,`futured`,`c_enabled`,`views`,`title`,`introtext`,`bodytext`,`content_format`,`published`,`author`,`source`) VALUES
+(2,10,0,0,0,0,'Getting started','Install the WBengine 4.0 skeleton, review its Composer requirements, and run the bundled site locally before changing its content.','## Requirements
+
+- PHP 8.3 or newer with `mysqli` and the extensions required by Composer dependencies.
+- MySQL 8 or MariaDB 10.6 or newer.
+- Apache with `mod_rewrite`, or Nginx with PHP-FPM.
+- Composer 2. Docker is optional.
+
+The application requires `wbengine/wbengine:^4.0`. The framework currently brings `firebase/php-jwt`; Smarty and Texy are not runtime dependencies. Check the package metadata for the exact PHP platform requirements of the release you install.
+
+## Docker quick start
+
+```bash
+git clone https://github.com/rrsoftcz/wbengine-skeleton-app
 cd wbengine-skeleton-app
-docker compose up -d --build      # web on http://localhost:8080, MySQL seeded from schemas/
-docker compose exec web sh bin/setup.sh</code></pre><p>Open <code>http://localhost:8080</code> and sign in with <code>admin@example.com</code> and the password <code>changeme</code>. <code>bin/setup.sh</code> creates <code>Settings.json</code> with fresh random JWT keys and installs the dependencies.</p><div class="warn"><p>Change the demo password before the application is reachable by anyone else.</p></div><h2>Add your first page</h2><ol><li>Insert a row into <code>cms_sites</code> (the URL) and, if it should appear in the navigation, into <code>cms_menu</code>.</li><li>Write a box class in <code>src/Box/Central/Hello.php</code>.</li><li>Write its template, <code>src/View/Central/Hello.tpl</code>.</li><li>Insert a <code>cms_boxes</code> row that names the module, the method, the section and the site.</li></ol><pre><code>namespace App\\Box\\Central;
+docker compose up -d --build
+docker compose exec web sh bin/setup.sh
+```
+
+Open `http://localhost:8080`. The seeded demo login is `admin@example.com` with password `changeme`. Change it before exposing the site.
+
+## Manual setup
+
+```bash
+composer install
+sh bin/setup.sh
+```
+
+Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` and then `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Configure `src/Config/Settings.json` and point the web root to `public/`. For upgrades, take a database backup and apply the pending scripts in `schemas/migrations/` in order.','markdown',1761000000,NULL,NULL),
+(3,11,0,0,0,0,'Architecture','WBengine keeps the request path small and explicit. Application, Site, Section, and Box objects form the same tree used by the application code.','## The object tree
+
+- **Application** is the request root and owns shared services.
+- **Site** represents the matched page and its metadata, access rules, and menu.
+- **Section** is a named layout region such as `header`, `central`, or `api`.
+- **Box** is the PHP class and method selected by a `cms_boxes` row.
+
+The layout renders section output. A box can render a template directly or load a model first. Keep new features in this tree and follow the existing `App\\Box\\<Section>` namespaces.
+
+## Request outline
+
+```text
+public/index.php
+  Application::run()
+    match URL to Site
+    check access and page-cache eligibility
+    build active Sections
+      resolve configured Boxes
+        call Box method and render its template
+    render the site layout
+```
+
+Sites, sections, and boxes are configuration data. PHP classes define reusable behavior. This keeps simple page changes out of the router while leaving application logic explicit.','markdown',1761000000,NULL,NULL),
+(4,12,0,0,0,0,'Boxes','A box is a method in the application tree that returns rendered output. Database rows attach it to a site and section.','## Static and data-backed boxes
+
+A static box renders a view. A data-backed box reads through a model and passes data to that view. Both extend `Wbengine\\Box\\WbengineBoxAbstract` and belong under `App\\Box\\<Section>`.
+
+```php
+<?php
+namespace App\\Box\\Central;
 
 use Wbengine\\Box\\WbengineBoxAbstract;
 
-class Hello extends WbengineBoxAbstract
+class Welcome extends WbengineBoxAbstract
 {
-    public function Hello()
+    public function Welcome(): string
     {
-        return $this-&gt;getRenderer()-&gt;render($this-&gt;getBoxTemplatePath(), [\'name\' =&gt; \'World\']);
+        return $this->getRenderer()->render(
+            $this->getBoxTemplatePath(),
+            [''name'' => ''World'']
+        );
     }
-}</code></pre><pre><code>INSERT INTO cms_sites (parent_id, strict, visible, link, title, html_title, html_description, html_keywords)
-VALUES (1, 1, 1, \'/hello/\', \'Hello\', \'Hello\', \'My first page\', \'hello\');
+}
+```
 
-INSERT INTO cms_boxes (name, module, method, section_id, static, `order`, sites)
-VALUES (\'Hello\', \'hello\', \'hello\', 1, 1, 0, \'["&lt;the new site_id&gt;"]\');</code></pre><p>Reload <code>/hello/</code>. If the page cache is on, wait for its time to live or call <code>POST /api/cache/flush</code> with an administrator token.</p><h2>How this documentation is built</h2><p>Every page you are reading is a row in <code>cms_sites</code> and an article in <code>cms_articles</code>, shown by one reusable box. The Czech text is in <code>cms_article_translations</code>, the menu names in <code>cms_menu_translations</code>. The boxed demonstration below each article is a second box on the same page. Read on to see how the pieces fit.</p>',1761000000,NULL,NULL),
-(3,11,0,0,0,0,'Architecture','<p>WBengine turns a URL into a page in four steps. Everything that varies between pages lives in database rows, so adding a page rarely means changing code.</p>','<h2>The four objects</h2><table><thead><tr><th>Object</th><th>What it is</th></tr></thead><tbody><tr><td><strong>Application</strong></td><td>The root object and a small lazy service container. It loads <code>Settings.json</code>, installs the error handler and creates the session, renderer, user and site only when they are first used.</td></tr><tr><td><strong>Site</strong></td><td>The page being requested: the <code>cms_sites</code> row matched by the URL, its access control, menu and meta data.</td></tr><tr><td><strong>Section</strong></td><td>A named area of the layout (<code>header</code>, <code>central</code>, <code>api</code>). Its boxes produce HTML that lands in <code>{$central}</code>, <code>{$header}</code> and so on.</td></tr><tr><td><strong>Box</strong></td><td>The unit of content: a <code>cms_boxes</code> row names a module and a method, WBengine calls it and takes the HTML it returns.</td></tr></tbody></table><h2>Request lifecycle</h2><pre><code>index.php
-  new Application()      load Settings.json, install error handler
-  $App-&gt;run()
-    Site::initialize()
-      cms_sites row by URL          404 if there is none
-      ACL check                     redirect to /login/ if the site needs a user
-      menu, meta, template vars
-      for each active section:
-        cms_boxes rows for this site and section
-        for each box: new App\\Box\\&lt;Section&gt;\\&lt;Module&gt;, call &lt;Method&gt;(), collect HTML
-    Renderer::dispatch()            render site.tpl with all variables</code></pre><p>An anonymous page costs roughly eight to ten queries without a cache: the site, the sections, the menu, one box query per section and the session. With the cache on, the same page costs none. See <a href="/docs/caching/">Caching</a>.</p><h2>Supporting classes</h2><table><thead><tr><th>Class</th><th>Purpose</th></tr></thead><tbody><tr><td><code>Db</code></td><td>A static facade over one lazy MySQL connection, with bound parameters and a query log</td></tr><tr><td><code>Router</code></td><td>Method and path matching with <code>{param}</code> placeholders, used by the REST API</td></tr><tr><td><code>Session</code>, <code>User</code></td><td>A database backed session and the current user</td></tr><tr><td><code>Renderer</code></td><td>The template engine adapter: the native engine or Smarty 5</td></tr><tr><td><code>Cache</code>, <code>PageCache</code></td><td>The data cache and the full page cache</td></tr><tr><td><code>I18n</code></td><td>The language of the request, catalogs, plural rules, number and date formats</td></tr></tbody></table><div class="note"><p>The table under this article is not text: it is the <code>cms_boxes</code> query of the framework run for this very page, so you can see which boxes built it.</p></div>',1761000000,NULL,NULL),
-(4,12,0,0,0,0,'Boxes','<p>A box is a PHP method that returns HTML. A static box only renders a template, a dynamic box asks a model for data first. A <code>cms_boxes</code> row decides which box appears on which site.</p>','<h2>A static box</h2><pre><code>namespace App\\Box\\Central;
+Create `src/View/Central/Welcome.tpl` and bind module `welcome`, method `welcome` to a section and site in `cms_boxes`. Pass SQL values as bound parameters. Keep database access in a model when the box needs reusable query logic.','markdown',1761000000,NULL,NULL),
+(5,13,0,0,0,0,'Templates and Markdown','WBengine 4.0 uses its own compiled template engine. Markdown can be a template source file or the explicit format of an article stored in the database.','## Native templates
 
-use Wbengine\\Box\\WbengineBoxAbstract;
+The native engine compiles `.tpl` files to PHP and can use OPcache. It has no Smarty runtime dependency. `{$value}` is HTML-escaped by default; `|raw` is for HTML that the application has deliberately rendered or trusted.
 
-class StaticBoxes extends WbengineBoxAbstract
-{
-    public function About()
-    {
-        return $this-&gt;getRenderer()-&gt;render($this-&gt;getBoxTemplatePath()); // View/Central/About.tpl
-    }
-}</code></pre><p>The <a href="/about/">About page</a> is exactly this: no model, no data.</p><h2>A dynamic box with a model</h2><pre><code>class Docs extends WbengineBoxAbstract
-{
-    public function Page()
-    {
-        return $this-&gt;getRenderer()-&gt;render($this-&gt;getBoxTemplatePath(), [
-            \'article\' =&gt; $this-&gt;getModel(\'App\\Box\\Central\\Article\')-&gt;getArticleRow(),
-        ]);
-        // the template reads {$Page.article-&gt;title}
-    }
-}</code></pre><p><code>getModel()</code> creates <code>App\\Box\\Central\\Article\\Model</code> once. A model extends <code>ModelAbstract</code> and talks to <code>Db</code> with bound parameters. Template data is exposed under the name of the template, so <code>render()</code> of <code>Central/Page</code> gives <code>$Page</code>. Every documentation page you read is this box.</p><h2>Boxes that ship with the framework</h2><ul><li><code>Wbengine\\Box\\Article</code>: an article from <code>cms_articles</code> with its own template, author and source lines, optional view counter and translations. The <a href="/blog/">Blog</a> uses it.</li><li><code>Wbengine\\Box\\Auth</code>: the login form with a CSRF token, a failed attempt counter and optional reCAPTCHA. It runs on <a href="/login/">/login/</a>.</li></ul><h2>The cms_boxes row</h2><table><thead><tr><th>Column</th><th>Meaning</th></tr></thead><tbody><tr><td><code>module</code>, <code>method</code></td><td>The PHP class and the method to call: module <code>docs</code>, method <code>page</code>, section central runs <code>App\\Box\\Central\\Docs::Page()</code></td></tr><tr><td><code>section_id</code></td><td>The section the box is rendered into</td></tr><tr><td><code>sites</code></td><td>A JSON array of site ids where the box appears, for example <code>["12"]</code></td></tr><tr><td><code>shared</code></td><td><code>1</code> shows the box on every site (banners, footers)</td></tr><tr><td><code>order</code></td><td>The order inside the section</td></tr></tbody></table><div class="note"><p>Several boxes can share one section. The documentation pages with a demonstration use two boxes in the central section: the article first, the live demo second.</p></div>',1761000000,NULL,NULL),
-(5,13,0,0,0,0,'Templates','<p>The native template engine compiles a Smarty-like syntax to plain PHP once and then just includes the file. It escapes every value by default and cannot run PHP. Smarty 5 remains available as an adapter.</p>','<h2>Syntax</h2><pre><code>{* a comment *}
-&lt;h1&gt;{$title}&lt;/h1&gt;                        {* escaped *}
-{$article-&gt;introtext|raw}                {* trusted HTML, printed as is *}
-{$user.address.city}  {$menu[0]-&gt;name}   {* array keys, properties *}
-{$name|default:\'anonymous\'|upper}        {* modifiers *}
+```tpl
+<h1>{$title}</h1>
+{$bodyHtml|raw}
+{include ''Shared/footer.tpl''}
+```
 
-{if $n &gt; 1 &amp;&amp; !$hidden}...{elseif $n === 1}...{else}...{/if}
+## Markdown files
 
-{foreach $menu as $m}
-  &lt;a href="{$m-&gt;link|lurl}"&gt;{$m-&gt;name}&lt;/a&gt;
-{foreachelse}
-  empty
-{/foreach}
+A `.md` file can be rendered directly by the native renderer or included in an HTML template:
 
-{set $total = $price * $count}
-{include \'Shared/footer.tpl\'}
-{cache \'sidebar\' ttl=300}...rendered once per five minutes...{/cache}</code></pre><p>Modifiers include <code>raw</code>, <code>escape</code>, <code>upper</code>, <code>lower</code>, <code>trim</code>, <code>default</code>, <code>truncate</code>, <code>nl2br</code>, <code>json</code>, <code>url</code>, <code>length</code>, <code>date</code> and <code>join</code>, and for languages <code>t</code>, <code>lurl</code>, <code>number</code> and <code>ldate</code>.</p><h2>Security model</h2><ul><li><strong>Escaping is on by default.</strong> <code>{$x}</code> is HTML-escaped; <code>|raw</code> prints as is.</li><li><strong>A template cannot run PHP.</strong> Expressions use a fixed grammar: no function calls, no assignment, no constants, no <code>new</code>. PHP tags in a template are plain text.</li><li><strong>A template cannot read arbitrary files.</strong> Names resolve inside the template directory only; <code>..</code> and symlinks out of it are refused.</li><li><strong>Missing things are empty.</strong> An undefined variable or property prints nothing instead of raising a warning.</li></ul><h2>Moving from Smarty</h2><ol><li>Switch <code>adapterName</code> to <code>NativeRenderer</code> and set <code>"autoEscape": false</code>. The pages render the same.</li><li>Mark trusted HTML with <code>|raw</code> and data with <code>|escape</code>. This is valid Smarty 5 too.</li><li>Remove <code>"autoEscape": false</code>. Every plain <code>{$x}</code> is escaped from now on.</li></ol><p>Not supported: Smarty plugins, <code>{capture}</code>, <code>{section}</code>, template inheritance and custom delimiters. Use Smarty for templates that need them.</p><h2>Performance</h2><p>With opcache a render runs compiled PHP. On a cold request, the case that matters for PHP-FPM and Apache, the native engine adds about 2.3 ms over a bare PHP process against 4.5 ms for Smarty. Set <code>"compileCheck": false</code> in production and clear the compiled directory on deploy.</p>',1761000000,NULL,NULL),
-(6,14,0,0,0,0,'Languages','<p>The interface and the content of the database can be shown in several languages. This site is available in English and Czech: switch with the buttons in the header.</p>','<h2>How the language is chosen</h2><p>For every request the first of these that gives a supported locale wins:</p><ol><li><strong>A language prefix in the URL</strong>: <code>/cs/docs/</code>. It is removed before anything else reads the URL, so sites and boxes are written without it. The default language has one canonical URL, so <code>/en/docs/</code> redirects to <code>/docs/</code>.</li><li><strong>The cookie</strong> <code>wb_locale</code>, which remembers the last explicit choice.</li><li><strong>The Accept-Language header</strong> of the browser, with quality values.</li><li><strong>The default locale.</strong></li></ol><p>The response carries <code>Content-Language</code> and <code>Vary</code>, and the page cache keeps one copy per language.</p><h2>Catalogs</h2><p>One PHP file per locale in <code>src/Locale/</code>. Opcache compiles it, so nothing is parsed per request:</p><pre><code>return [
-    \'greeting\' =&gt; \'Hello %name%\',
-    \'files\'    =&gt; [\'one\' =&gt; \'%count% file\', \'other\' =&gt; \'%count% files\'],
-];</code></pre><p>A missing message falls back to the language, then to the default, then shows the key. Plural forms follow the CLDR rules, so Czech has <code>one</code>, <code>few</code>, <code>many</code> and <code>other</code>.</p><h2>In templates</h2><pre><code>{t \'greeting\' name=$user.name}                  {* Hello Eva *}
-{t \'files\' count=$n}                            {* 1 file, 5 files, 5 souborů *}
-{$label|t}                                      {* the value is the key *}
-&lt;a href="{$m-&gt;link|lurl}"&gt;{$m-&gt;name}&lt;/a&gt;       {* /blog/ becomes /cs/blog/ *}
-{$price|number:2}  {$date|ldate:\'long\'}         {* 1 234,50 and 5. října 2026 *}</code></pre><h2>Translating database content</h2><p>Site titles and meta tags, menu names and articles have a translation table each. The default language stays in the original columns, and a missing or empty field falls back to it, field by field. A translated article that only has a title still shows the default text. This very article is stored that way.</p><table><thead><tr><th>Kind</th><th>Table</th><th>Fields</th></tr></thead><tbody><tr><td><code>site</code></td><td><code>cms_site_translations</code></td><td>title, html_title, html_description, html_keywords</td></tr><tr><td><code>menu</code></td><td><code>cms_menu_translations</code></td><td>name, description</td></tr><tr><td><code>article</code></td><td><code>cms_article_translations</code></td><td>title, introtext, bodytext</td></tr></tbody></table><p>Editors manage translations with <code>PUT /api/translations/{kind}/{id}/{locale}</code>, see the <a href="/docs/rest-api/">REST API</a>. Writing flushes the cache.</p>',1761000000,NULL,NULL),
-(7,15,0,0,0,0,'Caching','<p>Two opt-in layers: a data cache for the lookups every page needs, and a page cache that serves anonymous visitors a stored copy before any box runs. Both are on in this skeleton.</p>','<h2>Data cache</h2><p>Stores the table of visible sites, the menu, the sections and the box lists. The <code>apcu</code> driver is the fastest and is shared by the PHP workers of a server; the <code>file</code> driver used here works everywhere.</p><pre><code>"cache": {
-  "enabled": true,
-  "driver": "file",
-  "ttl": 300,
-  "pages": { "enabled": true, "ttl": 60 }
-}</code></pre><h2>Page cache</h2><p>A page is stored only when it is the same for everybody: a plain <code>GET</code> without a query string, a visitor who is not signed in, a <code>200</code> HTML response, no write to the session and a site that needs no login. The login page with its CSRF token is therefore never stored. Responses carry <code>X-WBengine-Cache: HIT</code>, <code>MISS-STORED</code> or <code>BYPASS</code>, an <code>ETag</code> and <code>304</code> support.</p><h3>Measured queries per page</h3><table><thead><tr><th>Page</th><th>Cache off</th><th>Cache on, warm</th></tr></thead><tbody><tr><td><code>/</code> first visit</td><td>6</td><td>0</td></tr><tr><td><code>/</code> returning visitor</td><td>7</td><td>1</td></tr><tr><td><code>/blog/</code> (article and view counter)</td><td>9</td><td>3</td></tr></tbody></table><h2>Invalidation</h2><ul><li>The API flushes the cache when sections or translations change.</li><li>After editing content tables directly in SQL, call <code>POST /api/cache/flush</code> with an administrator token, or wait for the time to live.</li><li>A page that depends on anything besides the URL and the login state (device type, a cookie, the clock) should not use the page cache.</li></ul><h2>View counter</h2><p>An opt-in batch counter turns one <code>UPDATE</code> per article view into one per 50 views or per minute, kept in small locked files that lose nothing under concurrency.</p><div class="note"><p>The box under this article reads the clock when the page is built. Reload: while the copy lives, the time does not change.</p></div>',1761000000,NULL,NULL),
-(8,16,0,0,0,0,'Security','<p>The defaults are the safe choices: values are bound, output is escaped, secrets stay out of the source and every privileged action checks a role in the database.</p>','<h2>What protects what</h2><table><thead><tr><th>Threat</th><th>Defence</th></tr></thead><tbody><tr><td>SQL injection</td><td>Every value is passed as a bound parameter. <code>Db::insert</code> and <code>Db::update</code> validate column and table names, and a failed query never shows its SQL to the client.</td></tr><tr><td>Cross-site scripting</td><td>The native template engine escapes output by default; <code>|raw</code> is an explicit decision. The debug bar and error pages escape too.</td></tr><tr><td>Template injection</td><td>A template cannot run PHP or read files outside the template directory, and template syntax inside data is never interpreted.</td></tr><tr><td>Password theft</td><td>Passwords are stored with <code>password_hash()</code>. Old MD5 hashes keep working and are upgraded on the next login.</td></tr><tr><td>Brute force</td><td>Login rate limiting per account and address pair, per address and per account; the answer is <code>429</code> with <code>Retry-After</code>. The web form adds reCAPTCHA after repeated failures.</td></tr><tr><td>Session fixation and theft</td><td>The session id is regenerated on login, the cookie is HttpOnly and SameSite, stored data is unserialized with a restricted class list.</td></tr><tr><td>Stolen tokens</td><td>Access tokens live 15 minutes. Refresh tokens are opaque, stored only as a hash, rotated on every use, and a reused token revokes its whole family.</td></tr><tr><td>Privilege escalation</td><td>Roles (<code>user</code>, <code>editor</code>, <code>admin</code>) are read from the database on every privileged call, and writes accept only whitelisted fields.</td></tr><tr><td>Forged requests</td><td>The login form uses a CSRF token; the refresh cookie is SameSite Strict and scoped to <code>/api/auth/</code>.</td></tr></tbody></table><h2>Page access control</h2><p>The <code>acl</code> column of <code>cms_sites</code> protects a page: a value of 1 or more redirects visitors who are not signed in to the login page before any box runs. Try <a href="/profile/">/profile/</a>.</p><h2>Your checklist</h2><ul><li>Keep <code>debug</code> off in production and <code>Settings.json</code> out of git.</li><li>Put TLS in front of the application; the session cookie is marked Secure over HTTPS.</li><li>Change the demo administrator password, and set the JWT keys from the environment (<code>WBENGINE_JWT_KEY</code>, <code>WBENGINE_JWT_REFRESH_KEY</code>).</li><li>Give every new API action an explicit role.</li></ul>',1761000000,NULL,NULL),
-(9,17,0,0,0,0,'REST API','<p>The API is served under <code>/api/</code>. Obtain a token with the login endpoint and send it as a bearer token. The console below the article calls the real API of this application.</p>','<h2>Endpoints</h2><table><thead><tr><th>Method and path</th><th>Purpose</th><th>Auth</th></tr></thead><tbody><tr><td><code>POST /api/auth/login</code></td><td>Exchange e-mail and password for a token</td><td>no</td></tr><tr><td><code>POST /api/auth/jwt/revalidate</code></td><td>Exchange the refresh cookie for a new token</td><td>cookie</td></tr><tr><td><code>POST /api/auth/logout</code>, <code>/logout/all</code></td><td>Revoke this device or every device</td><td>cookie, token</td></tr><tr><td><code>GET /api/users</code>, <code>/api/users/{id}</code></td><td>List and read users</td><td>admin</td></tr><tr><td><code>POST /api/users/create</code>, <code>PATCH /api/users/patch/{id}</code>, <code>DELETE /api/users/{id}</code></td><td>Create, change and delete users</td><td>admin</td></tr><tr><td><code>GET/POST /api/sections</code>, <code>GET/PUT/DELETE /api/sections/{id}</code></td><td>Sections CRUD</td><td>admin</td></tr><tr><td><code>GET /api/translations/{kind}/{id}</code></td><td>All translations of a site, menu item or article</td><td>editor</td></tr><tr><td><code>PUT/DELETE /api/translations/{kind}/{id}/{locale}</code></td><td>Create, change or remove a translation</td><td>editor</td></tr><tr><td><code>POST /api/cache/flush</code></td><td>Drop the cached data and pages</td><td>admin</td></tr></tbody></table><h2>Example</h2><pre><code>curl -X POST -H \'Content-Type: application/json\' \\
-     -d \'{"username":"admin@example.com","password":"changeme"}\' \\
-     http://localhost:8080/api/auth/login
+```tpl
+{include ''Central/notice.md''}
+```
 
-curl -X PUT -H "Authorization: Bearer &lt;token&gt;" -H \'Content-Type: application/json\' \\
-     -d \'{"title":"Moje stránka"}\' \\
-     http://localhost:8080/api/translations/site/10/cs</code></pre><h2>Conventions</h2><ul><li>A missing, malformed, expired or wrongly signed token returns <code>401</code>. A valid token without the required role returns <code>403</code>.</li><li>Writes accept only whitelisted fields; unknown fields are rejected with <code>400</code>.</li><li>Success bodies are plain data, errors are <code>{"success": false, "error": 400, "message": "..."}</code>.</li><li>Login attempts are rate limited and answer <code>429</code> with <code>Retry-After</code>.</li></ul><h2>Add a module</h2><p>Extend <code>WbengineRestapiAbstract</code>, wrap each action in <code>$this->isAuthenticated(fn () => ..., Role::EDITOR)</code>, and add a <code>Routes</code> class next to it. <code>Api/Section.php</code> in the framework is the smallest example.</p>',1761000000,NULL,NULL);
+Markdown is parsed as content. PHP tags, template variables, and template directives inside it are not executed. The built-in parser escapes raw HTML and restricts link protocols.
+
+From a box, use the shared service when you already have a Markdown string:
+
+```php
+$html = $this->getSite()->getParent()->getMarkdown()->render($source);
+```
+
+## Markdown in article rows
+
+Set `content_format` to `markdown` in `cms_articles` or `cms_article_translations`. Existing rows remain `legacy_html` after migration. Do not mark old HTML as Markdown without converting and reviewing its content. Smarty compatibility, if needed during migration, is a separate optional package.','markdown',1761000000,NULL,NULL),
+(6,14,0,0,0,0,'Languages','The application has English and Czech interface catalogs and translates site metadata, menu entries, and articles independently.','## Interface text
+
+Catalogs live in `src/Locale/en.php` and `src/Locale/cs.php`. Templates use `{t ''key''}`. The URL prefix selects Czech at `/cs/`; the default English URL has no prefix. Add a locale in the application settings and provide its catalog before linking to it.
+
+## Database content
+
+Default-language fields remain in `cms_sites`, `cms_menu`, and `cms_articles`. Translation tables contain the other locale. Missing translated values fall back to the default field. Article translations also carry their own `content_format`, so English Markdown can coexist with Czech legacy HTML during a gradual migration.
+
+After content changes, use the application''s normal cache invalidation path. For public production URLs, set `i18n.baseUrl` to a trusted HTTPS origin so alternate-language links do not depend on an untrusted Host header.','markdown',1761000000,NULL,NULL),
+(7,15,0,0,0,0,'Caching','WBengine provides data caching and a page cache for eligible public requests. Measure the real deployment before changing cache drivers or lifetimes.','## Data and page caches
+
+The data cache avoids repeating selected reads. The page cache stores eligible visitor-independent responses, separated by locale. Authenticated or request-specific output must not enter a shared public cache. Cache eligibility and invalidation are enforced by the framework.
+
+For the demo, page caching is configured in `src/Config/settings.json.default`. Set a short TTL while editing. Clear cache after content or configuration changes; the API cache-flush endpoint requires an administrator token.
+
+## Read-only diagnostics
+
+The CLI can inspect configuration, deployment readiness, and migration state without running database DDL:
+
+```bash
+vendor/bin/wbengine.php config:check --config=src/Config/Settings.json --root=src
+vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
+vendor/bin/wbengine.php migration:status --config=src/Config/Settings.json --root=src
+```
+
+CLI and web workers can use different PHP settings and filesystem permissions. Compare their OPcache and writable-directory configuration when results differ.','markdown',1761000000,NULL,NULL),
+(8,16,0,0,0,0,'Security','Secure defaults depend on keeping trusted data boundaries explicit: parameterized SQL, escaped template output, protected secrets, and role checks.','## Data and output
+
+- Use prepared statements for database values. Do not pre-escape request input with `addslashes()`.
+- Native template values are escaped by default. Use raw HTML output only for trusted or safely rendered HTML.
+- The Markdown renderer escapes raw HTML and allows only safe URL schemes. It does not execute PHP or template syntax.
+- Keep `Settings.json`, JWT keys, passwords, and private keys out of version control.
+
+## Deployment
+
+Use HTTPS, keep debug output disabled, change the demo password, and restrict API routes by role. Configure trusted proxies explicitly before using forwarded IP headers for rate limits. Back up the database before applying schema migrations; the Markdown migration preserves existing article bytes as `legacy_html`.
+
+The CLI `doctor` command reports deployment checks. It is read-only and does not apply migrations.','markdown',1761000000,NULL,NULL),
+(9,17,0,0,0,0,'REST API','The API is served under `/api/`. Authenticate with the login route, send the access token as a bearer token, and use the role required by each route.','## Example request
+
+```bash
+curl -X POST -H ''Content-Type: application/json'' \\
+  -d ''{"username":"admin@example.com","password":"changeme"}'' \\
+  http://localhost:8080/api/auth/login
+
+curl -H ''Authorization: Bearer <token>'' \\
+  http://localhost:8080/api/sections
+```
+
+The demo credentials are for local use only. Replace them before exposing the app.
+
+## Routes and roles
+
+Login is public. User and section administration and cache flushing require an administrator. Translation reads and writes require the editor role or higher. A missing or invalid token returns `401`; an authenticated user without the required role receives `403`. Write routes validate allowed fields.
+
+For deployment diagnostics use `vendor/bin/wbengine.php doctor`; it does not change the schema. The endpoint list and request console below this article show the routes enabled by this skeleton. Check the current route classes before relying on an example in another application.','markdown',1761000000,NULL,NULL);
 
 INSERT INTO `cms_boxes` (`id`,`name`,`module`,`method`,`section_id`,`static`,`shared`,`device_min`,`device_strict`,`acl`,`order`,`sites`) VALUES
 (7,'Features','staticBoxes','features',1,1,0,1,0,0,0,'["1"]'),
@@ -130,13 +217,13 @@ INSERT INTO `cms_boxes` (`id`,`name`,`module`,`method`,`section_id`,`static`,`sh
 (20,'Demo: api','demo','api',1,1,0,1,0,0,1,'["17"]');
 
 REPLACE INTO `cms_site_translations` (`site_id`,`locale`,`title`,`html_title`,`html_description`,`html_keywords`) VALUES
-(1,'cs','Domů','WBengine','Rychlý PHP framework řízený databází: weby, sekce a boxy, nativní šablony, cache, REST API a překládaný obsah.','wbengine,php,framework,cms'),
+(1,'cs','Domů','WBengine','Rychlý PHP framework řízený databází: weby, sekce a boxy, nativní šablony, Markdown, cache a REST API.','wbengine,php,framework,cms'),
 (2,'cs','Blog','Blog','Článek zobrazený dodávaným boxem Article, s překlady a počítadlem zobrazení.','blog,článek,box'),
 (3,'cs','O nás','O nás','O WBengine a příklad statického boxu.','o nás,statický box'),
 (10,'cs','Začínáme','Začínáme','Nainstalujte kostru WBengine, přihlaste se a za dvě minuty přidejte první stránku.','začínáme,instalace,docker'),
 (11,'cs','Architektura','Architektura','Jak WBengine mění URL ve stránku: weby, sekce, boxy a průběh požadavku.','architektura,web,sekce,box'),
 (12,'cs','Boxy','Boxy','Statické a dynamické boxy, modely a tabulka cms_boxes.','boxy,model,cms_boxes'),
-(13,'cs','Šablony','Šablony','Nativní šablonovací engine: syntaxe, automatické escapování, bezpečnostní model a přechod ze Smarty.','šablony,escapování,smarty'),
+(13,'cs','Šablony','Šablony','Nativní šablony, automatické escapování a Markdown v souborech i databázi.','šablony,escapování,markdown'),
 (14,'cs','Jazyky','Jazyky','Jazyky ve WBengine: detekce z URL, cookie a hlavičky, katalogy, množná čísla a překládaný obsah databáze.','i18n,jazyky,překlady'),
 (15,'cs','Cache','Cache','Datová cache a cache stránek: co se ukládá, kdy a jak ji zneplatnit.','cache,výkon,apcu'),
 (16,'cs','Zabezpečení','Zabezpečení','Vázané parametry, escapování, hashování hesel, session, tokeny, role a omezení pokusů.','zabezpečení,jwt,role'),
@@ -148,94 +235,179 @@ REPLACE INTO `cms_menu_translations` (`menu_id`,`locale`,`name`,`description`) V
 (3,'cs','O nás','O WBengine'),
 (4,'cs','Dokumentace','Průvodce a živé ukázky');
 
-REPLACE INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`) VALUES
-(1,'cs','Články s dodávaným boxem','<p>Tuto stránku zobrazuje <code>Wbengine\\Box\\Article</code>, box dodávaný s frameworkem. Načte článek webu z <code>cms_articles</code> a vykreslí ho vlastní šablonou, takže blog získáte bez jediného řádku PHP.</p>','<h2>Co box nabízí</h2><ul><li>Nadpis, úvod a text článku, psané jako HTML nebo formátované přes Texy.</li><li>Řádek autora a zdroje, přeložený spolu se zbytkem rozhraní.</li><li>Překlady do jazyků: <code>cms_article_translations</code> drží český nadpis a text a každé prázdné pole se nahradí angličtinou.</li><li>Volitelné dávkové počítadlo zobrazení, které změní jeden <code>UPDATE</code> na zobrazení na jeden za 50 zobrazení.</li><li>Cache celých stránek pro anonymní návštěvníky, s oddělenou kopií pro každý jazyk.</li></ul><h2>Přidání článku</h2><pre><code>INSERT INTO cms_articles (site_id, title, introtext, bodytext, published, author)
-VALUES (&lt;site_id&gt;, \'Můj nadpis\', \'&lt;p&gt;Úvod&lt;/p&gt;\', \'&lt;p&gt;Text&lt;/p&gt;\', UNIX_TIMESTAMP(), \'Já\');</code></pre><p>Pak přidejte řádek <code>cms_boxes</code> s modulem <code>blog</code> a metodou <code>story</code> pro daný web. Stránky dokumentace používají vlastní box <code>Docs::Page</code>, který přidává postranní panel, viz <a href="/cs/docs/boxes/">Boxy</a>.</p>'),
-(2,'cs','Začínáme','<p>Nainstalujte kostru, přihlaste se demo účtem a přidejte první stránku. S Dockerem to trvá asi dvě minuty.</p>','<h2>Požadavky</h2><ul><li>PHP 8.3 nebo novější (doporučeno 8.4) s rozšířením <code>mysqli</code></li><li>MySQL 8 nebo MariaDB 10.6 a novější</li><li>Apache s <code>mod_rewrite</code> nebo Nginx s PHP-FPM (hotová konfigurace je v <code>etc/nginx/</code>)</li><li>Composer a Docker, pokud chcete nejrychlejší start</li></ul><h2>Spuštění</h2><pre><code>git clone https://github.com/rrsoftcz/wbengine-skeleton-app
+REPLACE INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`,`content_format`) VALUES
+(1,'cs','Články s dodávaným boxem','Články vykresluje box Article dodávaný s WBengine 4.0. Nový obsah může používat bezpečný Markdown, zatímco původní HTML zůstává označené jako legacy HTML.','## Co dělá box Article
+
+Frameworkový box načte článek přiřazený k webu, zpracuje jeho výslovně zvolený formát a vykreslí výsledek vlastní šablonou. Přeložená pole jsou v `cms_article_translations`; každý překlad má vlastní `content_format`.
+
+Nový text ukládejte v Markdownu. WBengine ho parsuje bez dalšího balíčku, escapuje syrové HTML a povoluje jen bezpečná schémata odkazů. Stávající záznamy zůstávají ve formátu `legacy_html`, bez automatického převodu.
+
+## Přidání článku
+
+Uložte zdrojový Markdown a formát označte výslovně:
+
+```sql
+INSERT INTO cms_articles (site_id, title, introtext, bodytext, content_format, published, author)
+VALUES (18, ''Nová stránka'', ''Krátký úvod.'', ''## Podrobnosti\\n\\nText napište v Markdownu.'', ''markdown'', UNIX_TIMESTAMP(), ''Editor'');
+```
+
+V aplikačních dotazech používejte vázané parametry. Přidejte odpovídající řádek `cms_boxes` pro box `blog` a po publikaci zneplatněte cache stránky. Další informace jsou v části [Boxy](/cs/docs/boxes/).','markdown'),
+(2,'cs','Začínáme','Nainstalujte skeleton WBengine 4.0, ověřte jeho Composer požadavky a spusťte web lokálně, než začnete měnit jeho obsah.','## Požadavky
+
+- PHP 8.3 nebo novější s rozšířením `mysqli` a rozšířeními vyžadovanými Composer balíčky.
+- MySQL 8 nebo MariaDB 10.6 a novější.
+- Apache s `mod_rewrite` nebo Nginx s PHP-FPM.
+- Composer 2. Docker je volitelný.
+
+Aplikace vyžaduje `wbengine/wbengine:^4.0`. Framework aktuálně přináší `firebase/php-jwt`; Smarty ani Texy nejsou běhové závislosti. Přesné požadavky na PHP ověřte v metadatech instalované verze.
+
+## Rychlé spuštění v Dockeru
+
+```bash
+git clone https://github.com/rrsoftcz/wbengine-skeleton-app
 cd wbengine-skeleton-app
-docker compose up -d --build      # web na http://localhost:8080, MySQL naplněné ze schemas/
-docker compose exec web sh bin/setup.sh</code></pre><p>Otevřete <code>http://localhost:8080</code> a přihlaste se jako <code>admin@example.com</code> s heslem <code>changeme</code>. <code>bin/setup.sh</code> vytvoří <code>Settings.json</code> s novými náhodnými JWT klíči a nainstaluje závislosti.</p><div class="warn"><p>Heslo demo účtu změňte dřív, než bude aplikace dostupná komukoli dalšímu.</p></div><h2>První vlastní stránka</h2><ol><li>Vložte řádek do <code>cms_sites</code> (URL) a, má-li být v navigaci, i do <code>cms_menu</code>.</li><li>Napište třídu boxu v <code>src/Box/Central/Hello.php</code>.</li><li>Napište její šablonu <code>src/View/Central/Hello.tpl</code>.</li><li>Vložte řádek do <code>cms_boxes</code>, který pojmenuje modul, metodu, sekci a web.</li></ol><pre><code>namespace App\\Box\\Central;
+docker compose up -d --build
+docker compose exec web sh bin/setup.sh
+```
+
+Otevřete `http://localhost:8080`. Demo přihlášení je `admin@example.com`, heslo `changeme`. Před zpřístupněním webu heslo změňte.
+
+## Ruční instalace
+
+```bash
+composer install
+sh bin/setup.sh
+```
+
+Vytvořte databázi, importujte `schemas/wbengine_skeletone_app_mysql_template.sql` a potom `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Nastavte `src/Config/Settings.json` a jako kořen webu použijte `public/`. Před upgradem databázi zálohujte a dosud nepoužité skripty v `schemas/migrations/` aplikujte v pořadí.','markdown'),
+(3,'cs','Architektura','WBengine drží průchod požadavku malý a přehledný. Objekty Application, Site, Section a Box tvoří stejný strom jako aplikační kód.','## Strom objektů
+
+- **Application** je kořen požadavku a vlastní sdílené služby.
+- **Site** představuje nalezenou stránku, její metadata, přístupová pravidla a menu.
+- **Section** je pojmenovaná oblast layoutu, například `header`, `central` nebo `api`.
+- **Box** je PHP třída a metoda určená řádkem v `cms_boxes`.
+
+Layout vykreslí výstup sekcí. Box může vykreslit šablonu přímo nebo nejdřív načíst model. Nové funkce zařazujte do tohoto stromu a používejte existující jmenné prostory `App\\Box\\<Section>`.
+
+## Průběh požadavku
+
+```text
+public/index.php
+  Application::run()
+    nalezení Site podle URL
+    kontrola přístupu a vhodnosti pro page cache
+    sestavení aktivních Section
+      nalezení nakonfigurovaných Box
+        volání metody Box a vykreslení šablony
+    vykreslení layoutu webu
+```
+
+Weby, sekce a boxy jsou konfigurační data. PHP třídy definují opakovaně použitelné chování. Jednoduché změny stránek tak nevyžadují úpravu routeru.','markdown'),
+(4,'cs','Boxy','Box je metoda v aplikačním stromu, která vrací vykreslený výstup. Databázové řádky ji přiřazují webu a sekci.','## Statické a datové boxy
+
+Statický box vykreslí pohled. Datový box nejprve načte data modelem a předá je pohledu. Oba rozšiřují `Wbengine\\Box\\WbengineBoxAbstract` a patří do `App\\Box\\<Section>`.
+
+```php
+<?php
+namespace App\\Box\\Central;
 
 use Wbengine\\Box\\WbengineBoxAbstract;
 
-class Hello extends WbengineBoxAbstract
+class Welcome extends WbengineBoxAbstract
 {
-    public function Hello()
+    public function Welcome(): string
     {
-        return $this-&gt;getRenderer()-&gt;render($this-&gt;getBoxTemplatePath(), [\'name\' =&gt; \'World\']);
+        return $this->getRenderer()->render(
+            $this->getBoxTemplatePath(),
+            [''name'' => ''Svět'']
+        );
     }
-}</code></pre><pre><code>INSERT INTO cms_sites (parent_id, strict, visible, link, title, html_title, html_description, html_keywords)
-VALUES (1, 1, 1, \'/hello/\', \'Hello\', \'Hello\', \'My first page\', \'hello\');
+}
+```
 
-INSERT INTO cms_boxes (name, module, method, section_id, static, `order`, sites)
-VALUES (\'Hello\', \'hello\', \'hello\', 1, 1, 0, \'["&lt;the new site_id&gt;"]\');</code></pre><p>Načtěte <code>/hello/</code>. Je-li zapnutá cache stránek, počkejte, až vyprší její platnost, nebo zavolejte <code>POST /api/cache/flush</code> s tokenem administrátora.</p><h2>Jak je postavená tato dokumentace</h2><p>Každá stránka, kterou čtete, je řádek v <code>cms_sites</code> a článek v <code>cms_articles</code>, zobrazený jedním znovupoužitelným boxem. Český text je v <code>cms_article_translations</code>, názvy menu v <code>cms_menu_translations</code>. Živá ukázka pod každým článkem je druhý box na stejné stránce. Čtěte dál a uvidíte, jak do sebe díly zapadají.</p>'),
-(3,'cs','Architektura','<p>WBengine mění URL ve stránku ve čtyřech krocích. Vše, co se mezi stránkami liší, je v databázových řádcích, takže přidání stránky málokdy znamená změnu kódu.</p>','<h2>Čtyři objekty</h2><table><thead><tr><th>Objekt</th><th>Co to je</th></tr></thead><tbody><tr><td><strong>Application</strong></td><td>Kořenový objekt a malý líný kontejner služeb. Načte <code>Settings.json</code>, nainstaluje obsluhu chyb a vytvoří session, renderer, uživatele a web, až když jsou poprvé potřeba.</td></tr><tr><td><strong>Site</strong></td><td>Požadovaná stránka: řádek <code>cms_sites</code> nalezený podle URL, jeho řízení přístupu, menu a meta data.</td></tr><tr><td><strong>Section</strong></td><td>Pojmenovaná oblast layoutu (<code>header</code>, <code>central</code>, <code>api</code>). HTML jejích boxů skončí v <code>{$central}</code>, <code>{$header}</code> a podobně.</td></tr><tr><td><strong>Box</strong></td><td>Jednotka obsahu: řádek <code>cms_boxes</code> pojmenuje modul a metodu, WBengine ji zavolá a převezme HTML, které vrátí.</td></tr></tbody></table><h2>Průběh požadavku</h2><pre><code>index.php
-  new Application()      načte Settings.json, nainstaluje obsluhu chyb
-  $App-&gt;run()
-    Site::initialize()
-      řádek cms_sites podle URL     404, pokud žádný není
-      kontrola ACL                  přesměrování na /login/, pokud web vyžaduje uživatele
-      menu, meta, proměnné šablony
-      pro každou aktivní sekci:
-        řádky cms_boxes pro tento web a sekci
-        pro každý box: new App\\Box\\&lt;Section&gt;\\&lt;Module&gt;, volá &lt;Method&gt;(), sbírá HTML
-    Renderer::dispatch()            vykreslí site.tpl se všemi proměnnými</code></pre><p>Anonymní stránka stojí bez cache zhruba osm až deset dotazů: web, sekce, menu, jeden dotaz na boxy každé sekce a session. Se zapnutou cache stojí tatáž stránka nula. Viz <a href="/cs/docs/caching/">Cache</a>.</p><h2>Pomocné třídy</h2><table><thead><tr><th>Třída</th><th>Účel</th></tr></thead><tbody><tr><td><code>Db</code></td><td>Statická fasáda nad jedním líným spojením s MySQL, s vázanými parametry a logem dotazů</td></tr><tr><td><code>Router</code></td><td>Porovnávání metody a cesty s <code>{param}</code>, používá ho REST API</td></tr><tr><td><code>Session</code>, <code>User</code></td><td>Session v databázi a aktuální uživatel</td></tr><tr><td><code>Renderer</code></td><td>Adaptér šablonovacího enginu: nativní engine nebo Smarty 5</td></tr><tr><td><code>Cache</code>, <code>PageCache</code></td><td>Datová cache a cache celých stránek</td></tr><tr><td><code>I18n</code></td><td>Jazyk požadavku, katalogy, pravidla množných čísel, formáty čísel a dat</td></tr></tbody></table><div class="note"><p>Tabulka pod tímto článkem není text: je to dotaz frameworku na <code>cms_boxes</code> spuštěný pro právě tuto stránku, takže vidíte, které boxy ji sestavily.</p></div>'),
-(4,'cs','Boxy','<p>Box je PHP metoda, která vrací HTML. Statický box jen vykreslí šablonu, dynamický si nejdřív vyžádá data z modelu. Řádek <code>cms_boxes</code> určuje, který box se zobrazí na kterém webu.</p>','<h2>Statický box</h2><pre><code>namespace App\\Box\\Central;
+Vytvořte `src/View/Central/Welcome.tpl` a v `cms_boxes` spojte modul `welcome` a metodu `welcome` se sekcí a webem. Hodnoty SQL předávejte jako vázané parametry. Opakovaně použitelnou databázovou logiku umístěte do modelu.','markdown'),
+(5,'cs','Šablony a Markdown','WBengine 4.0 používá vlastní kompilovaný template engine. Markdown lze použít jako samostatný zdrojový soubor šablony i jako výslovný formát článku v databázi.','## Nativní šablony
 
-use Wbengine\\Box\\WbengineBoxAbstract;
+Nativní engine kompiluje `.tpl` do PHP a může využívat OPcache. Smarty není běhovou závislostí. `{$value}` se standardně escapuje pro HTML; `|raw` používejte pouze pro HTML, které aplikace záměrně vykreslila nebo kterému důvěřuje.
 
-class StaticBoxes extends WbengineBoxAbstract
-{
-    public function About()
-    {
-        return $this-&gt;getRenderer()-&gt;render($this-&gt;getBoxTemplatePath()); // View/Central/About.tpl
-    }
-}</code></pre><p><a href="/cs/about/">Stránka O nás</a> je přesně tohle: žádný model, žádná data.</p><h2>Dynamický box s modelem</h2><pre><code>class Docs extends WbengineBoxAbstract
-{
-    public function Page()
-    {
-        return $this-&gt;getRenderer()-&gt;render($this-&gt;getBoxTemplatePath(), [
-            \'article\' =&gt; $this-&gt;getModel(\'App\\Box\\Central\\Article\')-&gt;getArticleRow(),
-        ]);
-        // šablona čte {$Page.article-&gt;title}
-    }
-}</code></pre><p><code>getModel()</code> jednou vytvoří <code>App\\Box\\Central\\Article\\Model</code>. Model dědí z <code>ModelAbstract</code> a s <code>Db</code> mluví přes vázané parametry. Data šablony jsou dostupná pod názvem šablony, takže <code>render()</code> šablony <code>Central/Page</code> vytvoří <code>$Page</code>. Každá stránka dokumentace, kterou čtete, je tento box.</p><h2>Boxy dodávané s frameworkem</h2><ul><li><code>Wbengine\\Box\\Article</code>: článek z <code>cms_articles</code> s vlastní šablonou, řádky autora a zdroje, volitelným počítadlem zobrazení a překlady. Používá ho <a href="/cs/blog/">Blog</a>.</li><li><code>Wbengine\\Box\\Auth</code>: přihlašovací formulář s CSRF tokenem, počítadlem neúspěšných pokusů a volitelnou reCAPTCHA. Běží na <a href="/cs/login/">/login/</a>.</li></ul><h2>Řádek cms_boxes</h2><table><thead><tr><th>Sloupec</th><th>Význam</th></tr></thead><tbody><tr><td><code>module</code>, <code>method</code></td><td>PHP třída a metoda k volání: modul <code>docs</code>, metoda <code>page</code>, sekce central spustí <code>App\\Box\\Central\\Docs::Page()</code></td></tr><tr><td><code>section_id</code></td><td>Sekce, do které se box vykreslí</td></tr><tr><td><code>sites</code></td><td>JSON pole id webů, kde se box zobrazí, například <code>["12"]</code></td></tr><tr><td><code>shared</code></td><td><code>1</code> zobrazí box na každém webu (bannery, patičky)</td></tr><tr><td><code>order</code></td><td>Pořadí uvnitř sekce</td></tr></tbody></table><div class="note"><p>V jedné sekci může být více boxů. Stránky dokumentace s ukázkou používají v centrální sekci dva boxy: nejdřív článek, potom živou ukázku.</p></div>'),
-(5,'cs','Šablony','<p>Nativní šablonovací engine jednou zkompiluje syntaxi podobnou Smarty do čistého PHP a pak soubor jen includuje. Každou hodnotu escapuje ve výchozím stavu a nemůže spustit PHP. Smarty 5 zůstává dostupný jako adaptér.</p>','<h2>Syntaxe</h2><pre><code>{* komentář *}
-&lt;h1&gt;{$title}&lt;/h1&gt;                        {* escapováno *}
-{$article-&gt;introtext|raw}                {* důvěryhodné HTML, vytištěno tak, jak je *}
-{$user.address.city}  {$menu[0]-&gt;name}   {* klíče polí, vlastnosti *}
-{$name|default:\'anonymous\'|upper}        {* modifikátory *}
+```tpl
+<h1>{$title}</h1>
+{$bodyHtml|raw}
+{include ''Shared/footer.tpl''}
+```
 
-{if $n &gt; 1 &amp;&amp; !$hidden}...{elseif $n === 1}...{else}...{/if}
+## Markdown soubory
 
-{foreach $menu as $m}
-  &lt;a href="{$m-&gt;link|lurl}"&gt;{$m-&gt;name}&lt;/a&gt;
-{foreachelse}
-  prázdné
-{/foreach}
+Soubor `.md` lze vykreslit nativním rendererem přímo nebo jej vložit do HTML šablony:
 
-{set $total = $price * $count}
-{include \'Shared/footer.tpl\'}
-{cache \'sidebar\' ttl=300}...vykresleno jednou za pět minut...{/cache}</code></pre><p>Modifikátory zahrnují <code>raw</code>, <code>escape</code>, <code>upper</code>, <code>lower</code>, <code>trim</code>, <code>default</code>, <code>truncate</code>, <code>nl2br</code>, <code>json</code>, <code>url</code>, <code>length</code>, <code>date</code> a <code>join</code>, a pro jazyky <code>t</code>, <code>lurl</code>, <code>number</code> a <code>ldate</code>.</p><h2>Bezpečnostní model</h2><ul><li><strong>Escapování je ve výchozím stavu zapnuté.</strong> <code>{$x}</code> je escapováno pro HTML; <code>|raw</code> tiskne beze změny.</li><li><strong>Šablona nemůže spustit PHP.</strong> Výrazy mají pevnou gramatiku: žádná volání funkcí, přiřazení, konstanty ani <code>new</code>. PHP značky v šabloně jsou obyčejný text.</li><li><strong>Šablona nemůže číst libovolné soubory.</strong> Názvy se řeší jen uvnitř adresáře šablon; <code>..</code> a symlinky ven jsou odmítnuty.</li><li><strong>Chybějící věci jsou prázdné.</strong> Nedefinovaná proměnná nebo vlastnost nic nevytiskne místo varování.</li></ul><h2>Přechod ze Smarty</h2><ol><li>Přepněte <code>adapterName</code> na <code>NativeRenderer</code> a nastavte <code>"autoEscape": false</code>. Stránky se vykreslí stejně.</li><li>Důvěryhodné HTML označte <code>|raw</code> a data <code>|escape</code>. To je platné i ve Smarty 5.</li><li>Odstraňte <code>"autoEscape": false</code>. Od teď je každé prosté <code>{$x}</code> escapováno.</li></ol><p>Nepodporováno: pluginy Smarty, <code>{capture}</code>, <code>{section}</code>, dědičnost šablon a vlastní oddělovače. Pro šablony, které je potřebují, použijte Smarty.</p><h2>Výkon</h2><p>S opcache se vykresluje zkompilované PHP. Při studeném požadavku, který je pro PHP-FPM a Apache rozhodující, nativní engine přidá zhruba 2,3 ms oproti holému PHP procesu, Smarty 4,5 ms. V produkci nastavte <code>"compileCheck": false</code> a při nasazení smažte adresář zkompilovaných šablon.</p>'),
-(6,'cs','Jazyky','<p>Rozhraní i obsah databáze lze zobrazit ve více jazycích. Tento web je dostupný česky a anglicky: přepínejte tlačítky v záhlaví.</p>','<h2>Jak se vybírá jazyk</h2><p>Pro každý požadavek rozhoduje první z těchto zdrojů, který dá podporovaný jazyk:</p><ol><li><strong>Jazykový prefix v URL</strong>: <code>/cs/docs/</code>. Odstraní se dřív, než URL čte cokoli jiného, takže weby a boxy se píší bez něj. Výchozí jazyk má jednu kanonickou URL, takže <code>/en/docs/</code> přesměruje na <code>/docs/</code>.</li><li><strong>Cookie</strong> <code>wb_locale</code>, která si pamatuje poslední výslovnou volbu.</li><li><strong>Hlavička Accept-Language</strong> prohlížeče, včetně hodnot kvality.</li><li><strong>Výchozí jazyk.</strong></li></ol><p>Odpověď nese <code>Content-Language</code> a <code>Vary</code> a cache stránek drží jednu kopii pro každý jazyk.</p><h2>Katalogy</h2><p>Jeden PHP soubor pro každý jazyk v <code>src/Locale/</code>. Opcache ho zkompiluje, takže se za požadavek nic neparsuje:</p><pre><code>return [
-    \'greeting\' =&gt; \'Hello %name%\',
-    \'files\'    =&gt; [\'one\' =&gt; \'%count% file\', \'other\' =&gt; \'%count% files\'],
-];</code></pre><p>Chybějící zpráva se hledá v jazyce, pak ve výchozím jazyce a nakonec se zobrazí klíč. Množná čísla se řídí pravidly CLDR, takže čeština má <code>one</code>, <code>few</code>, <code>many</code> a <code>other</code>.</p><h2>V šablonách</h2><pre><code>{t \'greeting\' name=$user.name}                  {* Hello Eva *}
-{t \'files\' count=$n}                            {* 1 file, 5 files, 5 souborů *}
-{$label|t}                                      {* hodnota je klíč *}
-&lt;a href="{$m-&gt;link|lurl}"&gt;{$m-&gt;name}&lt;/a&gt;       {* /blog/ se změní na /cs/blog/ *}
-{$price|number:2}  {$date|ldate:\'long\'}         {* 1 234,50 a 5. října 2026 *}</code></pre><h2>Překlady obsahu databáze</h2><p>Názvy a meta tagy webů, názvy menu a články mají každý vlastní překladovou tabulku. Výchozí jazyk zůstává v původních sloupcích a chybějící nebo prázdné pole se nahradí jeho hodnotou, pole po poli. Přeložený článek, který má jen nadpis, ukáže výchozí text. Přesně takto je uložen i tento článek.</p><table><thead><tr><th>Druh</th><th>Tabulka</th><th>Pole</th></tr></thead><tbody><tr><td><code>site</code></td><td><code>cms_site_translations</code></td><td>title, html_title, html_description, html_keywords</td></tr><tr><td><code>menu</code></td><td><code>cms_menu_translations</code></td><td>name, description</td></tr><tr><td><code>article</code></td><td><code>cms_article_translations</code></td><td>title, introtext, bodytext</td></tr></tbody></table><p>Redaktoři spravují překlady přes <code>PUT /api/translations/{kind}/{id}/{locale}</code>, viz <a href="/cs/docs/rest-api/">REST API</a>. Zápis vyprázdní cache.</p>'),
-(7,'cs','Cache','<p>Dvě volitelné vrstvy: datová cache pro vyhledávání, která potřebuje každá stránka, a cache stránek, která anonymním návštěvníkům vydá uloženou kopii dřív, než se spustí jakýkoli box. V této kostře jsou obě zapnuté.</p>','<h2>Datová cache</h2><p>Ukládá tabulku viditelných webů, menu, sekce a seznamy boxů. Ovladač <code>apcu</code> je nejrychlejší a sdílejí ho PHP workery serveru; ovladač <code>file</code>, který používáme zde, funguje všude.</p><pre><code>"cache": {
-  "enabled": true,
-  "driver": "file",
-  "ttl": 300,
-  "pages": { "enabled": true, "ttl": 60 }
-}</code></pre><h2>Cache stránek</h2><p>Stránka se uloží jen tehdy, když je pro všechny stejná: obyčejný <code>GET</code> bez query stringu, nepřihlášený návštěvník, odpověď <code>200</code> s HTML, žádný zápis do session a web, který nevyžaduje přihlášení. Přihlašovací stránka s CSRF tokenem se tedy nikdy neukládá. Odpovědi nesou <code>X-WBengine-Cache: HIT</code>, <code>MISS-STORED</code> nebo <code>BYPASS</code>, <code>ETag</code> a podporu <code>304</code>.</p><h3>Naměřené dotazy na stránku</h3><table><thead><tr><th>Stránka</th><th>Cache vypnutá</th><th>Cache zapnutá, zahřátá</th></tr></thead><tbody><tr><td><code>/</code> první návštěva</td><td>6</td><td>0</td></tr><tr><td><code>/</code> vracející se návštěvník</td><td>7</td><td>1</td></tr><tr><td><code>/blog/</code> (článek a počítadlo zobrazení)</td><td>9</td><td>3</td></tr></tbody></table><h2>Zneplatnění</h2><ul><li>API vyprázdní cache, když se změní sekce nebo překlady.</li><li>Po úpravě tabulek obsahu přímo v SQL zavolejte <code>POST /api/cache/flush</code> s tokenem administrátora, nebo počkejte na vypršení platnosti.</li><li>Stránka, která závisí na čemkoli kromě URL a stavu přihlášení (typ zařízení, cookie, hodiny), by cache stránek používat neměla.</li></ul><h2>Počítadlo zobrazení</h2><p>Volitelné dávkové počítadlo změní jeden <code>UPDATE</code> na každé zobrazení článku na jeden za 50 zobrazení nebo za minutu, uložený v malých zamykaných souborech, které při souběhu nic neztratí.</p><div class="note"><p>Box pod tímto článkem čte hodiny při sestavení stránky. Načtěte ji znovu: dokud kopie žije, čas se nezmění.</p></div>'),
-(8,'cs','Zabezpečení','<p>Výchozí hodnoty jsou ty bezpečné: hodnoty se vážou, výstup se escapuje, tajemství zůstávají mimo zdrojový kód a každá privilegovaná akce kontroluje roli v databázi.</p>','<h2>Co čím chrání</h2><table><thead><tr><th>Hrozba</th><th>Obrana</th></tr></thead><tbody><tr><td>SQL injection</td><td>Každá hodnota se předává jako vázaný parametr. <code>Db::insert</code> a <code>Db::update</code> ověřují názvy sloupců a tabulek a selhavší dotaz klientovi nikdy neukáže své SQL.</td></tr><tr><td>Cross-site scripting</td><td>Nativní šablonovací engine escapuje výstup ve výchozím stavu; <code>|raw</code> je výslovné rozhodnutí. Debug lišta i chybové stránky také escapují.</td></tr><tr><td>Injekce do šablon</td><td>Šablona nemůže spustit PHP ani číst soubory mimo adresář šablon a syntaxe šablon uvnitř dat se nikdy neinterpretuje.</td></tr><tr><td>Krádež hesel</td><td>Hesla se ukládají přes <code>password_hash()</code>. Staré hashe MD5 dál fungují a při dalším přihlášení se upgradují.</td></tr><tr><td>Hádání hesel</td><td>Omezení pokusů o přihlášení podle dvojice účet a adresa, podle adresy a podle účtu; odpověď je <code>429</code> s <code>Retry-After</code>. Webový formulář po opakovaných neúspěších přidá reCAPTCHA.</td></tr><tr><td>Fixace a krádež session</td><td>ID session se při přihlášení vygeneruje znovu, cookie je HttpOnly a SameSite a uložená data se deserializují s omezeným seznamem tříd.</td></tr><tr><td>Ukradené tokeny</td><td>Přístupové tokeny žijí 15 minut. Refresh tokeny jsou neprůhledné, ukládají se jen jako hash, rotují při každém použití a opakované použití zruší celou jejich rodinu.</td></tr><tr><td>Zvyšování oprávnění</td><td>Role (<code>user</code>, <code>editor</code>, <code>admin</code>) se čtou z databáze při každém privilegovaném volání a zápisy přijímají jen povolená pole.</td></tr><tr><td>Padělané požadavky</td><td>Přihlašovací formulář používá CSRF token; refresh cookie je SameSite Strict a omezená na <code>/api/auth/</code>.</td></tr></tbody></table><h2>Řízení přístupu ke stránkám</h2><p>Sloupec <code>acl</code> v <code>cms_sites</code> chrání stránku: hodnota 1 a víc přesměruje nepřihlášené návštěvníky na přihlášení dřív, než se spustí jakýkoli box. Vyzkoušejte <a href="/cs/profile/">/profile/</a>.</p><h2>Váš kontrolní seznam</h2><ul><li>V produkci nechte <code>debug</code> vypnuté a <code>Settings.json</code> mimo git.</li><li>Před aplikaci postavte TLS; cookie session se při HTTPS označí jako Secure.</li><li>Změňte heslo demo administrátora a JWT klíče nastavte z prostředí (<code>WBENGINE_JWT_KEY</code>, <code>WBENGINE_JWT_REFRESH_KEY</code>).</li><li>Každé nové akci API přidělte výslovnou roli.</li></ul>'),
-(9,'cs','REST API','<p>API běží pod <code>/api/</code>. Token získáte přihlašovacím koncovým bodem a posíláte ho jako bearer token. Konzole pod článkem volá skutečné API této aplikace.</p>','<h2>Koncové body</h2><table><thead><tr><th>Metoda a cesta</th><th>Účel</th><th>Autorizace</th></tr></thead><tbody><tr><td><code>POST /api/auth/login</code></td><td>Výměna e-mailu a hesla za token</td><td>ne</td></tr><tr><td><code>POST /api/auth/jwt/revalidate</code></td><td>Výměna refresh cookie za nový token</td><td>cookie</td></tr><tr><td><code>POST /api/auth/logout</code>, <code>/logout/all</code></td><td>Zrušení tohoto zařízení nebo všech zařízení</td><td>cookie, token</td></tr><tr><td><code>GET /api/users</code>, <code>/api/users/{id}</code></td><td>Výpis a čtení uživatelů</td><td>admin</td></tr><tr><td><code>POST /api/users/create</code>, <code>PATCH /api/users/patch/{id}</code>, <code>DELETE /api/users/{id}</code></td><td>Vytváření, změna a mazání uživatelů</td><td>admin</td></tr><tr><td><code>GET/POST /api/sections</code>, <code>GET/PUT/DELETE /api/sections/{id}</code></td><td>CRUD sekcí</td><td>admin</td></tr><tr><td><code>GET /api/translations/{kind}/{id}</code></td><td>Všechny překlady webu, položky menu nebo článku</td><td>editor</td></tr><tr><td><code>PUT/DELETE /api/translations/{kind}/{id}/{locale}</code></td><td>Vytvoření, změna nebo smazání překladu</td><td>editor</td></tr><tr><td><code>POST /api/cache/flush</code></td><td>Zahodí data a stránky v cache</td><td>admin</td></tr></tbody></table><h2>Příklad</h2><pre><code>curl -X POST -H \'Content-Type: application/json\' \\
-     -d \'{"username":"admin@example.com","password":"changeme"}\' \\
-     http://localhost:8080/api/auth/login
+```tpl
+{include ''Central/notice.md''}
+```
 
-curl -X PUT -H "Authorization: Bearer &lt;token&gt;" -H \'Content-Type: application/json\' \\
-     -d \'{"title":"Moje stránka"}\' \\
-     http://localhost:8080/api/translations/site/10/cs</code></pre><h2>Konvence</h2><ul><li>Chybějící, poškozený, expirovaný nebo špatně podepsaný token vrací <code>401</code>. Platný token bez požadované role vrací <code>403</code>.</li><li>Zápisy přijímají jen povolená pole; neznámá pole jsou odmítnuta s <code>400</code>.</li><li>Úspěšné odpovědi jsou čistá data, chyby mají tvar <code>{"success": false, "error": 400, "message": "..."}</code>.</li><li>Pokusy o přihlášení jsou omezeny a odpovídají <code>429</code> s <code>Retry-After</code>.</li></ul><h2>Přidání modulu</h2><p>Rozšiřte <code>WbengineRestapiAbstract</code>, každou akci obalte <code>$this->isAuthenticated(fn () => ..., Role::EDITOR)</code> a vedle přidejte třídu <code>Routes</code>. Nejmenším příkladem je <code>Api/Section.php</code> ve frameworku.</p>');
+Markdown se zpracuje jako obsah. PHP tagy, proměnné a direktivy šablony uvnitř se nevykonávají. Vestavěný parser escapuje syrové HTML a omezuje protokoly odkazů.
+
+Když už máte řetězec Markdownu, použijte sdílenou službu:
+
+```php
+$html = $this->getSite()->getParent()->getMarkdown()->render($source);
+```
+
+## Markdown v článcích databáze
+
+V `cms_articles` nebo `cms_article_translations` nastavte `content_format` na `markdown`. Existující řádky po migraci zůstávají `legacy_html`. Staré HTML neoznačujte jako Markdown bez převodu a kontroly. Případný Smarty compatibility balíček slouží jen jako oddělený migrační nástroj.','markdown'),
+(6,'cs','Jazyky','Aplikace má anglické a české katalogy rozhraní a nezávisle překládá metadata webu, položky menu i články.','## Texty rozhraní
+
+Katalogy jsou v `src/Locale/en.php` a `src/Locale/cs.php`. Šablony používají `{t ''key''}`. Českou verzi vybere prefix `/cs/`; výchozí anglická adresa prefix nemá. Další jazyk přidejte do nastavení a vytvořte jeho katalog předtím, než na něj přidáte odkazy.
+
+## Obsah databáze
+
+Výchozí jazyk zůstává v `cms_sites`, `cms_menu` a `cms_articles`. Překladové tabulky obsahují další jazyk. Chybějící přeložené hodnoty se doplní z výchozího pole. Překlad článku má také vlastní `content_format`, takže anglický Markdown může během postupné migrace koexistovat s českým HTML.
+
+Po změně obsahu použijte běžný mechanismus zneplatnění cache. Pro produkční web nastavte důvěryhodnou HTTPS adresu v `i18n.baseUrl`, aby alternativní jazykové odkazy nezávisely na nedůvěryhodné hlavičce Host.','markdown'),
+(7,'cs','Cache','WBengine poskytuje datovou cache a cache stránek pro vhodné veřejné požadavky. Před změnou ovladače nebo platnosti měřte skutečné nasazení.','## Datová cache a cache stránek
+
+Datová cache omezuje opakované čtení vybraných údajů. Cache stránek ukládá odpovědi, které jsou stejné pro všechny návštěvníky, a odděluje je podle jazyka. Přihlášený nebo na požadavku závislý obsah nesmí být uložen jako společná veřejná odpověď. Vhodnost a zneplatnění hlídá framework.
+
+Vzorový web nastavuje page cache v `src/Config/settings.json.default`. Při úpravách použijte krátkou platnost. Po změně obsahu nebo nastavení cache vyčistěte; API endpoint pro vyprázdnění vyžaduje administrátorský token.
+
+## Diagnostika bez zápisu
+
+CLI může zkontrolovat nastavení, stav nasazení a migrace bez databázového DDL:
+
+```bash
+vendor/bin/wbengine.php config:check --config=src/Config/Settings.json --root=src
+vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
+vendor/bin/wbengine.php migration:status --config=src/Config/Settings.json --root=src
+```
+
+CLI a webový worker mohou mít odlišná PHP nastavení a oprávnění. Pokud se výsledky liší, porovnejte konfiguraci OPcache a práva k zapisovatelným adresářům.','markdown'),
+(8,'cs','Zabezpečení','Bezpečnost závisí na jasných hranicích důvěry: parametrizovaných SQL dotazech, escapovaném výstupu šablon, chráněných tajemstvích a kontrole rolí.','## Vstup a výstup
+
+- Pro hodnoty v databázových dotazech používejte prepared statements. Vstup předem neošetřujte přes `addslashes()`.
+- Nativní šablony hodnoty automaticky escapují. Raw HTML vypisujte jen tehdy, když je důvěryhodné nebo bezpečně vykreslené.
+- Markdown parser escapuje syrové HTML a povoluje bezpečná schémata URL. PHP ani syntaxi šablon nevykonává.
+- `Settings.json`, JWT klíče, hesla ani privátní klíče neukládejte do Gitu.
+
+## Nasazení
+
+Používejte HTTPS, vypněte debug výstup, změňte demo heslo a API chráníte podle rolí. Než začnete pro limity požadavků používat hlavičky s IP adresou, nastavte důvěryhodné proxy. Před migrací schématu databázi zálohujte; migrace Markdownu zachová původní bajty článků jako `legacy_html`.
+
+Příkaz CLI `doctor` vypíše kontroly nasazení. Je pouze pro čtení a migrace nespouští.','markdown'),
+(9,'cs','REST API','API je dostupné pod `/api/`. Přihlaste se přes login endpoint, posílejte přístupový token jako bearer token a používejte roli vyžadovanou danou cestou.','## Ukázkový požadavek
+
+```bash
+curl -X POST -H ''Content-Type: application/json'' \\
+  -d ''{"username":"admin@example.com","password":"changeme"}'' \\
+  http://localhost:8080/api/auth/login
+
+curl -H ''Authorization: Bearer <token>'' \\
+  http://localhost:8080/api/sections
+```
+
+Demo údaje používejte pouze lokálně. Před zveřejněním aplikace heslo změňte.
+
+## Cesty a role
+
+Přihlášení je veřejné. Správa uživatelů a sekcí i vyprázdnění cache vyžadují administrátora. Čtení a změna překladů vyžadují roli editor nebo vyšší. Chybějící či neplatný token vrací `401`; přihlášený uživatel bez potřebné role dostane `403`. Zapisovací cesty kontrolují povolená pole.
+
+Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. Seznam endpointů a konzole pod tímto článkem ukazují trasy zapnuté v této aplikaci. Před použitím příkladů v jiném projektu zkontrolujte jeho aktuální třídy tras.','markdown');

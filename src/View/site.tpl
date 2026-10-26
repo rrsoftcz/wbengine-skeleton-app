@@ -124,5 +124,6 @@
         {$debug->show()|raw}
     {/if}
     <script src="/menu.js" defer></script>
+    <script src="/code-highlight.js" defer></script>
 </body>
 </html>

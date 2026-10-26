@@ -52,6 +52,7 @@ class Demo extends WbengineBoxAbstract
             'price' => 1234.5,
             'time' => time(),
             'text' => 'WBengine compiles templates to plain PHP',
+            'locale' => I18n::locale(),
         ));
     }
 

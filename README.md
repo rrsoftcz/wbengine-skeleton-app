@@ -10,6 +10,11 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 * Composer
 * Docker (optional, the quickest way to try it)
 
+The Composer application requirement is `wbengine/wbengine:^4.0`. The framework's
+runtime Composer dependency is `firebase/php-jwt`; Smarty and Texy are not required.
+The native template engine and Markdown parser are included in WBengine. Composer
+also checks PHP platform requirements for the installed release.
+
 ## Quick start with Docker
 
 ```bash
@@ -78,7 +83,15 @@ The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` 
 4. Edit `dbAdapterDefinition` in `src/Config/Settings.json`
 5. Point the web server document root at `public/`
 
-Upgrading an existing database: run the scripts in `schemas/migrations/` once. The translation tables of 005 are optional: without them the site stays in the default language. Passwords are stored with `password_hash()`; old MD5 hashes keep working and are upgraded on each user's next login once the column is widened.
+Upgrading an existing database: back it up, then run the applicable scripts in
+`schemas/migrations/` once and in order. `005-content-translations.sql` creates the
+translation tables; `006-markdown-content-format.sql` adds `content_format`
+for WBengine 4.0. Apply 005 before 006. If the framework migration
+`migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
+never apply both. Existing article text is preserved and defaults to `legacy_html`;
+the schema migration does not convert or overwrite content. Passwords are stored with `password_hash()`; old
+MD5 hashes keep working and are upgraded on each user's next login once the column
+is widened.
 
 ## The demo site
 
@@ -90,7 +103,7 @@ The skeleton is a working site that explains WBengine with itself. Every documen
 | `/docs/` | getting started: install, first page | |
 | `/docs/architecture/` | sites, sections, boxes, request lifecycle | the `cms_boxes` rows that built the page (`Demo::Structure`) |
 | `/docs/boxes/` | static and dynamic boxes, models, the `cms_boxes` columns | |
-| `/docs/templates/` | native engine syntax, escaping, moving from Smarty | template source next to its output (`Demo::Templates`) |
+| `/docs/templates/` | native template syntax, escaping, Markdown files and database content | template and Markdown source live on the page (`Demo::Templates`) |
 | `/docs/languages/` | language detection, catalogs, plurals, translated content | the detected locale, plural forms, number and date formats (`Demo::Languages`) |
 | `/docs/caching/` | data cache, page cache, invalidation | build time, query count and the `X-WBengine-Cache` header (`Demo::Caching`) |
 | `/docs/security/` | the defences, the `acl` of a site | `/profile/` redirects to the login |
@@ -98,9 +111,9 @@ The skeleton is a working site that explains WBengine with itself. Every documen
 | `/blog/` | the framework's `Article` box | |
 | `/about/` | a static box | |
 
-The documentation text is content, not code: each page is a `cms_sites` row, a `cms_articles` row and a `cms_boxes` row for the reusable `Docs::Page` box (which adds the sidebar). The Czech text is in `cms_article_translations`, the menu names in `cms_menu_translations`. The demo content lives in `schemas/wbengine_skeletone_app_mysql_template_content.sql`, imported after the schema.
+The documentation text is content, not code: each page is a `cms_sites` row, a `cms_articles` row and a `cms_boxes` row for the reusable `Docs::Page` box (which adds the sidebar). The Czech text is in `cms_article_translations`, the menu names in `cms_menu_translations`. Article rows set `content_format` explicitly to `markdown`; the demo content lives in `schemas/wbengine_skeletone_app_mysql_template_content.sql`, imported after the schema. This seed is for a fresh database and is not idempotent: it updates some base rows and inserts the demo pages, menu item, and articles. Reimporting it into an existing database can overwrite base content and then fail on duplicate IDs. Do not reimport it into an installed site.
 
-To add a documentation page: insert the three rows (copy one of the seeded pages), add the url and a catalog key to `Docs::PAGES` for the sidebar, translate it with `PUT /api/translations/article/{id}/cs`, and rebuild the stylesheet (see TailwindCSS below), because the article HTML uses Tailwind classes and the build scans the SQL files.
+To add a documentation page: insert the three rows (copy one of the seeded pages), add the URL and a catalog key to `Docs::PAGES` for the sidebar, and translate it with `PUT /api/translations/article/{id}/cs`. The `.doc` typography styles apply to rendered Markdown; rebuild the stylesheet only when you add new Tailwind utility classes to templates or seeded content.
 
 The default `settings.json.default` switches the data cache and the page cache on (file driver, 60 seconds for pages), so the caching page is meaningful. While you edit templates, set `cache.enabled` to `false` or call `POST /api/cache/flush`, otherwise you see the stored copy for up to a minute.
 
@@ -124,7 +137,7 @@ public/.htaccess          routes everything to index.php
 src/Config/               Settings.json (not committed), settings.json.default
 src/Box/<Section>/        box classes, e.g. Central/Blog.php, Central/Profile.php
 src/Box/Api/Restapi.php   REST API box
-src/View/                 Smarty templates: site.tpl layout, <Section>/<Method>.tpl per box
+src/View/                 native templates and Markdown sources: site.tpl, <Section>/<Method>.tpl
 src/View/Compiled/        template cache, must be writable
 schemas/                  database schema and demo data, migrations/
 bin/setup.sh              first-time setup
@@ -138,15 +151,22 @@ The skeleton is available in English and Czech. `/` is English, `/cs/` is Czech,
 
 ## Templates
 
-The skeleton uses WBengine's native template engine with automatic escaping: `{$value}` is HTML-escaped, so a menu name or an e-mail address containing markup is shown as text, not run. Print trusted HTML (the sections built by the boxes, formatted article text) with `|raw`:
+The skeleton uses WBengine's native template engine with automatic escaping: `{$value}` is HTML-escaped, so a menu name or an e-mail address containing markup is shown as text, not run. Print HTML generated by a box or the safe Markdown renderer with `|raw`:
 
-```smarty
+```tpl
 <title>{$meta.title}</title>          {* escaped *}
 {$central|raw}                        {* HTML built by the boxes *}
-{$LocalStoryBox->bodytext|raw}        {* article HTML written by administrators *}
+{$LocalStoryBox->bodytext|raw}        {* article HTML rendered by the framework *}
 ```
 
-The syntax is a subset of Smarty (`{if}`, `{foreach}`, `{include}`, modifiers, `{cache}` for fragment caching), see the framework README. The current layout also uses native-only set/t syntax. It cannot be switched back to Smarty by changing the adapter alone; restore compatible source templates as part of a rollback. See the framework migration contract.
+This is WBengine's own syntax and compiler. It includes control flow such as `{if}` and `{foreach}`, includes, modifiers and fragment caching, without loading Smarty. A few constructs resemble familiar template languages; Smarty itself is an optional compatibility tool for migration, not an application dependency. The layout also uses native `{set}` and `{t}` tags.
+
+Markdown can be used in two ways:
+
+1. A `.md` file can be rendered directly by the native renderer with `$this->getRenderer()->render('Central/notice.md')`, or included in an HTML template with `{include 'Central/notice.md'}`. It remains Markdown content: PHP, template variables and directives inside it are not executed.
+2. An article or translation row can set `content_format` to `markdown`. The Article box parses that source and returns safe HTML. Existing rows default to `legacy_html` and are not converted automatically.
+
+The parser is included in WBengine, escapes raw HTML, restricts link schemes, and applies input/output limits. For a Markdown string outside the Article box, call `$app->getMarkdown()->render($source)`. See the framework's `README.md` section "Markdown content" for the precise renderer contract.
 
 ## Adding a page
 
@@ -189,7 +209,7 @@ Every route except `/api/auth/login` needs a valid token. Currently available: `
 
 * The JWT keys and reCAPTCHA secret live in `Settings.json` (or the environment variables `WBENGINE_JWT_KEY`, `WBENGINE_JWT_REFRESH_KEY`, `WBENGINE_RECAPTCHA_SECRET`). Never commit them. `Settings.json` is ignored by git.
 * Keep `"debug": false` in production: debug mode prints SQL and error details.
-* Any valid token can currently use every API route. Add a role check before exposing the API to more than administrators.
+* API operations require the documented role: user and section administration and cache flushing require an administrator; translation management requires an editor or administrator.
 * Do not commit TLS certificates or private keys; terminate TLS in front of the application.
 
 ## TailwindCSS
@@ -201,7 +221,27 @@ npm install
 npx tailwindcss -i ./src/input.css -o ./public/Css/output.min.css --watch --minify
 ```
 
-Without a local Node, use Docker: `docker run --rm -v "$PWD":/app -w /app node:22-alpine sh -c "npm install && npx tailwindcss -i ./src/input.css -o ./public/Css/output.min.css --minify"`. `tailwind.config.js` scans the templates, the framework's own box templates and `schemas/**/*.sql` (the article HTML in the seed uses classes).
+Without a local Node, use Docker: `docker run --rm -v "$PWD":/app -w /app node:22-alpine sh -c "npm install && npx tailwindcss -i ./src/input.css -o ./public/Css/output.min.css --minify"`. `tailwind.config.js` scans the templates, the framework's own box templates and `schemas/**/*.sql`; generated Markdown articles use the typography classes in `src/input.css`.
+
+Console examples use fenced Markdown blocks labeled `bash`. The dependency-free
+`public/code-highlight.js` colors shell commands, options, strings and comments
+with the homepage palette. It builds spans with DOM text nodes, preserving readable
+and copyable source. Without JavaScript, code remains plain text.
+
+## WBengine CLI
+
+Composer installs `vendor/bin/wbengine.php`. These commands inspect configuration,
+deployment readiness and migration state; they do not run database migrations:
+
+```bash
+vendor/bin/wbengine.php config:check --config=src/Config/Settings.json --root=src
+vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
+vendor/bin/wbengine.php migration:status --config=src/Config/Settings.json --root=src
+```
+
+`doctor` is read-only. Review its findings in both the CLI PHP environment and the
+web worker, since extensions, OPcache and filesystem permissions may differ. For
+all supported commands and options, run `vendor/bin/wbengine.php help`.
 
 ## Contributing
 

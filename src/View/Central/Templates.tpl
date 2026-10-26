@@ -20,4 +20,11 @@
             </tbody>
         </table>
     </div>
+    <div class="doc mt-5 rounded-xl border border-indigo-100 bg-white p-5">
+        {if $Templates.locale == 'cs'}
+            {include 'Central/TemplateMarkdownDemo.cs.md'}
+        {else}
+            {include 'Central/TemplateMarkdownDemo.md'}
+        {/if}
+    </div>
 </section>

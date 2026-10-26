@@ -107,3 +107,9 @@
 nav a.active, nav a.is-active {
     @apply bg-indigo-50 text-indigo-700;
 }
+
+/* Shell syntax colors reuse the homepage code sample palette. */
+.syntax-keyword { color: #f0abfc; }
+.syntax-command { color: #7dd3fc; }
+.syntax-comment { color: #94a3b8; }
+.syntax-string { color: #6ee7b7; }

@@ -34,6 +34,18 @@ class Docs extends WbengineBoxAbstract
      */
     public function Page()
     {
+        $article = $this->getModel('App\Box\Central\Article')->getArticleRow();
+        $format = $article->content_format ?? 'legacy_html';
+        if (!in_array($format, array('legacy_html', 'markdown'), true)) {
+            throw new \UnexpectedValueException('Unknown article content format.');
+        }
+        if ($format === 'markdown') {
+            $markdown = $this->getSite()->getParent()->getMarkdown();
+            foreach (array('introtext', 'bodytext') as $field) {
+                $article->$field = $markdown->render((string) ($article->$field ?? ''));
+            }
+        }
+
         $current = strtolower((string) $this->getSite()->getUrl());
         $nav = array();
         $index = -1;
@@ -46,7 +58,7 @@ class Docs extends WbengineBoxAbstract
         }
 
         return $this->getRenderer()->render($this->getBoxTemplatePath(), array(
-            'article' => $this->getModel('App\Box\Central\Article')->getArticleRow(),
+            'article' => $article,
             'nav' => $nav,
             'prev' => $index > 0 ? $nav[$index - 1] : null,
             'next' => ($index >= 0 && $index < count($nav) - 1) ? $nav[$index + 1] : null,

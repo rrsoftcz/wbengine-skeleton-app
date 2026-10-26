@@ -34,6 +34,16 @@ class Blog extends WbengineBoxAbstract
     public function LocalStoryBox()
     {
         $story = $this->getModel('App\Box\Central\Article')->getArticleRow();
+        $format = $story->content_format ?? 'legacy_html';
+        if (!in_array($format, array('legacy_html', 'markdown'), true)) {
+            throw new \UnexpectedValueException('Unknown article content format.');
+        }
+        if ($format === 'markdown') {
+            $markdown = $this->getSite()->getParent()->getMarkdown();
+            foreach (array('introtext', 'bodytext') as $field) {
+                $story->$field = $markdown->render((string) ($story->$field ?? ''));
+            }
+        }
         return $this->getRenderer()->render($this->getBoxTemplatePath(), $story);
     }
 }
