@@ -1,17 +1,17 @@
 # Migrace vzorové aplikace na WBengine 4.0
 
-Stav 2026-10-26. Pracovní větev codex/wbengine-4.0, výchozí čistý main d22281f. Framework je vydán jako v4.0.0 v samostatném repozitáři a [sloučené PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Původní checkout ani jeho databáze nebyly změněny.
+Stav 2026-10-26. Migrační základ je sloučený na main jako 19fde667; místní checkout byl fast-forward aktualizován a pokračuje ve větvi codex/skeleton-app-v4-composer-lock. Framework je vydán jako v4.0.0 v samostatném repozitáři a [sloučené PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Databáze skeletonu ani produkční data nebyly změněny.
 
 - [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
 - [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
 - [x] POST logout s auth.logout CSRF, žádný GET odhlašovací odkaz, diagnostické údaje pouze při dostupnosti.
-- [x] Composer cíl ^4.0 a oddělený dev smoke manifest, bez osobní konfigurace nebo tajemství v Gitu.
+- [x] Composer cíl ^4.0 a oddělený dev smoke manifest. Ignorovaný místní composer.lock byl aktualizován na v4.0.0 a produkční composer install proběhl; vendor obsahuje WBengine v4.0.0 bez Smarty/Texy. Soubor composer.lock zůstává ignorovaný podle existující konvence projektu.
 - [x] Reálná HTTP sada 20 kontrol lokálně zelená. RED nejprve chybějící cache HIT kvůli předčasnému user/session; potom chybějící POST logout. Login navíc odhalil Url null deprecation bez Apache aliasu, opraveno ve frameworku samostatnou regresí a commitem.
-- [x] CI workflow spouští stejnou izolovanou přípravu a HTTP kontroly, navázaný na explicitní frameworkovou větev.
+- [x] CI workflow používá framework tag v4.0.0 a spouští izolovanou přípravu i HTTP kontroly. Přidána také kontrola produkčního Composer manifestu/locku, aby smoke profil nemohl skrýt jejich nesoulad.
 - [x] Commit/push35d2d54, draft PR#1 a jeho skutečná CI prošla.
 - [x] TPL-03: čerstvé vendor bez Smarty, kontrola dependency profilu a vyčištěné cache, znovu20HTTP kontrol green. Framework checkpoint80208da/08dc79e.
 - [x] MD-03/04: skutečných9článků+9překladů ověřeno naTEMPkopiích:18HTMLplánů,8safeapply/rollback,10manualreview bezaplikace. Původnířádky/hashe/schéma bezezměny; stávajícíHTML zůstává legacy_html.
-- [ ] Finální release gate, aktuální referenční framework verze a opakovaný smoke. Žádný merge, tag ani produkční nasazení zatím neproběhly.
+- [x] Finální release gate a opakovaný smoke prošly v CI pro vydaný framework tag v4.0.0. PR migrace je sloučeno; produkční nasazení ani převod provozních dat se neprovádí.
 
 Postup opakování je v README. Tests setup/seed se odmítnou spustit bez markeru izolovaného smoke prostředí. K odstranění použít pouze Compose projekt, který byl právě vytvořen, ne obecné zastavování cizích kontejnerů.
 
@@ -42,4 +42,13 @@ Finální technickábrána jádra i centrály prošla na dvou nezávislých HTTP
 
 ## Publikace
 
-2026-10-26: Jádro bylo sloučeno do master jako cf710e5adbc25809868a864e615f8b9fc62a7489 a tag v4.0.0 ukazuje na tento commit. Následuje aktualizace CI závislosti na tag a sloučení vzorové aplikace a administrace. GitHub release ještě nebyl vytvořen. Produkční nasazení nebylo provedeno.
+2026-10-26: Jádro bylo sloučeno do master jako cf710e5adbc25809868a864e615f8b9fc62a7489 a tag v4.0.0 ukazuje na tento commit. Následně byly aktualizovány CI reference na tag a sloučeny vzorová aplikace i administrace. GitHub release v4.0.0 byl vytvořen. Produkční nasazení nebylo provedeno.
+
+
+## Lokální adopce v4.0 a Composer kontrola
+
+2026-10-26: Čistý místní checkout ../wbengine-skeleton-app byl fast-forward aktualizován na migrační commit 19fde667530a273e95ce05a118bd438c705520b5. Větev `main` nebyla přepisována; následující oprava probíhá v `codex/skeleton-app-v4-composer-lock`.
+
+Běžná `composer validate` odhalila, že commit aplikace změnil constraint na `^4.0`, ale nepřepočítal `composer.lock`, který stále obsahoval framework v3.5.0. CI tuto zastaralou lokální lock kopii nemohla zachytit, protože `composer.lock` je v `.gitignore`; její smoke workflow navíc používalo pouze alternativní `composer.smoke.json` s path repository. Lokální lock byl aktualizován Composerem na vydaný tag v4.0.0, bez Smarty/Texy; `composer validate --no-check-publish --strict` a skutečný produkční `composer install --no-dev` prošly. Místní vendor byl aktualizován; databáze a produkční data nebyla změněna.
+
+Přidána regresní kontrola běžného `composer.json` a locku do CI před instalací odděleného smoke profilu. Následující krok: ověřit nový CI běh a sloučit opravu CI i tohoto plánu. Produkční nasazení ani úprava databáze nebyly provedeny.
