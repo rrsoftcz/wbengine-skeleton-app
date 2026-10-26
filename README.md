@@ -92,8 +92,11 @@ for WBengine 4.0; `007-markdown-documentation.sql` refreshes the Markdown guide
 and removes obsolete template-engine notes; `008-docker-installation-guide.sql`
 updates the English and Czech Get started articles with the current installer and
 exception diagnostics; `009-repair-czech-installation-guide-encoding.sql` repairs
-Czech text if migration 008 was run with a `latin1` connection. Apply 005 before
-006, then 007 and 008. Run 009 only if Czech characters are corrupted. The guide
+Czech text if migration 008 was run with a `latin1` connection;
+`010-refresh-getting-started-content.sql` synchronizes the English and Czech
+installation guides, including matching troubleshooting headings. Apply 005 before
+006, then 007 and 008. Run 009 only if Czech characters are corrupted, then apply
+010 to synchronize both guides. The guide
 migrations set their SQL connection to `utf8mb4`. If the framework migration
 `migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
 never apply both. Existing article text is preserved and defaults to `legacy_html`;
@@ -110,6 +113,16 @@ are already applied:
 ```sh
 docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-install-guide.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/008-docker-installation-guide.sql
+```
+
+To synchronize the current English and Czech installation guides on an existing
+site, back up the database and apply migration 010. It updates only the built-in
+article with ID 2 and its Czech translation. Review local edits to that article
+before applying it:
+
+```sh
+docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-getting-started-010.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/010-refresh-getting-started-content.sql
 ```
 
 The database image runs files under `schemas/` only when its data volume is first

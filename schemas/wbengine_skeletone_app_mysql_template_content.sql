@@ -67,7 +67,9 @@ Run `php bin/wbe install` to create and validate settings, prepare `src/View/Com
 php bin/wbe install
 ```
 
-Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` and then `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Configure `src/Config/Settings.json` and point the web root to `public/`. ## Troubleshooting exceptions
+Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` and then `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Configure `src/Config/Settings.json` and point the web root to `public/`.
+
+## Installation and exception troubleshooting
 
 In development, set `debug` to `true` in `Settings.json` to show the WBengine exception template with the exception type, message, file, line and stack trace. If settings are missing or malformed, use `WBENGINE_DEBUG=1` only in a private development environment. Never expose debug output publicly. The production error page shows a safe explanation and reference code; find the full exception in the PHP or container error log under that code.
 
@@ -283,7 +285,9 @@ Příkaz `php bin/wbe install` vytvoří a ověří nastavení, připraví `src/
 php bin/wbe install
 ```
 
-Vytvořte databázi, importujte `schemas/wbengine_skeletone_app_mysql_template.sql` a potom `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Nastavte `src/Config/Settings.json` a jako kořen webu použijte `public/`. ## Řešení výjimek
+Vytvořte databázi, importujte `schemas/wbengine_skeletone_app_mysql_template.sql` a potom `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Nastavte `src/Config/Settings.json` a jako kořen webu použijte `public/`.
+
+## Řešení chyb instalace a výjimek
 
 Při vývoji nastavte v `Settings.json` `debug` na `true`. Šablona WBengine zobrazí typ výjimky, zprávu, soubor, řádek a trasu volání. Pokud nastavení chybí nebo obsahuje neplatný JSON, použijte `WBENGINE_DEBUG=1` pouze v soukromém vývojovém prostředí. Ladicí výstup nikdy nezpřístupňujte veřejně. Produkční stránka zobrazí bezpečné vysvětlení a referenční kód; úplnou výjimku najdete v PHP nebo kontejnerovém error logu pod stejným kódem.
 
