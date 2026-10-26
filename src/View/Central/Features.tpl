@@ -63,14 +63,18 @@
         </ol>
     </div>
 
-    <div class="relative mt-20 overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-10 text-center shadow-xl sm:p-14">
-        <h2 class="m-0 text-3xl text-white">{t 'cta.title'}</h2>
-        <p class="mx-auto mt-3 max-w-xl py-0 text-indigo-100">{t 'cta.text'}</p>
-        <pre class="mx-auto mt-6 max-w-xl overflow-x-auto rounded-xl bg-black/30 p-4 text-left font-mono text-sm text-indigo-50"><code>git clone https://github.com/rrsoftcz/wbengine-skeleton-app
+    <div class="relative mt-20 overflow-hidden rounded-3xl bg-slate-950 p-10 text-center text-slate-200 shadow-xl sm:p-14">
+        <div class="pointer-events-none absolute inset-0 opacity-70" aria-hidden="true"
+             style="background: radial-gradient(60% 80% at 80% 0%, rgba(99,102,241,.55) 0, transparent 60%), radial-gradient(50% 70% at 0% 100%, rgba(217,70,239,.35) 0, transparent 60%);"></div>
+        <div class="relative">
+            <h2 class="m-0 text-3xl text-white">{t 'cta.title'}</h2>
+            <p class="mx-auto mt-3 max-w-xl py-0 text-slate-300">{t 'cta.text'}</p>
+            <pre class="mx-auto mt-6 max-w-xl overflow-x-auto rounded-xl border border-white/10 bg-slate-900/80 p-4 text-left font-mono text-sm text-slate-200 shadow-2xl ring-1 ring-black/40 backdrop-blur"><code>git clone https://github.com/rrsoftcz/wbengine-skeleton-app
 docker compose up -d --build</code></pre>
-        <div class="mt-6 flex flex-wrap justify-center gap-3">
-            <a class="btn-white" href="{'/docs/'|lurl}">{t 'hero.cta_start'}</a>
-            <a class="btn-ghost" href="https://github.com/rrsoftcz/wbengine-skeleton-app">{t 'jumbotron.download'}</a>
+            <div class="mt-6 flex flex-wrap justify-center gap-3">
+                <a class="btn-white" href="{'/docs/'|lurl}">{t 'hero.cta_start'}</a>
+                <a class="btn-ghost" href="https://github.com/rrsoftcz/wbengine-skeleton-app">{t 'jumbotron.download'}</a>
+            </div>
         </div>
     </div>
 </section>

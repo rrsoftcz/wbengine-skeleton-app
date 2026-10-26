@@ -47,7 +47,7 @@ INSERT INTO `cms_articles` (`id`,`site_id`,`grouped`,`futured`,`c_enabled`,`view
 - Apache with `mod_rewrite`, or Nginx with PHP-FPM.
 - Composer 2. Docker is optional.
 
-The application requires `wbengine/wbengine:^4.0`. The framework currently brings `firebase/php-jwt`; Smarty and Texy are not runtime dependencies. Check the package metadata for the exact PHP platform requirements of the release you install.
+The application requires `wbengine/wbengine:^4.0`. The framework currently brings `firebase/php-jwt`; its template engine and Markdown parser are included. Check package metadata for the exact PHP platform requirements of the release you install.
 
 ## Docker quick start
 
@@ -116,7 +116,7 @@ class Welcome extends WbengineBoxAbstract
 Create `src/View/Central/Welcome.tpl` and bind module `welcome`, method `welcome` to a section and site in `cms_boxes`. Pass SQL values as bound parameters. Keep database access in a model when the box needs reusable query logic.','markdown',1761000000,NULL,NULL),
 (5,13,0,0,0,0,'Templates and Markdown','WBengine 4.0 uses its own compiled template engine. Markdown can be a template source file or the explicit format of an article stored in the database.','## Native templates
 
-The native engine compiles `.tpl` files to PHP and can use OPcache. It has no Smarty runtime dependency. `{$value}` is HTML-escaped by default; `|raw` is for HTML that the application has deliberately rendered or trusted.
+The native engine compiles `.tpl` files to PHP and can use OPcache. `{$value}` is HTML-escaped by default; `|raw` is for HTML that the application has deliberately rendered or trusted.
 
 ```tpl
 <h1>{$title}</h1>
@@ -142,7 +142,7 @@ $html = $this->getSite()->getParent()->getMarkdown()->render($source);
 
 ## Markdown in article rows
 
-Set `content_format` to `markdown` in `cms_articles` or `cms_article_translations`. Existing rows remain `legacy_html` after migration. Do not mark old HTML as Markdown without converting and reviewing its content. Smarty compatibility, if needed during migration, is a separate optional package.','markdown',1761000000,NULL,NULL),
+Set `content_format` to `markdown` in `cms_articles` or `cms_article_translations`. Existing rows remain `legacy_html` after migration. Do not mark old HTML as Markdown without converting and reviewing its content.','markdown',1761000000,NULL,NULL),
 (6,14,0,0,0,0,'Languages','The application has English and Czech interface catalogs and translates site metadata, menu entries, and articles independently.','## Interface text
 
 Catalogs live in `src/Locale/en.php` and `src/Locale/cs.php`. Templates use `{t ''key''}`. The URL prefix selects Czech at `/cs/`; the default English URL has no prefix. Add a locale in the application settings and provide its catalog before linking to it.
@@ -259,7 +259,7 @@ V aplikačních dotazech používejte vázané parametry. Přidejte odpovídají
 - Apache s `mod_rewrite` nebo Nginx s PHP-FPM.
 - Composer 2. Docker je volitelný.
 
-Aplikace vyžaduje `wbengine/wbengine:^4.0`. Framework aktuálně přináší `firebase/php-jwt`; Smarty ani Texy nejsou běhové závislosti. Přesné požadavky na PHP ověřte v metadatech instalované verze.
+Aplikace vyžaduje `wbengine/wbengine:^4.0`. Framework aktuálně přináší `firebase/php-jwt`; template engine i parser Markdownu jsou jeho součástí. Přesné požadavky na PHP ověřte v metadatech instalované verze.
 
 ## Rychlé spuštění v Dockeru
 
@@ -328,7 +328,7 @@ class Welcome extends WbengineBoxAbstract
 Vytvořte `src/View/Central/Welcome.tpl` a v `cms_boxes` spojte modul `welcome` a metodu `welcome` se sekcí a webem. Hodnoty SQL předávejte jako vázané parametry. Opakovaně použitelnou databázovou logiku umístěte do modelu.','markdown'),
 (5,'cs','Šablony a Markdown','WBengine 4.0 používá vlastní kompilovaný template engine. Markdown lze použít jako samostatný zdrojový soubor šablony i jako výslovný formát článku v databázi.','## Nativní šablony
 
-Nativní engine kompiluje `.tpl` do PHP a může využívat OPcache. Smarty není běhovou závislostí. `{$value}` se standardně escapuje pro HTML; `|raw` používejte pouze pro HTML, které aplikace záměrně vykreslila nebo kterému důvěřuje.
+Nativní engine kompiluje `.tpl` do PHP a může využívat OPcache. `{$value}` se standardně escapuje pro HTML; `|raw` používejte pouze pro HTML, které aplikace záměrně vykreslila nebo kterému důvěřuje.
 
 ```tpl
 <h1>{$title}</h1>
@@ -354,7 +354,7 @@ $html = $this->getSite()->getParent()->getMarkdown()->render($source);
 
 ## Markdown v článcích databáze
 
-V `cms_articles` nebo `cms_article_translations` nastavte `content_format` na `markdown`. Existující řádky po migraci zůstávají `legacy_html`. Staré HTML neoznačujte jako Markdown bez převodu a kontroly. Případný Smarty compatibility balíček slouží jen jako oddělený migrační nástroj.','markdown'),
+V `cms_articles` nebo `cms_article_translations` nastavte `content_format` na `markdown`. Existující řádky po migraci zůstávají `legacy_html`. Staré HTML neoznačujte jako Markdown bez převodu a kontroly.','markdown'),
 (6,'cs','Jazyky','Aplikace má anglické a české katalogy rozhraní a nezávisle překládá metadata webu, položky menu i články.','## Texty rozhraní
 
 Katalogy jsou v `src/Locale/en.php` a `src/Locale/cs.php`. Šablony používají `{t ''key''}`. Českou verzi vybere prefix `/cs/`; výchozí anglická adresa prefix nemá. Další jazyk přidejte do nastavení a vytvořte jeho katalog předtím, než na něj přidáte odkazy.
@@ -411,3 +411,13 @@ Demo údaje používejte pouze lokálně. Před zveřejněním aplikace heslo zm
 Přihlášení je veřejné. Správa uživatelů a sekcí i vyprázdnění cache vyžadují administrátora. Čtení a změna překladů vyžadují roli editor nebo vyšší. Chybějící či neplatný token vrací `401`; přihlášený uživatel bez potřebné role dostane `403`. Zapisovací cesty kontrolují povolená pole.
 
 Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. Seznam endpointů a konzole pod tímto článkem ukazují trasy zapnuté v této aplikaci. Před použitím příkladů v jiném projektu zkontrolujte jeho aktuální třídy tras.','markdown');
+
+UPDATE `cms_articles`
+SET `introtext`='Learn which Markdown syntax WBengine supports, how source becomes safe HTML, and how file and database content differ.',
+    `bodytext`=CONCAT(`bodytext`, '\n\n## Supported Markdown syntax\n\nThe bundled parser supports CommonMark 0.31.2 and GitHub Flavored Markdown tables, strikethrough, and task lists. Common block forms include headings, paragraphs, thematic breaks, blockquotes, ordered and unordered lists, indented code, and fenced code blocks. Tables use the pipe and delimiter-row syntax.\n\nInline forms include emphasis, strong emphasis, inline code, links, images, escaped punctuation, automatic links and email addresses, and hard line breaks. GFM adds `~~strikethrough~~` and task list markers such as `- [x] done`. A language after a fenced code marker is retained as a `language-*` class.\n\n````markdown\n## Heading\n\nA paragraph with **strong**, *emphasis*, `code`, and [a link](https://example.com).\n\n- first item\n- second item\n\n| Name | Value |\n| --- | --- |\n| site | WBengine |\n\n- [x] reviewed\n\n```php\necho "Hello";\n```\n````\n\n## How rendering works\n\nThe parser turns source into a document tree. The HTML renderer then emits a limited set of elements and escapes text and attributes. Raw HTML in Markdown is displayed as text, and links are limited to safe URL schemes such as relative URLs, HTTP, HTTPS, and mailto. Markdown never executes PHP or template directives. The output of the built-in renderer is safe to print with `|raw`; do not use `|raw` for arbitrary input.\n\nFor a `.md` file, the native renderer selects Markdown by the file extension, whether the file is rendered directly or included from a `.tpl` file. For database articles, `content_format` is stored separately on each article and translation row. When it is `markdown`, the Article box parses the article text fields before the template prints the generated HTML. Rows marked `legacy_html` keep the existing HTML behavior. Review and convert legacy HTML before changing its format.')
+WHERE `id`=5 AND `title`='Templates and Markdown';
+
+UPDATE `cms_article_translations`
+SET `introtext`='Zjistěte, jakou syntaxi Markdownu WBengine podporuje, jak se zdroj převádí na bezpečné HTML a v čem se liší soubory od obsahu v databázi.',
+    `bodytext`=CONCAT(`bodytext`, '\n\n## Podporovaná syntaxe Markdownu\n\nVestavěný parser podporuje CommonMark 0.31.2 a z GitHub Flavored Markdown tabulky, přeškrtnutí a úkolové seznamy. Mezi blokové prvky patří nadpisy, odstavce, vodorovné oddělovače, citace, číslované i nečíslované seznamy, odsazené bloky kódu a bloky kódu ohraničené zpětnými apostrofy nebo vlnovkami. Tabulky používají svislé čáry a oddělovací řádek.\n\nV textu lze použít kurzívu, tučné písmo, řádkový kód, odkazy, obrázky, escapování interpunkce, automatické odkazy a e-mailové adresy i pevné zalomení řádku. Rozšíření GFM přidává `~~přeškrtnutí~~` a značky úkolů jako `- [x] hotovo`. Jazyk uvedený za úvodní značkou bloku kódu se zachová jako třída `language-*`.\n\n````markdown\n## Nadpis\n\nOdstavec s **tučným písmem**, *kurzívou*, `kódem` a [odkazem](https://example.com).\n\n- první položka\n- druhá položka\n\n| Název | Hodnota |\n| --- | --- |\n| web | WBengine |\n\n- [x] zkontrolováno\n\n```php\necho "Ahoj";\n```\n````\n\n## Jak probíhá vykreslení\n\nParser převede zdroj na strom dokumentu. HTML renderer z něj vytvoří omezenou sadu prvků a escapuje text i atributy. Syrové HTML v Markdownu se zobrazí jako text a odkazy povolují jen bezpečná schémata, například relativní adresy, HTTP, HTTPS a mailto. Markdown nespouští PHP ani direktivy šablon. Výstup vestavěného rendereru lze bezpečně vypsat pomocí `|raw`; tento filtr nepoužívejte pro libovolný vstup.\n\nU souboru `.md` nativní renderer zvolí Markdown podle přípony, ať se soubor vykreslí přímo, nebo vloží do `.tpl`. U databázových článků je `content_format` uložen samostatně u článku i jeho překladu. Pokud má hodnotu `markdown`, box Article nejprve zpracuje textová pole a šablona vypíše vytvořené HTML. Řádky označené `legacy_html` zachovávají dosavadní chování. Staré HTML nejprve zkontrolujte a převeďte, než jeho formát změníte.')
+WHERE `article_id`=5 AND `locale`='cs';

@@ -11,8 +11,8 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 * Docker (optional, the quickest way to try it)
 
 The Composer application requirement is `wbengine/wbengine:^4.0`. The framework's
-runtime Composer dependency is `firebase/php-jwt`; Smarty and Texy are not required.
-The native template engine and Markdown parser are included in WBengine. Composer
+runtime Composer dependency is `firebase/php-jwt`. Its native template engine and
+Markdown parser are included in WBengine. Composer
 also checks PHP platform requirements for the installed release.
 
 ## Quick start with Docker
@@ -37,7 +37,7 @@ Change this password before the application is reachable by anyone else.
 
 ## Nginx
 
-`etc/nginx/wbengine.conf` is the equivalent of `public/.htaccess` for Nginx with PHP-FPM: pages get a trailing slash (a 301 redirect), the API is exempt (a redirect would turn a POST into a GET), every request that is not a file goes to `index.php`, and `src/`, `vendor/`, `schemas/`, `bin/` and `etc/` are never served. It was tested with Nginx 1.30, PHP 8.4 FPM and MariaDB 11.4. Adjust `fastcgi_pass` and `root` to your setup.
+`etc/nginx/wbengine.conf` is the development/general-purpose equivalent of `public/.htaccess` for Nginx with PHP-FPM. The production virtual host for `www.wbengine.org` is `etc/nginx/www.wbengine.org.conf`. Before enabling its HTTPS blocks, point DNS for both `wbengine.org` and `www.wbengine.org` to the server, temporarily enable only its HTTP block, create `/var/www/letsencrypt`, and obtain a Let's Encrypt certificate covering both names. Then enable all blocks and verify the certificate paths, application `root`, and PHP-FPM socket. The sample expects `/run/php/php8.4-fpm.sock` for PHP-FPM. Run `nginx -t` before reloading Nginx. The existing general-purpose file was tested with Nginx 1.30, PHP 8.4 FPM and MariaDB 11.4.
 
 ## HTTPS development with mkcert (optional)
 
@@ -86,10 +86,14 @@ The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` 
 Upgrading an existing database: back it up, then run the applicable scripts in
 `schemas/migrations/` once and in order. `005-content-translations.sql` creates the
 translation tables; `006-markdown-content-format.sql` adds `content_format`
-for WBengine 4.0. Apply 005 before 006. If the framework migration
+for WBengine 4.0; `007-markdown-documentation.sql` refreshes the Markdown guide
+and removes obsolete template-engine notes. Apply 005 before 006 and 007 after
+006. If the framework migration
 `migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
 never apply both. Existing article text is preserved and defaults to `legacy_html`;
-the schema migration does not convert or overwrite content. Passwords are stored with `password_hash()`; old
+the 006 schema migration does not convert or overwrite content. Migration 007 is a
+narrow update to the built-in getting-started and Markdown documentation pages; it
+does not touch other articles. Passwords are stored with `password_hash()`; old
 MD5 hashes keep working and are upgraded on each user's next login once the column
 is widened.
 
@@ -159,14 +163,14 @@ The skeleton uses WBengine's native template engine with automatic escaping: `{$
 {$LocalStoryBox->bodytext|raw}        {* article HTML rendered by the framework *}
 ```
 
-This is WBengine's own syntax and compiler. It includes control flow such as `{if}` and `{foreach}`, includes, modifiers and fragment caching, without loading Smarty. A few constructs resemble familiar template languages; Smarty itself is an optional compatibility tool for migration, not an application dependency. The layout also uses native `{set}` and `{t}` tags.
+This is WBengine's own syntax and compiler. It includes control flow such as `{if}` and `{foreach}`, includes, modifiers, fragment caching, and the native `{set}` and `{t}` tags.
 
 Markdown can be used in two ways:
 
 1. A `.md` file can be rendered directly by the native renderer with `$this->getRenderer()->render('Central/notice.md')`, or included in an HTML template with `{include 'Central/notice.md'}`. It remains Markdown content: PHP, template variables and directives inside it are not executed.
 2. An article or translation row can set `content_format` to `markdown`. The Article box parses that source and returns safe HTML. Existing rows default to `legacy_html` and are not converted automatically.
 
-The parser is included in WBengine, escapes raw HTML, restricts link schemes, and applies input/output limits. For a Markdown string outside the Article box, call `$app->getMarkdown()->render($source)`. See the framework's `README.md` section "Markdown content" for the precise renderer contract.
+The parser is included in WBengine, escapes raw HTML, restricts link schemes, and applies input/output limits. It supports CommonMark 0.31.2 and GFM tables, strikethrough, and task lists. For a Markdown string outside the Article box, call `$app->getMarkdown()->render($source)`. The pipeline parses Markdown into a document tree, then a safe HTML renderer escapes text and attributes and emits a limited set of HTML elements. There is no unsafe HTML mode. See the framework's `README.md` section "Markdown content" for the renderer contract and limits.
 
 ## Adding a page
 
@@ -209,6 +213,8 @@ Every route except `/api/auth/login` needs a valid token. Currently available: `
 
 * The JWT keys and reCAPTCHA secret live in `Settings.json` (or the environment variables `WBENGINE_JWT_KEY`, `WBENGINE_JWT_REFRESH_KEY`, `WBENGINE_RECAPTCHA_SECRET`). Never commit them. `Settings.json` is ignored by git.
 * Keep `"debug": false` in production: debug mode prints SQL and error details.
+* Set `i18n.baseUrl` in the production `Settings.json` to `"https://www.wbengine.org"`. Keep the site behind HTTPS, create unique production JWT signing keys, and replace or remove the demo administrator before opening the site to the public.
+* Build and deploy the reviewed application and database schema, run the documented migrations, then verify `/`, `/cs/`, `/docs/` and `/cs/docs/` over HTTPS. Do not deploy with the demo login `admin@example.com` / `changeme` enabled.
 * API operations require the documented role: user and section administration and cache flushing require an administrator; translation management requires an editor or administrator.
 * Do not commit TLS certificates or private keys; terminate TLS in front of the application.
 

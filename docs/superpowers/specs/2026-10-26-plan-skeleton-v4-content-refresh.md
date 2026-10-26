@@ -90,4 +90,21 @@ Běžný běh zůstane bez Smarty, Texy a bez nové JS knihovny. Základní náv
 
 Poznámka k nasazeným databázím: migration 006 bezpečně přidá formát, ale nepřepíše stávající demo text. Nový obsah se dostane do čerstvého seed prostředí; u již používaného webu je třeba články aktualizovat redakčně, aby se nepřepsaly úpravy provozovatele.
 
+## Navazující opravy před zveřejněním na wbengine.org
+
+- [x] Opravit přepnutí z češtiny do výchozí angličtiny: jazykový přepínač používá explicitní `/en/...`, které nastaví locale cookie, a framework následně přesměruje na kanonickou neprefixovanou URL.
+- [x] Přidat HTTP regresní kontroly pro volbu angličtiny z české stránky, canonical redirect a anglický obsah po přesměrování.
+- [x] Rozšířit zvýrazňovač CLI: obarvit příkaz v příkazové pozici i tehdy, když nebyl v předchozím pevném seznamu, a pod-příkazy běžných nástrojů jako Docker, Git, npm a Composer.
+- [x] Doplnit README o nastavení produkční `i18n.baseUrl` na `https://www.wbengine.org`, HTTPS, produkční JWT klíče a odstranění demo přístupu před zveřejněním.
+- [ ] Spustit HTTP regresní smoke na lokální službě po jejím opětovném spuštění. Při této revizi Docker socket nebyl dostupný a `localhost:8080` neposlouchal. PHP syntaxe testu, kompilace šablony, `node --check` a `git diff --check` prošly.
+- [ ] Před ostrým zveřejněním ověřit produkční konfiguraci, schéma a migrace na hostingu; toto není provedeno a DNS ani deployment se tímto krokem nemění.
+
+## Navazující úprava vzhledu a Markdown dokumentace
+
+- [x] CTA box „Run it in two minutes“ používá tmavý základ a stejné indigo/fuchsiové světelné pozadí jako Hero box.
+- [x] Dokumentace vysvětluje podporované blokové a řádkové prvky, GFM rozšíření, bezpečné HTML vykreslení a formát databázových záznamů.
+- [x] Z veřejného README a nového seed obsahu odstraněny zmínky o Smarty. Migrace 007 aktualizuje dvě vestavěné dokumentační stránky na již nainstalovaných webech.
+- [x] Ověřena kompilace šablon, syntaxe PHP smoke souboru, JavaScript syntaxe, SQL vyvážení uvozovek/závorek, přítomnost potřebných tříd v již sestaveném CSS a čistota diffu.
+- [ ] Znovu spustit webový smoke test a aplikovat migraci 007 na lokální databázi, až bude dostupný Docker/DB. V této relaci Docker socket ani lokální databázový port dostupné nebyly.
+
 Tailwind build vytvořil `public/Css/output.min.css`; lokální `caniuse-lite` vypsal upozornění na stáří databáze prohlížečů. Toto upozornění neblokovalo build. Po následném 500 na `localhost:8080` log potvrdil chybějící `content_format`. Na lokální Docker databázi skeletonu byla provedena migrace 006; devět anglických článků a devět českých překladů se aktualizovalo jen po shodě s kontrolními součty původních seed řádků. Před změnou byly pořízeny cílené dumpy dotčených řádků a po ověření odstraněny. `/cs/docs/` a `/cs/docs/templates/` nyní vracejí 200. `Settings.json` nebyl změněn. Ostatní smoke a migrační ověření běžela v odděleném Docker prostředí.

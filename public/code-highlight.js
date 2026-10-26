@@ -1,13 +1,16 @@
 (() => {
     'use strict';
 
-    const commandNames = new Set([
-        'apt', 'apt-get', 'brew', 'cat', 'cd', 'chmod', 'chown', 'composer', 'cp', 'curl',
-        'docker', 'echo', 'exec', 'find', 'git', 'grep', 'ln', 'make', 'mkdir', 'mkcert',
-        'mv', 'mysql', 'npx', 'npm', 'openssl', 'php', 'printf', 'pwd', 'rm', 'sh', 'sudo',
-        'tail', 'tar', 'tee', 'vendor/bin/wbengine.php', 'vendor/bin/migrate-content.php',
-    ]);
     const shellKeywords = new Set(['if', 'then', 'else', 'elif', 'fi', 'for', 'in', 'do', 'done', 'case', 'esac']);
+    const wrappers = new Set(['command', 'exec', 'env', 'nohup', 'sudo', 'time']);
+    const subcommands = {
+        docker: new Set(['build', 'compose', 'down', 'exec', 'logs', 'run', 'up']),
+        git: new Set(['add', 'checkout', 'clone', 'commit', 'diff', 'pull', 'push', 'status']),
+        npm: new Set(['install', 'run', 'test', 'update']),
+        composer: new Set(['install', 'require', 'update', 'validate']),
+        php: new Set(['-l']),
+        'vendor/bin/wbengine.php': new Set(['config:check', 'doctor', 'help', 'migration:status']),
+    };
 
     function add(parent, text, className) {
         if (!text) return;
@@ -29,6 +32,7 @@
         for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
             const line = lines[lineIndex];
             let expectCommand = true;
+            let commandRoot = '';
             let offset = 0;
             tokenPattern.lastIndex = 0;
             let match;
@@ -37,9 +41,10 @@
                 const token = match[0];
                 if (match.index > offset) {
                     const word = line.slice(offset, match.index);
-                    const cls = expectCommand && commandNames.has(word) ? 'syntax-command' : '';
+                    const cls = expectCommand ? 'syntax-command' : '';
                     add(fragment, word, cls);
-                    expectCommand = false;
+                    if (expectCommand && !wrappers.has(word)) commandRoot = word;
+                    expectCommand = expectCommand && wrappers.has(word);
                 }
 
                 if (/^\s+$/.test(token)) {
@@ -63,22 +68,31 @@
                 } else if (token === '$' || token === '%') {
                     add(fragment, token, 'syntax-comment');
                     expectCommand = true;
-                } else if (expectCommand && commandNames.has(token)) {
-                    add(fragment, token, 'syntax-command');
-                    expectCommand = false;
                 } else if (shellKeywords.has(token)) {
                     add(fragment, token, 'syntax-keyword');
-                    expectCommand = true;
+                    expectCommand = ['if', 'then', 'else', 'elif', 'do'].includes(token);
+                    commandRoot = '';
+                } else if (expectCommand) {
+                    add(fragment, token, 'syntax-command');
+                    if (wrappers.has(token)) {
+                        expectCommand = true;
+                    } else {
+                        commandRoot = token;
+                        expectCommand = false;
+                    }
+                } else if (commandRoot && subcommands[commandRoot]?.has(token)) {
+                    add(fragment, token, 'syntax-command');
+                    commandRoot = '';
                 } else {
                     add(fragment, token, '');
-                    expectCommand = false;
+                    if (commandRoot) commandRoot = '';
                 }
                 offset = tokenPattern.lastIndex;
             }
 
             if (offset < line.length) {
                 const word = line.slice(offset);
-                const cls = expectCommand && commandNames.has(word) ? 'syntax-command' : '';
+                const cls = expectCommand ? 'syntax-command' : '';
                 add(fragment, word, cls);
             }
             if (lineIndex < lines.length - 1) add(fragment, '\n', '');

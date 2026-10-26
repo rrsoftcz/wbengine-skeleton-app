@@ -46,7 +46,7 @@
                 {* Language switcher: the same page in every language *}
                 <ul class="m-0 flex list-none items-center rounded-lg bg-slate-100 p-0.5 text-xs font-semibold" aria-label="{t 'nav.language'}">
                     {foreach $alternates as $code => $url}
-                    <li><a class="block rounded-md px-2.5 py-1 no-underline {if $code == $locale}bg-white text-indigo-700 shadow-sm{else}text-slate-600 hover:text-slate-900{/if}" href="{$url}" hreflang="{$code}" lang="{$code}">{$code|upper}</a></li>
+                    <li><a class="block rounded-md px-2.5 py-1 no-underline {if $code == $locale}bg-white text-indigo-700 shadow-sm{else}text-slate-600 hover:text-slate-900{/if}" href="{if $code == 'en'}/en{$url}{else}{$url}{/if}" hreflang="{$code}" lang="{$code}">{$code|upper}</a></li>
                     {/foreach}
                 </ul>
                 {if $user && $user->isLogged() === true}

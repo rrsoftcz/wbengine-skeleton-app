@@ -31,6 +31,12 @@ $check(str_contains($again['headers'], 'X-WBengine-Cache: HIT'), 'Anonymous home
 $check(!str_contains($home['body'], '?a=logout'), 'No GET logout link');
 $cs = $public->request('/cs/');
 $check($cs['status'] === 200 && str_contains($cs['body'], '<html lang="cs"'), 'Czech locale rendered');
+$check(preg_match('/<a[^>]*href="([^"]+)"[^>]*hreflang="en"/', $cs['body'], $englishSwitch), 'English language switch is present');
+$check($englishSwitch[1] === '/en/', 'English switch uses explicit locale prefix');
+$englishSelection = $public->request($englishSwitch[1]);
+$check($englishSelection['status'] === 301 && preg_match('/^Location: \/$/mi', $englishSelection['headers']), 'English locale selection redirects to canonical home');
+$englishAfterSwitch = $public->request('/');
+$check($englishAfterSwitch['status'] === 200 && str_contains($englishAfterSwitch['body'], '<html lang="en"'), 'English switch updates locale cookie');
 $missing = $public->request('/no-such-smoke-page/');
 $check($missing['status'] === 404, 'Unknown page returns 404');
 $blog = $public->request('/blog/');
