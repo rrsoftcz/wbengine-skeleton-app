@@ -22,6 +22,11 @@ jobs:
           path: framework
       - name: Build test PHP image
         run: docker compose -p wbengine-modernization -f framework/docker-compose.yml build php
+      - name: Verify released Composer package profile
+        working-directory: app
+        run: |
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --no-deps --rm -e COMPOSER=composer.json tools composer validate --no-check-publish --strict
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --no-deps --rm -e COMPOSER=composer.json tools composer install --no-dev --no-interaction --prefer-dist --no-scripts --dry-run
       - name: Prepare isolated test application
         working-directory: app
         run: |
