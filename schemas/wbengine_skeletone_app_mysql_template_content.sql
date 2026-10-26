@@ -54,17 +54,17 @@ The application requires `wbengine/wbengine:^4.0`. The framework currently bring
 ```bash
 git clone https://github.com/rrsoftcz/wbengine-skeleton-app
 cd wbengine-skeleton-app
-docker compose up -d --build
-docker compose exec web sh bin/setup.sh
+docker compose up --build
 ```
 
-Open `http://localhost:8080`. The seeded demo login is `admin@example.com` with password `changeme`. Change it before exposing the site.
+Open `http://localhost:8080`. On startup, the web container runs `bin/wbe install`: it creates and validates `Settings.json`, prepares the compiled-template directory and installs locked dependencies. The demo login is `admin@example.com` with password `changeme`. Change it before exposing the site.
 
 ## Manual setup
 
+Run `php bin/wbe install` to create and validate settings, prepare `src/View/Compiled`, and install dependencies from `composer.lock`. The command reports invalid JSON, unreadable settings, unwritable compiled cache and Composer failures. Never use `chmod 777`; grant write access to the PHP web-server user. For local debugging only, set `debug` to `true` or `WBENGINE_DEBUG=1`. Remove debug mode before going live.
+
 ```bash
-composer install
-sh bin/setup.sh
+php bin/wbe install
 ```
 
 Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` and then `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Configure `src/Config/Settings.json` and point the web root to `public/`. For upgrades, take a database backup and apply the pending scripts in `schemas/migrations/` in order.','markdown',1761000000,NULL,NULL),
@@ -266,17 +266,17 @@ Aplikace vyžaduje `wbengine/wbengine:^4.0`. Framework aktuálně přináší `f
 ```bash
 git clone https://github.com/rrsoftcz/wbengine-skeleton-app
 cd wbengine-skeleton-app
-docker compose up -d --build
-docker compose exec web sh bin/setup.sh
+docker compose up --build
 ```
 
-Otevřete `http://localhost:8080`. Demo přihlášení je `admin@example.com`, heslo `changeme`. Před zpřístupněním webu heslo změňte.
+Otevřete `http://localhost:8080`. Při startu webový kontejner spustí `bin/wbe install`: vytvoří a ověří `Settings.json`, připraví složku kompilovaných šablon a nainstaluje uzamčené závislosti. Demo účet je `admin@example.com`, heslo `changeme`. Před zpřístupněním webu heslo změňte.
 
 ## Ruční instalace
 
+Příkaz `php bin/wbe install` vytvoří a ověří nastavení, připraví `src/View/Compiled` a nainstaluje závislosti podle `composer.lock`. Oznámí chybný JSON, nečitelná nastavení, nezapisovatelnou cache šablon i chyby Composeru. Nepoužívejte `chmod 777`; právo zápisu přidělte uživateli PHP webserveru. Pro lokální diagnostiku nastavte `debug` na `true` nebo `WBENGINE_DEBUG=1`. Před nasazením debug vypněte.
+
 ```bash
-composer install
-sh bin/setup.sh
+php bin/wbe install
 ```
 
 Vytvořte databázi, importujte `schemas/wbengine_skeletone_app_mysql_template.sql` a potom `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Nastavte `src/Config/Settings.json` a jako kořen webu použijte `public/`. Před upgradem databázi zálohujte a dosud nepoužité skripty v `schemas/migrations/` aplikujte v pořadí.','markdown'),

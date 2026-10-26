@@ -15,7 +15,6 @@ src/View/Compiled/**
 src/Config/Settings.json
 
 # Composer files
-composer.lock
 composer.phar
 vendor/
 node_modules/

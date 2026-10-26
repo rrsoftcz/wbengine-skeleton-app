@@ -1,0 +1,93 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+$args = $argv;
+array_shift($args);
+$command = array_shift($args) ?? 'help';
+$options = [];
+foreach ($args as $arg) {
+    if (str_starts_with($arg, '--')) {
+        [$key, $value] = array_pad(explode('=', substr($arg, 2), 2), 2, true);
+        $options[$key] = $value;
+    }
+}
+
+if ($command !== 'install') {
+    fwrite(STDERR, "Usage: bin/wbe install [--root=/path] [--skip-composer] [--no-dev]\n");
+    exit(2);
+}
+
+$root = realpath((string) ($options['root'] ?? dirname(__DIR__)));
+if ($root === false) {
+    fwrite(STDERR, "Install error: project root does not exist.\n");
+    exit(1);
+}
+$config = $root . '/src/Config/Settings.json';
+$default = $root . '/src/Config/settings.json.default';
+$compiled = $root . '/src/View/Compiled';
+
+try {
+    if (!is_file($config)) {
+        if (!is_readable($default)) {
+            throw new RuntimeException('Default config is missing or unreadable: src/Config/settings.json.default');
+        }
+        $contents = file_get_contents($default);
+        if ($contents === false) {
+            throw new RuntimeException('Could not read the default configuration.');
+        }
+        $settings = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        if (!is_array($settings) || !isset($settings['jwt']['accessKey'], $settings['jwt']['refreshKey'])) {
+            throw new RuntimeException('Default configuration is invalid: expected JWT accessKey and refreshKey.');
+        }
+        $settings['jwt']['accessKey'] = bin2hex(random_bytes(32));
+        $settings['jwt']['refreshKey'] = bin2hex(random_bytes(32));
+        $encoded = json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n";
+        if (file_put_contents($config, $encoded, LOCK_EX) === false) {
+            throw new RuntimeException('Cannot create src/Config/Settings.json. Make src/Config writable by the installer.');
+        }
+        fwrite(STDOUT, "Created src/Config/Settings.json with new random JWT keys.\n");
+    } else {
+        fwrite(STDOUT, "src/Config/Settings.json already exists; preserving it.\n");
+    }
+
+    if (!is_readable($config)) {
+        throw new RuntimeException('src/Config/Settings.json exists but PHP cannot read it. Check file ownership and read permissions.');
+    }
+    try {
+        $settings = json_decode((string) file_get_contents($config), true, 512, JSON_THROW_ON_ERROR);
+    } catch (JsonException $exception) {
+        throw new RuntimeException('Invalid JSON in src/Config/Settings.json: ' . $exception->getMessage() . '. Restore valid JSON; the file was not overwritten.', 0, $exception);
+    }
+    if (!is_array($settings)) {
+        throw new RuntimeException('src/Config/Settings.json must contain a JSON object at its top level.');
+    }
+
+    if (!is_dir($compiled) && !mkdir($compiled, 0775, true) && !is_dir($compiled)) {
+        throw new RuntimeException('Cannot create src/View/Compiled. Check parent-directory permissions.');
+    }
+    if (!is_writable($compiled)) {
+        throw new RuntimeException('src/View/Compiled is not writable by ' . get_current_user() . '. Grant the PHP/web-server user write access to this directory.');
+    }
+
+    if (empty($options['skip-composer'])) {
+        $composer = trim((string) shell_exec('command -v composer 2>/dev/null'));
+        if ($composer === '') {
+            throw new RuntimeException('Composer was not found. Run this command inside the PHP container or install Composer: composer install.');
+        }
+        $command = [$composer, 'install', '--no-interaction', '--prefer-dist'];
+        if (!empty($options['no-dev'])) { $command[] = '--no-dev'; }
+        $environment = getenv();
+        if (!is_array($environment)) { $environment = []; }
+        $environment['COMPOSER_ALLOW_SUPERUSER'] = '1';
+        $process = proc_open($command, [0 => STDIN, 1 => STDOUT, 2 => STDERR], $pipes, $root, $environment);
+        if (!is_resource($process) || proc_close($process) !== 0) {
+            throw new RuntimeException('Composer install failed. Review the Composer output above and rerun bin/wbe install.');
+        }
+    }
+
+    fwrite(STDOUT, "Install checks completed.\n");
+} catch (Throwable $exception) {
+    fwrite(STDERR, 'Install error: ' . $exception->getMessage() . "\n");
+    exit(1);
+}

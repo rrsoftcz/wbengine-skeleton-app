@@ -21,11 +21,14 @@ also checks PHP platform requirements for the installed release.
 git clone <this repository> wbengine-skeleton-app
 cd wbengine-skeleton-app
 
-docker compose up -d --build          # web on http://localhost:8080, MySQL seeded from schemas/
-docker compose exec web sh bin/setup.sh
+docker compose up --build             # http://localhost:8080, MySQL seeded from schemas/
 ```
 
-`bin/setup.sh` creates `src/Config/Settings.json` from `settings.json.default` with new random JWT keys, makes `src/View/Compiled` writable and runs `composer install`.
+The web container runs `bin/wbe install` before Apache starts. It creates `src/Config/Settings.json` with fresh JWT secrets when missing, validates the JSON, prepares the writable compiled-template directory, and runs `composer install` from the committed lock file in the PHP 8.4 container. Existing settings are preserved and validated. Every container start reconciles installed packages with the lock file, so a framework version update is applied on restart. You do not need host PHP or Composer. The installer never uses `chmod 777`.
+
+To run the installer again manually, use `docker compose exec web php bin/wbe install`. `bin/setup.sh` remains as a backwards-compatible alias. You can also run `bin/wbe install` directly when PHP 8.3+ and Composer 2 are installed locally.
+
+If setup stops, read the `Install error:` message in the container output. For a running stack, inspect `docker compose logs web`. The installer reports missing default settings, invalid JSON, unreadable settings, unwritable `src/View/Compiled`, and Composer failures separately. For local debugging only, set `"debug": true` in `src/Config/Settings.json` and restart the web container. Debug output includes file paths and stack traces, so keep it off on public sites. An invalid or missing config is diagnosed by the framework's safe error page; for detailed startup diagnostics, set `WBENGINE_DEBUG=1` only in your private development environment, then remove it before going live.
 
 Open http://localhost:8080 and sign in with the demo account:
 
@@ -77,18 +80,18 @@ The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` 
 
 ## Manual installation
 
-1. `composer install`
-2. `sh bin/setup.sh` (or copy `src/Config/settings.json.default` to `src/Config/Settings.json` and replace both `CHANGE_ME` JWT keys with random strings of at least 32 characters, for example `openssl rand -hex 32`)
-3. Create a database and import `schemas/wbengine_skeletone_app_mysql_template.sql`
-4. Edit `dbAdapterDefinition` in `src/Config/Settings.json`
-5. Point the web server document root at `public/`
+1. Run `php bin/wbe install` to create and validate settings, prepare the compiled-template directory, and install locked Composer dependencies.
+2. Create a database and import `schemas/wbengine_skeletone_app_mysql_template.sql` and `schemas/wbengine_skeletone_app_mysql_template_content.sql`.
+3. Edit `dbAdapterDefinition` in `src/Config/Settings.json` and set production secrets through environment variables or a private config.
+4. Point the web server document root at `public/` and grant the PHP-FPM user write access to `src/View/Compiled` using ownership or a restricted group permission. Do not use `chmod 777`.
 
 Upgrading an existing database: back it up, then run the applicable scripts in
 `schemas/migrations/` once and in order. `005-content-translations.sql` creates the
 translation tables; `006-markdown-content-format.sql` adds `content_format`
 for WBengine 4.0; `007-markdown-documentation.sql` refreshes the Markdown guide
-and removes obsolete template-engine notes. Apply 005 before 006 and 007 after
-006. If the framework migration
+and removes obsolete template-engine notes; `008-docker-installation-guide.sql`
+updates the English and Czech Get started articles with the current installer and
+exception diagnostics. Apply 005 before 006, then 007 and 008. If the framework migration
 `migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
 never apply both. Existing article text is preserved and defaults to `legacy_html`;
 the 006 schema migration does not convert or overwrite content. Migration 007 is a
@@ -144,7 +147,8 @@ src/Box/Api/Restapi.php   REST API box
 src/View/                 native templates and Markdown sources: site.tpl, <Section>/<Method>.tpl
 src/View/Compiled/        template cache, must be writable
 schemas/                  database schema and demo data, migrations/
-bin/setup.sh              first-time setup
+bin/wbe install           first-time setup and dependency validation
+bin/setup.sh              backwards-compatible installer alias
 ```
 
 Examples to read first: `StaticBoxes::About` (static box), `Blog::LocalStoryBox` with `Article/Model.php` (dynamic box with a model), `Profile` (box that uses the logged in user).

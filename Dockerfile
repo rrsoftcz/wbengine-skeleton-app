@@ -13,3 +13,7 @@ COPY etc/apache2/sites-available/wbengine.conf /etc/apache2/sites-available/000-
 RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 WORKDIR /var/www/html
+COPY bin/container-entrypoint.sh /usr/local/bin/wbengine-container-entrypoint
+RUN chmod 0755 /usr/local/bin/wbengine-container-entrypoint
+ENTRYPOINT ["/usr/local/bin/wbengine-container-entrypoint"]
+CMD ["apache2-foreground"]
