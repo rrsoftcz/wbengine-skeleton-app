@@ -8,11 +8,13 @@ Stav 2026-10-26. Pracovní větev codex/wbengine-4.0, výchozí čistý main d22
 - [x] Composer cíl ^4.0 a oddělený dev smoke manifest, bez osobní konfigurace nebo tajemství v Gitu.
 - [x] Reálná HTTP sada 20 kontrol lokálně zelená. RED nejprve chybějící cache HIT kvůli předčasnému user/session; potom chybějící POST logout. Login navíc odhalil Url null deprecation bez Apache aliasu, opraveno ve frameworku samostatnou regresí a commitem.
 - [x] CI workflow spouští stejnou izolovanou přípravu a HTTP kontroly, navázaný na explicitní frameworkovou větev.
-- [ ] Commit/push, draft PR a ověření skutečného CI tohoto checkpointu.
-- [ ] TPL-03: zopakovat smoke po odstranění Smarty z jádra a čerstvé instalaci bez jeho balíčku.
+- [x] Commit/push35d2d54, draft PR#1 a jeho skutečná CI prošla.
+- [x] TPL-03: čerstvé vendor bez Smarty, kontrola dependency profilu a vyčištěné cache, znovu20HTTP kontrol green. Framework checkpoint80208da/08dc79e.
 - [ ] MD-03/04: prověřit zdrojové HTML článků a překladů, dry-run převodu, explicitní schválení bezpečných záznamů a ruční opravy ostatních; původní data automaticky nepřepisovat.
 - [ ] Finální release gate, aktuální referenční framework verze a opakovaný smoke. Žádný merge, tag ani produkční nasazení zatím neproběhly.
 
 Postup opakování je v README. Tests setup/seed se odmítnou spustit bez markeru izolovaného smoke prostředí. K odstranění použít pouze Compose projekt, který byl právě vytvořen, ne obecné zastavování cizích kontejnerů.
 
 Rollback aplikačních změn: obnovit odpovídající public bootstrap, App služby, layout a Composer verzi, vyčistit kompilované/page/fragment/externí HTML cache. Samotné přepnutí adaptéru nestačí pro native-only set/t syntax. SQL obsahové migrace mají vlastní plán a originály; tento checkpoint je nespouští.
+
+Kontrolní bod TPL-03: dependency-profile a reset-smoke-cache odmítají běh mimo označené izolované prostředí. CI provádí obě kontroly před HTTP sadou. Následuje MD-04 čerstvá instalace bez Texy a izolovaný obsahový pilot.

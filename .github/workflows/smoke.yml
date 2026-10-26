@@ -29,6 +29,11 @@ jobs:
           docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools composer install --no-dev --no-interaction --prefer-dist
           docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/seed-smoke.php
           docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml up -d --wait web
+      - name: Verify dependency profile and clear smoke caches
+        working-directory: app
+        run: |
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml exec -T web php tests/dependency-profile.php
+          docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml exec -T web php tests/reset-smoke-cache.php
       - name: Exercise real HTTP requests
         working-directory: app
         run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml exec -T web php tests/http-smoke.php
