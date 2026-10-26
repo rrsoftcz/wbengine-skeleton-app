@@ -67,7 +67,11 @@ Run `php bin/wbe install` to create and validate settings, prepare `src/View/Com
 php bin/wbe install
 ```
 
-Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` and then `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Configure `src/Config/Settings.json` and point the web root to `public/`. For upgrades, take a database backup and apply the pending scripts in `schemas/migrations/` in order.','markdown',1761000000,NULL,NULL),
+Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` and then `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Configure `src/Config/Settings.json` and point the web root to `public/`. ## Troubleshooting exceptions
+
+In development, set `debug` to `true` in `Settings.json` to show the WBengine exception template with the exception type, message, file, line and stack trace. If settings are missing or malformed, use `WBENGINE_DEBUG=1` only in a private development environment. Never expose debug output publicly. The production error page shows a safe explanation and reference code; find the full exception in the PHP or container error log under that code.
+
+For upgrades, back up the database and apply pending scripts in `schemas/migrations/` in order. Docker imports the schema and seed files only when it initializes a new database volume. Rebuilding the web image does not update an existing database.','markdown',1761000000,NULL,NULL),
 (3,11,0,0,0,0,'Architecture','WBengine keeps the request path small and explicit. Application, Site, Section, and Box objects form the same tree used by the application code.','## The object tree
 
 - **Application** is the request root and owns shared services.
@@ -279,7 +283,11 @@ Příkaz `php bin/wbe install` vytvoří a ověří nastavení, připraví `src/
 php bin/wbe install
 ```
 
-Vytvořte databázi, importujte `schemas/wbengine_skeletone_app_mysql_template.sql` a potom `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Nastavte `src/Config/Settings.json` a jako kořen webu použijte `public/`. Před upgradem databázi zálohujte a dosud nepoužité skripty v `schemas/migrations/` aplikujte v pořadí.','markdown'),
+Vytvořte databázi, importujte `schemas/wbengine_skeletone_app_mysql_template.sql` a potom `schemas/wbengine_skeletone_app_mysql_template_content.sql`. Nastavte `src/Config/Settings.json` a jako kořen webu použijte `public/`. ## Řešení výjimek
+
+Při vývoji nastavte v `Settings.json` `debug` na `true`. Šablona WBengine zobrazí typ výjimky, zprávu, soubor, řádek a trasu volání. Pokud nastavení chybí nebo obsahuje neplatný JSON, použijte `WBENGINE_DEBUG=1` pouze v soukromém vývojovém prostředí. Ladicí výstup nikdy nezpřístupňujte veřejně. Produkční stránka zobrazí bezpečné vysvětlení a referenční kód; úplnou výjimku najdete v PHP nebo kontejnerovém error logu pod stejným kódem.
+
+Před upgradem databázi zálohujte a dosud nepoužité skripty v `schemas/migrations/` aplikujte v pořadí. Docker importuje schéma a seed pouze při vytvoření nového databázového volume. Rebuild webového image existující databázi nezmění.','markdown'),
 (3,'cs','Architektura','WBengine drží průchod požadavku malý a přehledný. Objekty Application, Site, Section a Box tvoří stejný strom jako aplikační kód.','## Strom objektů
 
 - **Application** je kořen požadavku a vlastní sdílené služby.
