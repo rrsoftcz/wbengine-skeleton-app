@@ -46,8 +46,10 @@ try {
     $assert(file_get_contents($settingsPath) === '{broken json', 'Installer must not overwrite malformed existing settings.');
 
     $dockerfile = file_get_contents($project . '/Dockerfile');
+    $compose = file_get_contents($project . '/docker-compose.yml');
     $entrypoint = file_get_contents($project . '/bin/container-entrypoint.sh');
     $assert(str_contains($dockerfile, 'container-entrypoint.sh'), 'Docker image must run the installer entrypoint.');
+    $assert(!str_contains($compose, 'entrypoint:'), 'Compose must preserve the image command that starts Apache.');
     $assert(str_contains($entrypoint, 'bin/wbe install'), 'Container startup must run wbe install.');
     echo "OK (Docker installer smoke)\n";
 } finally {

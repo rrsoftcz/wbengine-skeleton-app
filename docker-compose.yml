@@ -2,7 +2,6 @@ services:
     web:
         build: .
         container_name: wbengine-skeleton-web
-        entrypoint: ["/usr/local/bin/wbengine-container-entrypoint"]
         depends_on:
             db:
                 condition: service_healthy
