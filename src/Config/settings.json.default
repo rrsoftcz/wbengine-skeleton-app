@@ -4,6 +4,9 @@
   "minimizeHtml": false,
   "minimizeCss": false,
   "debug": false,
+  "apiV2": {
+    "enabled": true
+  },
   "cdnPath": "",
   "renderer": {
     "adapterName": "NativeRenderer",

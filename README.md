@@ -146,7 +146,7 @@ The skeleton uses WBengine's native template engine with automatic escaping: `{$
 {$LocalStoryBox->bodytext|raw}        {* article HTML written by administrators *}
 ```
 
-The syntax is a subset of Smarty (`{if}`, `{foreach}`, `{include}`, modifiers, `{cache}` for fragment caching), see the framework README. Templates written with explicit `|raw` and `|escape` also work with Smarty: set `"adapterName": "SmartyRenderer"` in `Settings.json` to switch back.
+The syntax is a subset of Smarty (`{if}`, `{foreach}`, `{include}`, modifiers, `{cache}` for fragment caching), see the framework README. The current layout also uses native-only set/t syntax. It cannot be switched back to Smarty by changing the adapter alone; restore compatible source templates as part of a rollback. See the framework migration contract.
 
 ## Adding a page
 
@@ -214,3 +214,52 @@ The WBengine library and this sample application are open source and a volunteer
 ## License
 
 MIT, see [LICENSE.md](LICENSE.md).
+
+
+## WBengine 4.0 migration and HTTP verification
+
+This branch targets WBengine ^4.0. Production Composer installation requires the
+4.0 release; the isolated development profile uses a path checkout with an explicit
+4.0.x-dev version. It never replaces the normal deployment configuration.
+
+The application root now owns a lazy App\Site service. Layout user data is prepared
+after framework routes and the page-cache gate, so anonymous public pages can reach
+HIT without starting a session. Logged-in navigation uses a POST logout form and
+its own purpose CSRF token. Production diagnostics are displayed only when supplied.
+
+For repeatable local smoke testing, build the framework test image, set
+WBENGINE_FRAMEWORK_PATH to its 4.0 checkout, and run:
+
+```sh
+docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/setup-smoke.php
+docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools composer install --no-dev --no-interaction --prefer-dist
+docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/seed-smoke.php
+docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml up -d --wait web
+docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml exec -T web php tests/http-smoke.php
+docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml down --remove-orphans
+```
+
+This creates only the isolated Compose database and ignored Settings/vendor files.
+The fixture password and JWT values are test-only. No ports are published by this
+profile. The 20 checks cover native page output, anonymous HIT, locale, 404, article,
+real login/CSRF/profile, rejected GET/invalid POST logout, successful POST logout,
+public API v2 discovery and unchanged API v1 authorization. CI executes the same
+workflow against the framework development branch.
+
+[Migration checkpoint and remaining work](plan-wbengine-4.0-migration.md).
+
+
+## Izolovaný CMS benchmark WBengine 4.0
+
+Po přípravě stejného smoke prostředí lze spustit:
+
+```sh
+docker compose -p wbengine-skeleton-modernization -f compose.smoke.yml run --rm tools php tests/benchmark-cms.php
+```
+
+Runner vyžaduje WBENGINE_SMOKE marker a vlastní existující seed DB. Spustí pouze svůj čtyřprocesový HTTP server na interním loopback8081, použije skutečné CSRF přihlášení a DB sessions. Mění pouze konfiguraci jednotlivých testovacích requestů a čistí jen vlastní náhodný cache adresář před každou kohortou; hlavní konfiguraci ani server nemění. Testovací router přidává měřicí hlavičky pouze zde, ne v produkci.
+
+Výsledek tests/benchmark-cms-result.json obsahuje 15 kombinací cache/identity,20vzorků každé,p50/p95,throughput,HTTPerrors,SQL/spojení/paměť a skutečné HIT počty. Cookies ani hesla ve výsledku nejsou. Měření na malé lokální fixture není záruka produkčního výkonu. Throughput zahrnuje fork a sběr klientských procesů, paměť je vrchol alokovaných bajtů serveru, OPcacheCLI byl při uloženém běhu vypnutý.
+
+
+`tests/content-migration-smoke.php` ověřuje skutečné demo HTML články a překlady na dočasných kopiích:18suchýchplánů,8vratných bezpečných převodů a10 případů k ručnímu rozhodnutí. Původní obsah a schéma zůstávají bezezměn. Spusťte ve stejném smoke prostředí přes tools stejně jako benchmark; kompletní stav a důvody jsou v plan-wbengine-4.0-migration.md.

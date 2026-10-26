@@ -51,7 +51,11 @@
                 </ul>
                 {if $user && $user->isLogged() === true}
                 <a class="btn-outline hidden sm:inline-flex" href="{'/profile/'|lurl}">{$user->getUserEmail()}</a>
-                <a class="btn-primary px-3 sm:px-5" href="{$loginUrl}?a=logout" title="{t 'nav.logout_title'}">{t 'nav.logout'}</a>
+                <form method="post" action="{$loginUrl}" class="inline-flex">
+                    <input type="hidden" name="a" value="logout">
+                    <input type="hidden" name="token" value="{$logoutToken}">
+                    <button type="submit" class="btn-primary px-3 sm:px-5" title="{t 'nav.logout_title'}">{t 'nav.logout'}</button>
+                </form>
                 {else}
                 <a class="btn-primary px-3 sm:px-5" href="{$loginUrl}" title="{t 'nav.signin_title'}">{t 'nav.signin'}</a>
                 {/if}
@@ -111,7 +115,7 @@
         <div class="border-t border-slate-100">
             <div class="container-page flex flex-col gap-2 py-4 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between">
                 <span>{t 'footer.rights'} &middot; &copy; 2008&ndash;2026 RRSOFT</span>
-                <span>{$server} &middot; MySQL {$dbinfo} &middot; PHP {$phpversion}</span>
+                {if $dbinfo}<span>{$server} &middot; MySQL {$dbinfo} &middot; PHP {$phpversion}</span>{/if}
             </div>
         </div>
     </footer>

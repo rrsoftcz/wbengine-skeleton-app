@@ -1,0 +1,487 @@
+{
+    "recorded_at": "2026-10-26T02:03:59+00:00",
+    "environment": {
+        "php": "8.4.27",
+        "server": "PHP built-in HTTP server, PHP_CLI_SERVER_WORKERS=4; loopback in isolated smoke Compose container",
+        "database": "8.4.13",
+        "opcache_cli": "0",
+        "data": {
+            "cms_sites": 14,
+            "cms_articles": 9,
+            "cms_boxes": 20,
+            "cms_users": 2
+        },
+        "template": "App native site.tpl and real CMS home/profile; file data/page cache",
+        "sessions": "WBengine DB-backed sessions; real CSRF-protected admin form login"
+    },
+    "measurement": {
+        "latency": "per-request new TCP connection including body transfer; nearest-rank p50/p95",
+        "throughput": "measured batch wall time includes client fork and sample collection overhead",
+        "limits": "20 samples per case on a small isolated localhost fixture; no production latency, memory or capacity guarantee",
+        "requests_per_case": 20,
+        "concurrency": 4,
+        "warmup": "clear only the runner mode cache root, then one unmeasured request per cohort",
+        "sql": "Db::getQueriesCount at response header commit; includes framework SQL but excludes connection initialization statements",
+        "connections": "mysqlnd connect_success delta from request start to header commit",
+        "memory": "memory_get_peak_usage(true) at header commit, server request peak allocated bytes",
+        "cache_modes": "Isolated mode directories; full-page warm cohort uses HIT only where server reports HIT; private/custom API responses bypass shared pages"
+    },
+    "cases": {
+        "off": {
+            "anonymous": {
+                "requests": 20,
+                "p50_ms": 6.241709,
+                "p95_ms": 7.020541,
+                "requests_per_second": 551.4344713047562,
+                "elapsed_seconds": 0.036269042,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 6,
+                    "max": 6,
+                    "mean": 6
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "anonymous-session": {
+                "requests": 20,
+                "p50_ms": 7.287125,
+                "p95_ms": 7.697958,
+                "requests_per_second": 484.66587449645033,
+                "elapsed_seconds": 0.041265542,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 7,
+                    "max": 7,
+                    "mean": 7
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "logged": {
+                "requests": 20,
+                "p50_ms": 10.896667,
+                "p95_ms": 11.518167,
+                "requests_per_second": 319.6179466052331,
+                "elapsed_seconds": 0.062574709,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 8,
+                    "max": 9,
+                    "mean": 8.1
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "custom-api": {
+                "requests": 20,
+                "p50_ms": 1.696792,
+                "p95_ms": 2.010041,
+                "requests_per_second": 1557.1573687372786,
+                "elapsed_seconds": 0.012843917,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "sql_connections": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "same-session": {
+                "requests": 20,
+                "p50_ms": 10.542042,
+                "p95_ms": 11.022958,
+                "requests_per_second": 333.1868699384229,
+                "elapsed_seconds": 0.060026375,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 8,
+                    "max": 9,
+                    "mean": 8.05
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            }
+        },
+        "data-warm": {
+            "anonymous": {
+                "requests": 20,
+                "p50_ms": 5.019875,
+                "p95_ms": 5.975125,
+                "requests_per_second": 670.0719275309169,
+                "elapsed_seconds": 0.029847542,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "anonymous-session": {
+                "requests": 20,
+                "p50_ms": 6.694,
+                "p95_ms": 7.234708,
+                "requests_per_second": 525.2192836465912,
+                "elapsed_seconds": 0.038079333,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 2,
+                    "max": 2,
+                    "mean": 2
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "logged": {
+                "requests": 20,
+                "p50_ms": 7.531875,
+                "p95_ms": 9.38075,
+                "requests_per_second": 450.49103522839897,
+                "elapsed_seconds": 0.044396,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 3,
+                    "max": 3,
+                    "mean": 3
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "custom-api": {
+                "requests": 20,
+                "p50_ms": 1.759375,
+                "p95_ms": 2.028833,
+                "requests_per_second": 1586.7926802205736,
+                "elapsed_seconds": 0.012604041,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "sql_connections": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "same-session": {
+                "requests": 20,
+                "p50_ms": 8.481042,
+                "p95_ms": 9.605,
+                "requests_per_second": 412.41612564372747,
+                "elapsed_seconds": 0.048494709,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 3,
+                    "max": 4,
+                    "mean": 3.05
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            }
+        },
+        "page-warm": {
+            "anonymous": {
+                "requests": 20,
+                "p50_ms": 1.475125,
+                "p95_ms": 1.786917,
+                "requests_per_second": 1753.2452789268598,
+                "elapsed_seconds": 0.011407417,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "sql_connections": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "page_cache_responses": {
+                    "HIT": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "anonymous-session": {
+                "requests": 20,
+                "p50_ms": 6.54025,
+                "p95_ms": 7.836959,
+                "requests_per_second": 525.0877060559021,
+                "elapsed_seconds": 0.038088875,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 3,
+                    "max": 3,
+                    "mean": 3
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "logged": {
+                "requests": 20,
+                "p50_ms": 8.056375,
+                "p95_ms": 9.313042,
+                "requests_per_second": 429.55941830180427,
+                "elapsed_seconds": 0.046559333,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 4,
+                    "max": 4,
+                    "mean": 4
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "custom-api": {
+                "requests": 20,
+                "p50_ms": 1.409334,
+                "p95_ms": 1.772791,
+                "requests_per_second": 1845.160241557308,
+                "elapsed_seconds": 0.010839167,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "sql_connections": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "same-session": {
+                "requests": 20,
+                "p50_ms": 8.07175,
+                "p95_ms": 8.9795,
+                "requests_per_second": 426.55860515336116,
+                "elapsed_seconds": 0.046886875,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 4,
+                    "max": 4,
+                    "mean": 4
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            }
+        }
+    }
+}
