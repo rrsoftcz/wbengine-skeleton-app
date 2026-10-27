@@ -82,16 +82,16 @@
         },
         {
             "name": "wbengine/wbengine",
-            "version": "v4.0.2",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rrsoftcz/wbengine.git",
-                "reference": "e64a8bfc859bea1583edaa94c023bbf99a018166"
+                "reference": "cdf7b90287825af5d1d0f16445c43965a56c3231"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/e64a8bfc859bea1583edaa94c023bbf99a018166",
-                "reference": "e64a8bfc859bea1583edaa94c023bbf99a018166",
+                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/cdf7b90287825af5d1d0f16445c43965a56c3231",
+                "reference": "cdf7b90287825af5d1d0f16445c43965a56c3231",
                 "shasum": ""
             },
             "require": {
@@ -136,9 +136,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rrsoftcz/wbengine/issues",
-                "source": "https://github.com/rrsoftcz/wbengine/tree/v4.0.2"
+                "source": "https://github.com/rrsoftcz/wbengine/tree/v4.1.0"
             },
-            "time": "2026-10-26T22:45:33+00:00"
+            "time": "2026-10-27T19:58:42+00:00"
         }
     ],
     "packages-dev": [],
