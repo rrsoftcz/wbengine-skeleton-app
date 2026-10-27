@@ -49,7 +49,7 @@ Nginx:
 ```sh
 ln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org.conf /etc/nginx/sites-enabled/www.wbengine.org.conf
 nginx -t && systemctl reload nginx
-certbot renew --dry-run
+certbot renew --dry-run --no-random-sleep-on-renew
 ```
 
 The apex domain can continue redirecting to `www` at its existing DNS host. The
