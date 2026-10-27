@@ -35,7 +35,8 @@ if [ ! -f src/Config/Settings.json ]; then
         $settings["jwt"]["refreshKey"] = bin2hex(random_bytes(32));
         file_put_contents("src/Config/Settings.json", json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n", LOCK_EX);
     '
-    chmod 600 src/Config/Settings.json
+    chgrp 33 src/Config/Settings.json
+    chmod 640 src/Config/Settings.json
     echo "Created production Settings.json with fresh JWT keys."
 else
     echo "Using existing Settings.json."
