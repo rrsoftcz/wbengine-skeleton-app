@@ -2,6 +2,25 @@
 
 A minimal application built on the [WBengine](https://packagist.org/packages/wbengine/wbengine) PHP framework. Use it as a starting point for a website or a backend: it shows a static page, a database driven blog article, a login, a user profile and the REST API.
 
+## Documentation index
+
+### Skeleton App
+
+- [Production Docker VPS deployment](docs/deploy-vps-docker.md)
+- [Plan: refresh the example content and documentation](plan-skeleton-v4-content-refresh.md)
+- [WBengine 4 migration plan for the example site](plan-wbengine-4.0-migration.md)
+- [Local HTTPS certificates](etc/cert/README.md)
+- [Changelog](CHANGELOG.md)
+- [Contribution guide](CONTRIBUTING.md)
+- [License](LICENSE.md)
+
+### WBengine framework
+
+- [Framework README](https://github.com/rrsoftcz/wbengine)
+- [Markdown reference](https://github.com/rrsoftcz/wbengine/blob/master/ref-markdown.md)
+- [Template migration reference](https://github.com/rrsoftcz/wbengine/blob/master/ref-template-migration.md)
+- [API v2 reference](https://github.com/rrsoftcz/wbengine/blob/master/ref-api-v2.md)
+
 ## Requirements
 
 * PHP 8.3 or newer (8.4 recommended) with the `mysqli` extension
