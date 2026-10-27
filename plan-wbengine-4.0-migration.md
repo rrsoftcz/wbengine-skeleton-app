@@ -4,6 +4,10 @@ Stav k 2026-10-27. Skeleton WBengine 4 je nasazen na `www.wbengine.org`. Uživat
 
 Migrační projekt je dokončen. Další doporučený krok je pilot vzdálené administrace proti izolovanému testovacímu webu. Deset historických HTML položek ponechaných pro ruční posouzení se převede jen po redakčním rozhodnutí.
 
+## Kontrolní bod Google Analytics a souhlasu s cookies
+
+2026-10-27: Připravuje se GA4 `G-PRGMM4N3S6` a vlastní dvojjazyčná lišta souhlasu v skeleton layoutu. Základní Consent Mode začíná stavem denied; skript `gtag.js` se načte až po povolení analytiky. Odmítnutí ji nechá vypnutou, patička umožňuje volbu později znovu otevřít a odvolání souhlasu vypne měření, odstraní dostupné GA cookies a obnoví stránku. Volba se ukládá pouze do localStorage, bez serverového záznamu. Před nasazením zbývá ověřit skutečné chování na live při přijetí, odmítnutí a odvolání a doplnit úplné informace o správci a zpracování do zásad soukromí.
+
 - [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
 - [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
 - [x] POST logout s auth.logout CSRF, žádný GET odhlašovací odkaz, diagnostické údaje pouze při dostupnosti.

@@ -256,6 +256,12 @@ Every route except `/api/auth/login` needs a valid token. Currently available: `
 * API operations require the documented role: user and section administration and cache flushing require an administrator; translation management requires an editor or administrator.
 * Do not commit TLS certificates or private keys; terminate TLS in front of the application.
 
+## Google Analytics and cookie consent
+
+The site uses Google Analytics 4 property `G-PRGMM4N3S6`. The localized cookie banner uses Google's basic consent approach: analytics storage starts denied, and the `gtag.js` library is not requested until the visitor allows analytics. Rejecting optional cookies keeps the tag disabled. A persistent Cookie settings button in the footer lets visitors reopen the choice; withdrawing a previous grant disables analytics and removes visible Google Analytics cookies before reloading. The choice is kept in browser local storage and is not sent to this application.
+
+The banner explains the analytics purpose and links to Google's privacy policy. It is a technical consent control, not a complete privacy notice. Before treating the site as legally ready, publish the site's own privacy and cookie information with the controller identity, purposes, legal basis, retention, recipients and any international transfers. See [Google's Consent Mode documentation](https://developers.google.com/tag-platform/security/concepts/consent-mode) and the [Czech Data Protection Authority's cookie guidance](https://uoou.gov.cz/verejnost/qa-otazky-a-odpovedi/cookies).
+
 ## TailwindCSS
 
 The stylesheet is built from `src/input.css` with Tailwind (`tailwind.config.js`):
