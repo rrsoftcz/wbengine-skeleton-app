@@ -1,0 +1,9 @@
+.git
+.github
+.idea
+node_modules
+vendor
+src/Config/Settings.json
+src/View/Compiled/*
+tests
+*.md

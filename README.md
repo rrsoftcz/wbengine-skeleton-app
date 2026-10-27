@@ -17,6 +17,8 @@ also checks PHP platform requirements for the installed release.
 
 ## Quick start with Docker
 
+For a clean production VPS deployment, see [docs/deploy-vps-docker.md](docs/deploy-vps-docker.md).
+
 ```bash
 git clone <this repository> wbengine-skeleton-app
 cd wbengine-skeleton-app
