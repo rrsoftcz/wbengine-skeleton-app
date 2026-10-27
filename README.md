@@ -66,6 +66,17 @@ For a clean Ubuntu VPS deployment, follow the [production Docker guide](docs/dep
 
 The files under `etc/nginx/` are for a separate PHP-FPM installation without the production Docker Compose stack. Do not use those PHP-FPM virtual hosts with `docker-compose.production.yml`.
 
+When Nginx terminates TLS and proxies to a Docker web container, the framework sees the container-side proxy address rather than the browser. Set `http.trustedProxies` to the exact proxy peer address as seen by PHP, and enable only the forwarded headers the proxy overwrites:
+
+```json
+"http": {
+  "trustedProxies": ["172.18.0.1/32"],
+  "forwardedHeaders": ["x-forwarded-for", "x-forwarded-proto"]
+}
+```
+
+Treat `172.18.0.1/32` as an example only. Inspect the actual Docker network route or request peer before configuring it; the address can change when a Compose network is recreated. Keep the web container port bound to loopback or otherwise reachable only from that proxy. The Nginx configuration must overwrite `X-Forwarded-Proto` with the external scheme and derive `X-Forwarded-For` from the actual client. Never trust all proxies or a broad network without a specific need. Without this configuration, authenticated API requests behind TLS termination can be rejected as insecure, and rate limits can group visitors under the proxy IP.
+
 ## HTTPS development with mkcert (optional)
 
 The quick start above uses plain HTTP on port 8080. To develop against `https://wbengine.local` with a locally trusted certificate:
