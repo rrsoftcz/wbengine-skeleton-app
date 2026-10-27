@@ -6,7 +6,7 @@ Migrační projekt je dokončen. Dvouwebový pilot vzdálené administrace je ov
 
 ## Kontrolní bod Google Analytics a souhlasu s cookies
 
-2026-10-27: Připravuje se GA4 `G-PRGMM4N3S6` a vlastní dvojjazyčná lišta souhlasu v skeleton layoutu. Základní Consent Mode začíná stavem denied; skript `gtag.js` se načte až po povolení analytiky. Odmítnutí ji nechá vypnutou, patička umožňuje volbu později znovu otevřít a odvolání souhlasu vypne měření, odstraní dostupné GA cookies a obnoví stránku. Volba se ukládá pouze do localStorage, bez serverového záznamu. Před nasazením zbývá ověřit skutečné chování na live při přijetí, odmítnutí a odvolání a doplnit úplné informace o správci a zpracování do zásad soukromí.
+2026-10-27: Na živém webu ověřen souhlasový tok GA4 `G-PRGMM4N3S6`: při povolení se načetl `gtag.js` a odeslal měřicí požadavek; po odmítnutí se po reloadu nenačetl Google tag ani měřicí požadavek; opětovné povolení tag načetlo; následné odvolání souhlasu vedlo k reloadu bez Google tagu a měření. Původní volba uživatele byla po testu obnovena na povoleno. Lišta je dvojjazyčná a volbu ukládá pouze do localStorage. Technické ověření live je hotové. Před označením informací o cookies za úplné ještě doplnit a publikovat zásady soukromí s ověřenou identitou správce, účely, právním základem, dobou uchování, příjemci a případnými mezinárodními přenosy; tyto právní a provozní údaje nelze odvodit z kódu.
 
 - [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
 - [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
