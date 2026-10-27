@@ -2,7 +2,7 @@
 
 Stav k 2026-10-27. Skeleton WBengine 4 je nasazen na `www.wbengine.org`. Uživatel potvrdil opravu obsahu, přepínání jazyků a angličtinu jako výchozí jazyk. Framework `v4.0.2` je uzamčen v Composer locku; aktuální commity skeletonu na `main`: `d2898d5` (jazykový přepínač a migrace průvodce) a `45dc494` (angličtina jako výchozí jazyk). Migrace obsahu `010` a nastavení `i18n.default=en`, `i18n.detect=[url]` byly nasazeny na live podle potvrzení uživatele. Historické poznámky níže o nenasazené databázi popisují tehdejší stav a tento kontrolní bod je nahrazuje.
 
-Migrační projekt je dokončen. Další doporučený krok je pilot vzdálené administrace proti izolovanému testovacímu webu. Deset historických HTML položek ponechaných pro ruční posouzení se převede jen po redakčním rozhodnutí.
+Migrační projekt je dokončen. Dvouwebový pilot vzdálené administrace je ověřen v izolované CI a administrace zůstává samostatným SvelteKit projektem. Dalším krokem je připravit její nezávislé vydání po rozhodnutí o viditelnosti a schválení publikace. Deset historických HTML položek ponechaných pro ruční posouzení se převede jen po redakčním rozhodnutí.
 
 ## Kontrolní bod Google Analytics a souhlasu s cookies
 
