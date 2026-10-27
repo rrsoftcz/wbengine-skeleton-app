@@ -42,6 +42,11 @@
             <h3 class="m-0 text-lg">{t 'feat.api.title'}</h3>
             <p class="mt-2 py-0 text-sm text-slate-600">{t 'feat.api.text'}</p>
         </a>
+        <a class="card group" href="{'/docs/administration/'|lurl}">
+            <span class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16M8 4v16m8-16v16"/></svg></span>
+            <h3 class="m-0 text-lg">{t 'feat.admin.title'}</h3>
+            <p class="mt-2 py-0 text-sm text-slate-600">{t 'feat.admin.text'}</p>
+        </a>
         <a class="card group" href="{'/blog/'|lurl}">
             <span class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-slate-100 text-slate-700 group-hover:bg-slate-800 group-hover:text-white"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h9l5 5v9a2 2 0 01-2 2zM9 13h6M9 17h6"/></svg></span>
             <h3 class="m-0 text-lg">{t 'feat.blog.title'}</h3>

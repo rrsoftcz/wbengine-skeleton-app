@@ -2,6 +2,12 @@
 
 Stav k 2026-10-27. Skeleton WBengine 4 je nasazen na `www.wbengine.org`. Uživatel potvrdil opravu obsahu, přepínání jazyků a angličtinu jako výchozí jazyk. Framework `v4.0.2` je uzamčen v Composer locku; aktuální commity skeletonu na `main`: `d2898d5` (jazykový přepínač a migrace průvodce) a `45dc494` (angličtina jako výchozí jazyk). Migrace obsahu `010` a nastavení `i18n.default=en`, `i18n.detect=[url]` byly nasazeny na live podle potvrzení uživatele. Historické poznámky níže o nenasazené databázi popisují tehdejší stav a tento kontrolní bod je nahrazuje.
 
+## DOC-01: veřejný přehled systému a centrální správa
+
+2026-10-27: Zdrojové změny připraveny, produkční databáze zatím nezměněna. Stránka Architektura popisuje Application → Site → Section → Box → Model/Renderer/Template, průchod požadavku, rozdělení databáze a PHP a postup rozšiřování. Stránka REST API rozlišuje existující CMS API `/api/` od volitelného serverového integračního API `/api/v2`. Přidána anglická i česká stránka centrální SvelteKit administrace, její vícewebový tok přes HTTPS/API v2, role, návrhy, náhledy, publikování a řešení konfliktů; výslovně uvádí oddělenou distribuci a soukromý zdroj/release. Doplněna navigace dokumentace a karta na úvodní stránce. SQL migrace 011 připravena pro existující databázi. Zbývá nezávisle ověřit migraci a vyrenderované stránky, poté aplikovat migraci na live a potvrdit její zobrazení v EN i CS. Nepouštět automaticky při buildu.
+
+Akceptace: celý průchod je srozumitelný začátečníkovi i vývojáři, příklady odpovídají WBengine 4.0.2, oba jazyky jsou věcně shodné, neobjevuje se zastaralý Smarty/Texy runtime a dokumentace nevydává privátní administraci za součást PHP balíčku. Před nasazením zkontrolovat migraci na izolované DB kopii a oba jazykové renderované výstupy; poté předat přesný příkaz pro aplikaci produkční databáze.
+
 Migrační projekt je dokončen. Dvouwebový pilot vzdálené administrace je ověřen v izolované CI a administrace zůstává samostatným SvelteKit projektem. Dalším krokem je připravit její nezávislé vydání po rozhodnutí o viditelnosti a schválení publikace. Deset historických HTML položek ponechaných pro ruční posouzení se převede jen po redakčním rozhodnutí.
 
 ## Kontrolní bod Google Analytics a souhlasu s cookies

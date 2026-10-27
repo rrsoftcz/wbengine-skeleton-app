@@ -14,7 +14,8 @@ INSERT INTO `cms_sites` (`site_id`,`parent_id`,`left_id`,`right_id`,`strict`,`vi
 (14,1,0,0,1,1,'/docs/languages/','Languages','Languages','Languages in WBengine: URL, cookie and header detection, catalogs, plurals and translated database content.','i18n,languages,translations',0),
 (15,1,0,0,1,1,'/docs/caching/','Caching','Caching','The data cache and the page cache: what is stored, when, and how to invalidate it.','cache,performance,apcu',0),
 (16,1,0,0,1,1,'/docs/security/','Security','Security','Bound parameters, escaping, password hashing, sessions, tokens, roles and rate limiting.','security,jwt,roles',0),
-(17,1,0,0,1,1,'/docs/rest-api/','REST API','REST API','The REST API: endpoints, tokens, roles and how to add a module, with a live console.','rest,api,jwt',0);
+(17,1,0,0,1,1,'/docs/rest-api/','REST API','REST API','The CMS API and the separate server-to-server API v2, with authentication, scopes and roles.','rest,api,jwt',0),
+(18,1,0,0,1,1,'/docs/administration/','Central administration','Central administration','A separate application for managing content on multiple WBengine sites through API v2.','administration,api,multi-site',0);
 
 UPDATE `cms_menu` SET `visible`=1, `order`=1, `description`='Start page' WHERE `menu_id`=1;
 UPDATE `cms_menu` SET `order`=3, `description`='Articles with the bundled box' WHERE `menu_id`=2;
@@ -74,29 +75,45 @@ Create a database, import `schemas/wbengine_skeletone_app_mysql_template.sql` an
 In development, set `debug` to `true` in `Settings.json` to show the WBengine exception template with the exception type, message, file, line and stack trace. If settings are missing or malformed, use `WBENGINE_DEBUG=1` only in a private development environment. Never expose debug output publicly. The production error page shows a safe explanation and reference code; find the full exception in the PHP or container error log under that code.
 
 For upgrades, back up the database and apply pending scripts in `schemas/migrations/` in order. Docker imports the schema and seed files only when it initializes a new database volume. Rebuilding the web image does not update an existing database.','markdown',1761000000,NULL,NULL),
-(3,11,0,0,0,0,'Architecture','WBengine keeps the request path small and explicit. Application, Site, Section, and Box objects form the same tree used by the application code.','## The object tree
+(3,11,0,0,0,0,'Architecture','WBengine is a request-driven PHP framework with a visible object tree. It keeps site structure and content in MySQL, reusable behavior in namespaced PHP boxes, and presentation in templates.','## The object tree
 
-- **Application** is the request root and owns shared services.
-- **Site** represents the matched page and its metadata, access rules, and menu.
-- **Section** is a named layout region such as `header`, `central`, or `api`.
-- **Box** is the PHP class and method selected by a `cms_boxes` row.
+- **Application** is the root of one HTTP request. It loads configuration and provides shared services such as database access, routing, authentication, rendering, Markdown and cache. Services are created lazily when used.
+- **Site** is the page selected for the current URL. It carries the site row, locale, access rules, metadata and navigation context.
+- **Section** is a named region in the page layout, for example `header`, `central` or `footer`.
+- **Box** is a small application component selected by a `cms_boxes` row. Its configured module and method map to a class in the application namespace, such as `App\\Box\\Central\\Docs`.
+- **Model** contains reusable data access for a box. It uses the framework database layer and bound SQL parameters.
+- **Renderer and template** turn the box data into output. Templates use the framework renderer; they do not replace the PHP object tree.
 
-The layout renders section output. A box can render a template directly or load a model first. Keep new features in this tree and follow the existing `App\\Box\\<Section>` namespaces.
+The parent links are real object references: a box can reach its section, site and application without a second global container. Keep new PHP features in the existing tree and namespaces. Do not put credentials or database logic in templates.
 
-## Request outline
+## One request from URL to HTML
 
 ```text
 public/index.php
-  Application::run()
-    match URL to Site
-    check access and page-cache eligibility
-    build active Sections
-      resolve configured Boxes
-        call Box method and render its template
-    render the site layout
+  load Composer and application bootstrap
+  Application handles an explicit application route or enabled API route
+  resolve language and match the request to a Site
+  check access and whether a safe full-page cache entry can answer
+  load active Sections for the Site
+    read the configured Boxes for each Section
+      create the namespaced Box with its parent objects
+      Box calls a Model when it needs database content
+      Renderer processes a .tpl file or a .md content source
+  combine section output in the site layout
+  return the HTTP response and optionally store a safe public page copy
 ```
 
-Sites, sections, and boxes are configuration data. PHP classes define reusable behavior. This keeps simple page changes out of the router while leaving application logic explicit.','markdown',1761000000,NULL,NULL),
+The exact route and cache gates depend on application settings. The framework handles matching, access and rendering; application classes define what each box does.
+
+## What lives in the database and in PHP
+
+`cms_sites` describes URLs and page metadata. `cms_sections` defines layout regions. `cms_boxes` attaches a module and method to a section, controls order and can mark a box as shared. Article, menu and translation tables hold editable content. PHP classes provide behavior, models query data, and templates present it. An existing box can often be attached to a new site through data alone; new behavior requires an application box class.
+
+## How to extend a site
+
+For a content-only page, use an existing article or registered box and configure its site, section and box rows. For new behavior, add a class beneath `App\\Box\\<Section>`, extend `Wbengine\\Box\\WbengineBoxAbstract`, and use its parent accessors. Put reusable queries in a model and render a `.tpl` or `.md` source. The [Boxes](/docs/boxes/) guide walks through the code and database mapping.
+
+Markdown, templates, locales, caching, the legacy CMS API and the separate server-to-server API v2 are described in their own guides. The optional [central administration](/docs/administration/) is a separate application connected through API v2; it is not part of the PHP request tree or Composer package.','markdown',1761000000,NULL,NULL),
 (4,12,0,0,0,0,'Boxes','A box is a method in the application tree that returns rendered output. Database rows attach it to a site and section.','## Static and data-backed boxes
 
 A static box renders a view. A data-backed box reads through a model and passes data to that view. Both extend `Wbengine\\Box\\WbengineBoxAbstract` and belong under `App\\Box\\<Section>`.
@@ -187,7 +204,14 @@ CLI and web workers can use different PHP settings and filesystem permissions. C
 Use HTTPS, keep debug output disabled, change the demo password, and restrict API routes by role. Configure trusted proxies explicitly before using forwarded IP headers for rate limits. Back up the database before applying schema migrations; the Markdown migration preserves existing article bytes as `legacy_html`.
 
 The CLI `doctor` command reports deployment checks. It is read-only and does not apply migrations.','markdown',1761000000,NULL,NULL),
-(9,17,0,0,0,0,'REST API','The API is served under `/api/`. Authenticate with the login route, send the access token as a bearer token, and use the role required by each route.','## Example request
+(9,17,0,0,0,0,'REST API','WBengine has two API layers: the application CMS API under `/api/` and an optional, separately enabled server-to-server content API under `/api/v2`. They have different clients, authentication and purposes.','## Choose the API for the job
+
+- The **CMS API** under `/api/` exposes the routes registered by an application. The skeleton demonstrates user login, sections, translations and cache operations. Its bearer JWT represents an application user; each route checks the required role.
+- The **API v2** under `/api/v2` is an optional integration interface for trusted servers such as the separate central administration. It uses a provisioned integration key and scopes, HTTPS, finite resource and field allowlists, strong ETags for edits and audit records. It does not expose its key to browser JavaScript and does not enable browser CORS.
+
+Do not send an API v2 integration key from a user browser. The browser should call its own application server, which then contacts each WBengine site over verified HTTPS.
+
+## CMS API example
 
 ```bash
 curl -X POST -H ''Content-Type: application/json'' \\
@@ -204,7 +228,28 @@ The demo credentials are for local use only. Replace them before exposing the ap
 
 Login is public. User and section administration and cache flushing require an administrator. Translation reads and writes require the editor role or higher. A missing or invalid token returns `401`; an authenticated user without the required role receives `403`. Write routes validate allowed fields.
 
-For deployment diagnostics use `vendor/bin/wbengine.php doctor`; it does not change the schema. The endpoint list and request console below this article show the routes enabled by this skeleton. Check the current route classes before relying on an example in another application.','markdown',1761000000,NULL,NULL);
+For deployment diagnostics use `vendor/bin/wbengine.php doctor`; it does not change the schema. The endpoint list and request console below this article show the CMS routes enabled by this skeleton. API v2 is enabled separately in application configuration and needs its explicit schema migrations for protected content operations. Its discovery, capabilities, resources, scopes and concurrency rules are described in the [WBengine API v2 reference](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). See also the [central administration guide](/docs/administration/).','markdown',1761000000,NULL,NULL);
+
+INSERT INTO `cms_articles` (`id`,`site_id`,`grouped`,`futured`,`c_enabled`,`views`,`title`,`introtext`,`bodytext`,`content_format`,`published`,`author`,`source`) VALUES
+(10,18,0,0,0,0,'Central administration','The central administration is a separate SvelteKit application for managing content on multiple WBengine websites. It connects to each site through the optional API v2; it is not installed as a PHP or Composer dependency.','## Separate application, connected sites
+
+Each WBengine website keeps its own PHP application, MySQL database, files and public pages. The central administration runs separately with its own Node.js service and database. It stores its administrator accounts, site registry and encrypted integration credentials. It does not connect directly to a remote website database and it does not copy the site code into the central service.
+
+The connection is server to server over HTTPS. A site operator enables API v2, provisions an integration key with only the required scopes and securely provides it to the central service. The central service validates the destination and TLS certificate, keeps the key on the server, and calls only supported API operations. Browser pages never receive the remote key. A site can revoke its key, and a failure or shutdown of the central service does not take the public website offline.
+
+## What an editor can manage
+
+Depending on the site API capabilities and the central account role, an editor can work with articles, pages, menu entries, sections, registered boxes, translations and supported images across multiple sites. Article edits are saved as drafts. An editor can preview a private draft and publish it explicitly when ready. Existing revisions can be restored as a new draft.
+
+The editor handles simultaneous changes safely. Every write includes the version it was based on. If another editor or local process changed the same content, the API reports a conflict instead of silently overwriting it. The editor preserves the typed text and lets the user review the current remote version before making a new explicit save.
+
+Images supported by this release are public raster media, not private draft attachments. Box choices come from a site-side allowlist. The central client cannot choose arbitrary PHP classes, methods, SQL statements, templates or filesystem paths.
+
+## What it does not replace
+
+The central service is an optional content client. It does not replace WBengine, the site database, source control, deployment pipeline or server administration. Developers still change PHP classes and templates in the site project and deploy them through the normal deployment workflow for that project. Sites continue serving pages independently if the central administration is unavailable.
+
+The administration is distributed separately from the PHP framework. Its current `v0.1.0` source release is private and is not a public Composer package or public container image. The public documentation describes its architecture and supported workflow; access to the tool is managed separately.','markdown',1761000000,NULL,'https://www.wbengine.org/');
 
 INSERT INTO `cms_boxes` (`id`,`name`,`module`,`method`,`section_id`,`static`,`shared`,`device_min`,`device_strict`,`acl`,`order`,`sites`) VALUES
 (7,'Features','staticBoxes','features',1,1,0,1,0,0,0,'["1"]'),
@@ -216,6 +261,7 @@ INSERT INTO `cms_boxes` (`id`,`name`,`module`,`method`,`section_id`,`static`,`sh
 (13,'Docs: Caching','docs','page',1,1,0,1,0,0,0,'["15"]'),
 (14,'Docs: Security','docs','page',1,1,0,1,0,0,0,'["16"]'),
 (15,'Docs: REST API','docs','page',1,1,0,1,0,0,0,'["17"]'),
+(21,'Docs: Central administration','docs','page',1,1,0,1,0,0,0,'["18"]'),
 (16,'Demo: structure','demo','structure',1,1,0,1,0,0,1,'["11"]'),
 (17,'Demo: templates','demo','templates',1,1,0,1,0,0,1,'["13"]'),
 (18,'Demo: languages','demo','languages',1,1,0,1,0,0,1,'["14"]'),
@@ -227,13 +273,14 @@ REPLACE INTO `cms_site_translations` (`site_id`,`locale`,`title`,`html_title`,`h
 (2,'cs','Blog','Blog','Článek zobrazený dodávaným boxem Article, s překlady a počítadlem zobrazení.','blog,článek,box'),
 (3,'cs','O nás','O nás','O WBengine a příklad statického boxu.','o nás,statický box'),
 (10,'cs','Začínáme','Začínáme','Nainstalujte kostru WBengine, přihlaste se a za dvě minuty přidejte první stránku.','začínáme,instalace,docker'),
-(11,'cs','Architektura','Architektura','Jak WBengine mění URL ve stránku: weby, sekce, boxy a průběh požadavku.','architektura,web,sekce,box'),
+(11,'cs','Architektura','Architektura','Jak WBengine mění požadavek ve stránku pomocí aplikačního stromu, databáze, boxů, modelů, rendereru a cache.','architektura,web,sekce,box'),
 (12,'cs','Boxy','Boxy','Statické a dynamické boxy, modely a tabulka cms_boxes.','boxy,model,cms_boxes'),
 (13,'cs','Šablony','Šablony','Nativní šablony, automatické escapování a Markdown v souborech i databázi.','šablony,escapování,markdown'),
 (14,'cs','Jazyky','Jazyky','Jazyky ve WBengine: detekce z URL, cookie a hlavičky, katalogy, množná čísla a překládaný obsah databáze.','i18n,jazyky,překlady'),
 (15,'cs','Cache','Cache','Datová cache a cache stránek: co se ukládá, kdy a jak ji zneplatnit.','cache,výkon,apcu'),
 (16,'cs','Zabezpečení','Zabezpečení','Vázané parametry, escapování, hashování hesel, session, tokeny, role a omezení pokusů.','zabezpečení,jwt,role'),
-(17,'cs','REST API','REST API','REST API: koncové body, tokeny, role a přidání modulu, s živou konzolí.','rest,api,jwt');
+(17,'cs','REST API','REST API','CMS API a oddělené serverové integrační API v2, ověřování, scopes a role.','rest,api,jwt'),
+(18,'cs','Centrální administrace','Centrální administrace','Samostatný nástroj pro správu obsahu více webů WBengine přes API v2.','administrace,api,více webů');
 
 REPLACE INTO `cms_menu_translations` (`menu_id`,`locale`,`name`,`description`) VALUES
 (1,'cs','Domů','Úvodní stránka'),
@@ -405,7 +452,14 @@ CLI a webový worker mohou mít odlišná PHP nastavení a oprávnění. Pokud s
 Používejte HTTPS, vypněte debug výstup, změňte demo heslo a API chráníte podle rolí. Než začnete pro limity požadavků používat hlavičky s IP adresou, nastavte důvěryhodné proxy. Před migrací schématu databázi zálohujte; migrace Markdownu zachová původní bajty článků jako `legacy_html`.
 
 Příkaz CLI `doctor` vypíše kontroly nasazení. Je pouze pro čtení a migrace nespouští.','markdown'),
-(9,'cs','REST API','API je dostupné pod `/api/`. Přihlaste se přes login endpoint, posílejte přístupový token jako bearer token a používejte roli vyžadovanou danou cestou.','## Ukázkový požadavek
+(9,'cs','REST API','WBengine má dvě vrstvy API: aplikační CMS API pod `/api/` a volitelné serverové obsahové API v2 pod `/api/v2`. Mají odlišné klienty, autentizaci i účel.','## Vyberte správné API
+
+- **CMS API** pod `/api/` vystavuje trasy zaregistrované aplikací. Skeleton ukazuje přihlášení uživatele, sekce, překlady a operace s cache. Bearer JWT zastupuje uživatele aplikace a každá trasa kontroluje jeho roli.
+- **API v2** pod `/api/v2` je volitelné integrační rozhraní pro důvěryhodné servery, například samostatnou centrální administraci. Používá vydaný integrační klíč a scopes, HTTPS, konečný seznam zdrojů a polí, silné ETagy pro zápis a audit. Klíč se neposílá do JavaScriptu prohlížeče a API nezapíná CORS.
+
+Integrační klíč API v2 neposílejte z prohlížeče. Prohlížeč má volat vlastní aplikační server, který se potom přes ověřené HTTPS připojí ke každému webu WBengine.
+
+## Příklad CMS API
 
 ```bash
 curl -X POST -H ''Content-Type: application/json'' \\
@@ -422,7 +476,28 @@ Demo údaje používejte pouze lokálně. Před zveřejněním aplikace heslo zm
 
 Přihlášení je veřejné. Správa uživatelů a sekcí i vyprázdnění cache vyžadují administrátora. Čtení a změna překladů vyžadují roli editor nebo vyšší. Chybějící či neplatný token vrací `401`; přihlášený uživatel bez potřebné role dostane `403`. Zapisovací cesty kontrolují povolená pole.
 
-Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. Seznam endpointů a konzole pod tímto článkem ukazují trasy zapnuté v této aplikaci. Před použitím příkladů v jiném projektu zkontrolujte jeho aktuální třídy tras.','markdown');
+Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. Seznam endpointů a konzole pod tímto článkem ukazují CMS trasy zapnuté v této aplikaci. API v2 se zapíná samostatně v konfiguraci a pro chráněné obsahové operace vyžaduje explicitní migrace schématu. Discovery, capabilities, zdroje, scopes a pravidla souběžných změn popisuje [referenční dokumentace WBengine API v2](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). Viz také [centrální administrace](/cs/docs/administration/).','markdown');
+
+REPLACE INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`,`content_format`) VALUES
+(10,'cs','Centrální administrace','Centrální administrace je samostatná aplikace SvelteKit pro správu obsahu na více webech WBengine. Ke každému webu se připojuje přes volitelné API v2; není součástí PHP ani Composer balíčku.','## Samostatná aplikace, připojené weby
+
+Každý web WBengine si ponechává vlastní PHP aplikaci, databázi MySQL, soubory a veřejné stránky. Centrální administrace běží odděleně jako služba Node.js s vlastní databází. Ukládá účty správců, seznam připojených webů a zašifrované integrační údaje. Nepřipojuje se přímo do vzdálené databáze webu a nekopíruje jeho zdrojový kód.
+
+Spojení probíhá mezi servery přes HTTPS. Provozovatel webu zapne API v2, vydá integrační klíč jen s potřebnými scopes a bezpečně jej předá centrální službě. Ta ověří cílovou adresu i TLS certifikát, ponechá klíč na serveru a volá pouze podporované operace API. Klíč se nikdy nedostane do prohlížeče. Web může klíč odvolat a výpadek centrální služby neodstaví veřejný web.
+
+## Co může redaktor spravovat
+
+Podle možností API daného webu a role centrálního účtu může redaktor spravovat články, stránky, položky menu, sekce, registrované boxy, překlady a podporované obrázky na více webech. Úpravy článků se ukládají jako koncepty. Redaktor si může zobrazit soukromý náhled a potom koncept výslovně publikovat. Starší revize lze obnovit jako nový koncept.
+
+Každý zápis uvádí verzi, ze které vychází. Pokud stejný obsah změnil další redaktor nebo místní proces, API nahlásí konflikt místo tichého přepsání. Administrace zachová rozepsaný text a umožní porovnat aktuální vzdálenou verzi před novým výslovným uložením.
+
+Obrázky podporované touto verzí jsou veřejná rastrová média, nikoli soukromé přílohy konceptu. Nabídka boxů pochází z allowlistu na webu. Centrální klient nemůže vybírat libovolné PHP třídy, metody, SQL, šablony ani cesty k souborům.
+
+## Co administrace nenahrazuje
+
+Centrální služba je volitelný obsahový klient. Nenahrazuje WBengine, databázi webu, správu zdrojového kódu, nasazovací postup ani správu serveru. Vývojář mění PHP třídy a šablony v projektu webu a nasazuje je jeho běžným postupem. Weby dál fungují, i když centrální administrace není dostupná.
+
+Administrace se distribuuje odděleně od PHP frameworku. Její současné zdrojové vydání `v0.1.0` je soukromé a nejde o veřejný Composer balíček ani veřejný kontejner. Veřejná dokumentace popisuje architekturu a podporovaný postup; přístup k nástroji se řeší samostatně.','markdown');
 
 UPDATE `cms_articles`
 SET `introtext`='Learn which Markdown syntax WBengine supports, how source becomes safe HTML, and how file and database content differ.',

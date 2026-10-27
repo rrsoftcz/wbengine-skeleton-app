@@ -23,6 +23,7 @@ class Docs extends WbengineBoxAbstract
         array('/docs/caching/', 'doc.caching'),
         array('/docs/security/', 'doc.security'),
         array('/docs/rest-api/', 'doc.rest_api'),
+        array('/docs/administration/', 'doc.administration'),
     );
 
     /**
