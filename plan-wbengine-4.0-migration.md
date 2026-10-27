@@ -1,6 +1,8 @@
 # Migrace vzorové aplikace na WBengine 4.0
 
-Stav 2026-10-26. Migrační základ je sloučený na main jako 19fde667; místní checkout je synchronizován s main na commit b1c3034. Framework je vydán jako v4.0.0 v samostatném repozitáři a [sloučené PR #2](https://github.com/rrsoftcz/wbengine/pull/2). Databáze skeletonu ani produkční data nebyly změněny.
+Stav k 2026-10-27. Skeleton WBengine 4 je nasazen na `www.wbengine.org`. Uživatel potvrdil opravu obsahu, přepínání jazyků a angličtinu jako výchozí jazyk. Framework `v4.0.2` je uzamčen v Composer locku; aktuální commity skeletonu na `main`: `d2898d5` (jazykový přepínač a migrace průvodce) a `45dc494` (angličtina jako výchozí jazyk). Migrace obsahu `010` a nastavení `i18n.default=en`, `i18n.detect=[url]` byly nasazeny na live podle potvrzení uživatele. Historické poznámky níže o nenasazené databázi popisují tehdejší stav a tento kontrolní bod je nahrazuje.
+
+Migrační projekt je dokončen. Další doporučený krok je pilot vzdálené administrace proti izolovanému testovacímu webu. Deset historických HTML položek ponechaných pro ruční posouzení se převede jen po redakčním rozhodnutí.
 
 - [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
 - [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
