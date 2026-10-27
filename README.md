@@ -96,7 +96,9 @@ Czech text if migration 008 was run with a `latin1` connection;
 `010-refresh-getting-started-content.sql` synchronizes the English and Czech
 installation guides, including matching troubleshooting headings. Apply 005 before
 006, then 007 and 008. Run 009 only if Czech characters are corrupted, then apply
-010 to synchronize both guides. The guide
+010 to synchronize both guides. Migration 011 updates the architecture and API
+documentation and adds the bilingual central administration page. Review local
+edits to those built-in documentation articles before applying it. The guide
 migrations set their SQL connection to `utf8mb4`. If the framework migration
 `migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
 never apply both. Existing article text is preserved and defaults to `legacy_html`;
@@ -124,6 +126,19 @@ before applying it:
 docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-getting-started-010.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/010-refresh-getting-started-content.sql
 ```
+
+To publish the expanded system documentation on an existing site, first deploy
+the code containing migration 011, then back up the database and apply it once:
+
+```sh
+docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-system-docs-011.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/011-system-and-central-administration-documentation.sql
+```
+
+Open `/docs/architecture/`, `/docs/rest-api/`, and `/docs/administration/`,
+then check `/cs/docs/architecture/`, `/cs/docs/rest-api/`, and
+`/cs/docs/administration/`. Rebuilding containers alone does not
+apply this content migration to an existing database.
 
 The database image runs files under `schemas/` only when its data volume is first
 created. Rebuilding the web image does not rerun schema initialization scripts. If
