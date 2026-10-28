@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0cd592cc932c1a5ca03a88449aae611",
+    "content-hash": "973f5a3efbe0c4b389e1c13ffc2cdb6d",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -82,16 +82,16 @@
         },
         {
             "name": "wbengine/wbengine",
-            "version": "v4.2.0",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rrsoftcz/wbengine.git",
-                "reference": "a2f7425c6acf552c84a0ef89ccfc73c689521441"
+                "reference": "93d71049a62b4bed5f3db9ff045c9b6fa7dd7b3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/a2f7425c6acf552c84a0ef89ccfc73c689521441",
-                "reference": "a2f7425c6acf552c84a0ef89ccfc73c689521441",
+                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/93d71049a62b4bed5f3db9ff045c9b6fa7dd7b3a",
+                "reference": "93d71049a62b4bed5f3db9ff045c9b6fa7dd7b3a",
                 "shasum": ""
             },
             "require": {
@@ -136,9 +136,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rrsoftcz/wbengine/issues",
-                "source": "https://github.com/rrsoftcz/wbengine/tree/v4.2.0"
+                "source": "https://github.com/rrsoftcz/wbengine/tree/v4.3.0"
             },
-            "time": "2026-10-28T16:30:40+00:00"
+            "time": "2026-10-28T18:08:47+00:00"
         }
     ],
     "packages-dev": [],

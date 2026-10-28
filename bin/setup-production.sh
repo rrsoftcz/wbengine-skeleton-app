@@ -44,8 +44,8 @@ fi
 
 docker compose -f docker-compose.production.yml up -d --build --wait
 
-# Prepare framework API and analytics tables from the exact installed release.
-for migration in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql; do
+# Prepare framework API and analytics tables from the exact installed release (007 needs WBengine 4.2 or newer).
+for migration in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
     docker compose -f docker-compose.production.yml exec -T web \
         cat "vendor/wbengine/wbengine/migrations/4.0.0/$migration" \
         | docker compose -f docker-compose.production.yml exec -T db \
@@ -59,3 +59,8 @@ docker compose -f docker-compose.production.yml exec -T db \
     -e "UPDATE cms_users SET password = '$DEMO_HASH' WHERE user_id = 1"
 
 echo "Application containers are running at http://127.0.0.1:8080."
+echo
+echo "The demo password was disabled, so nobody can sign in yet. Create your administrator now:"
+echo "  docker compose -f docker-compose.production.yml exec web php bin/wbe user:create --email=YOU@YOUR-DOMAIN --role=admin"
+echo "Then sign in at /login/ and remove the demo account with: bin/wbe user:delete --example"
+echo "Full guide: docs/deploy-vps-docker.md, section Users and the first login."
