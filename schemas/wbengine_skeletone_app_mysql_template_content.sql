@@ -529,7 +529,7 @@ WHERE article_id = 2
 
 -- Integrations page (schemas/migrations/013-integrations-page.sql), ids assigned by the database.
 INSERT INTO cms_sites (parent_id, left_id, right_id, strict, visible, link, title, html_title, html_description, html_keywords, acl)
-SELECT 1, 1, 1, 1, 0, '/integrations/', 'Integrations', 'Integrations', 'Integration keys for the central WBengine Admin', 'integrations,api', 1
+SELECT 1, 1, 1, 1, 1, '/integrations/', 'Integrations', 'Integrations', 'Integration keys for the central WBengine Admin', 'integrations,api', 1
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM cms_sites WHERE link = '/integrations/');
 
@@ -565,3 +565,6 @@ SET bodytext = CONCAT(bodytext, '\n\n## Připojení webu krok za krokem\n\nCentr
 WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/administration/' ORDER BY site_id LIMIT 1) AND title = 'Central administration' ORDER BY id LIMIT 1) AS a)
   AND locale = 'cs'
   AND LOCATE('## Připojení webu krok za krokem', bodytext) = 0;
+
+-- Repair of the integrations page visibility (schemas/migrations/015-integrations-page-visible.sql).
+UPDATE cms_sites SET visible = 1 WHERE link = '/integrations/' AND visible = 0;

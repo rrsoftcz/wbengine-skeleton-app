@@ -46,6 +46,8 @@ $capabilityBody = json_decode($capabilities['body'], true, 512, JSON_THROW_ON_ER
 $check($capabilities['status'] === 200 && ($capabilityBody['data']['api_version'] ?? '') === '2.0', 'API v2 discovery bypasses layout rendering');
 $legacy = $public->request('/api/sections/');
 $check($legacy['status'] === 401, 'Legacy API still requires authentication');
+$integrations = $public->request('/integrations/');
+$check($integrations['status'] === 302 && stripos($integrations['headers'], '/login/') !== false, 'Integrations page resolves and sends anonymous visitors to the login (status ' . $integrations['status'] . ')');
 $login = new SmokeClient();
 $form = $login->request('/login/');
 $check($form['status'] === 200 && preg_match('/name="token" value="([^"]+)"/', $form['body'], $match), 'Login CSRF token present');
