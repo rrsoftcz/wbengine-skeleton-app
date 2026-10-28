@@ -1,0 +1,26 @@
+FROM php:8.4-apache
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip libzip-dev libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install mysqli zip opcache curl \
+    && a2enmod rewrite headers \
+    && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+COPY etc/apache2/sites-available/wbengine.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /var/www/html
+COPY . /var/www/html
+
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
+    && mkdir -p src/View/Compiled \
+    && chown -R www-data:www-data src/View/Compiled \
+    && chmod 2775 src/View/Compiled
+
+COPY bin/container-entrypoint-production.sh /usr/local/bin/wbengine-container-entrypoint
+RUN chmod 0755 /usr/local/bin/wbengine-container-entrypoint
+
+EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/wbengine-container-entrypoint"]
+CMD ["apache2-foreground"]

@@ -2,6 +2,26 @@
 
 A minimal application built on the [WBengine](https://packagist.org/packages/wbengine/wbengine) PHP framework. Use it as a starting point for a website or a backend: it shows a static page, a database driven blog article, a login, a user profile and the REST API.
 
+## Documentation index
+
+### Skeleton App
+
+- [Production Docker VPS deployment](docs/deploy-vps-docker.md)
+- [Plan: refresh the example content and documentation](docs/plan-skeleton-v4-content-refresh.md)
+- [WBengine 4 migration plan for the example site](docs/plan-wbengine-4.0-migration.md)
+- [Local HTTPS certificates](etc/cert/README.md)
+- [Changelog](docs/CHANGELOG.md)
+- [Contribution guide](docs/CONTRIBUTING.md)
+- [License](docs/LICENSE.md)
+- [Live site documentation](https://www.wbengine.org/docs/)
+
+### WBengine framework
+
+- [Framework README](https://github.com/rrsoftcz/wbengine)
+- [Markdown reference](https://github.com/rrsoftcz/wbengine/blob/master/ref-markdown.md)
+- [Template migration reference](https://github.com/rrsoftcz/wbengine/blob/master/ref-template-migration.md)
+- [API v2 reference](https://github.com/rrsoftcz/wbengine/blob/master/ref-api-v2.md)
+
 ## Requirements
 
 * PHP 8.3 or newer (8.4 recommended) with the `mysqli` extension
@@ -16,6 +36,8 @@ Markdown parser are included in WBengine. Composer
 also checks PHP platform requirements for the installed release.
 
 ## Quick start with Docker
+
+For a clean production VPS deployment, see [docs/deploy-vps-docker.md](docs/deploy-vps-docker.md).
 
 ```bash
 git clone <this repository> wbengine-skeleton-app
@@ -38,9 +60,22 @@ Open http://localhost:8080 and sign in with the demo account:
 
 Change this password before the application is reachable by anyone else.
 
-## Nginx
+## Nginx and production Docker deployment
 
-`etc/nginx/wbengine.conf` is the development/general-purpose equivalent of `public/.htaccess` for Nginx with PHP-FPM. The production virtual host for `www.wbengine.org` is `etc/nginx/www.wbengine.org.conf`. Before enabling its HTTPS blocks, point DNS for both `wbengine.org` and `www.wbengine.org` to the server, temporarily enable only its HTTP block, create `/var/www/letsencrypt`, and obtain a Let's Encrypt certificate covering both names. Then enable all blocks and verify the certificate paths, application `root`, and PHP-FPM socket. The sample expects `/run/php/php8.4-fpm.sock` for PHP-FPM. Run `nginx -t` before reloading Nginx. The existing general-purpose file was tested with Nginx 1.30, PHP 8.4 FPM and MariaDB 11.4.
+For a clean Ubuntu VPS deployment, follow the [production Docker guide](docs/deploy-vps-docker.md). It runs PHP and MySQL in containers, binds the application to `127.0.0.1:8080`, and uses host Nginx and Certbot for HTTPS. MySQL has no public host port. The procedure does not require PHP or Composer on the host.
+
+The files under `etc/nginx/` are for a separate PHP-FPM installation without the production Docker Compose stack. Do not use those PHP-FPM virtual hosts with `docker-compose.production.yml`.
+
+When Nginx terminates TLS and proxies to a Docker web container, the framework sees the container-side proxy address rather than the browser. Set `http.trustedProxies` to the exact proxy peer address as seen by PHP, and enable only the forwarded headers the proxy overwrites:
+
+```json
+"http": {
+  "trustedProxies": ["172.18.0.1/32"],
+  "forwardedHeaders": ["x-forwarded-for", "x-forwarded-proto"]
+}
+```
+
+Treat `172.18.0.1/32` as an example only. Inspect the actual Docker network route or request peer before configuring it; the address can change when a Compose network is recreated. Keep the web container port bound to loopback or otherwise reachable only from that proxy. The Nginx configuration must overwrite `X-Forwarded-Proto` with the external scheme and derive `X-Forwarded-For` from the actual client. Never trust all proxies or a broad network without a specific need. Without this configuration, authenticated API requests behind TLS termination can be rejected as insecure, and rate limits can group visitors under the proxy IP.
 
 ## HTTPS development with mkcert (optional)
 
@@ -97,8 +132,10 @@ Czech text if migration 008 was run with a `latin1` connection;
 installation guides, including matching troubleshooting headings. Apply 005 before
 006, then 007 and 008. Run 009 only if Czech characters are corrupted, then apply
 010 to synchronize both guides. Migration 011 updates the architecture and API
-documentation and adds the bilingual central administration page. Review local
-edits to those built-in documentation articles before applying it. The guide
+documentation and adds the bilingual central administration page. Migration 012
+adds the clean VPS Docker deployment procedure to the English and Czech Getting
+started pages. Review local edits to those built-in documentation articles
+before applying content migrations. The guide
 migrations set their SQL connection to `utf8mb4`. If the framework migration
 `migrations/4.0.0/003-markdown-content.sql` was already applied, skip skeleton 006;
 never apply both. Existing article text is preserved and defaults to `legacy_html`;
@@ -134,6 +171,17 @@ the code containing migration 011, then back up the database and apply it once:
 docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-system-docs-011.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/011-system-and-central-administration-documentation.sql
 ```
+
+To add the production Docker deployment instructions to the English and Czech
+Getting started pages on an existing site, back up the database and apply the
+idempotent content migration once:
+
+```sh
+docker compose exec -T db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > before-deployment-guide-012.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/012-vps-docker-deployment-guide.sql
+```
+
+The page cache can delay the visible change by up to its configured lifetime.
 
 Open `/docs/architecture/`, `/docs/rest-api/`, and `/docs/administration/`,
 then check `/cs/docs/architecture/`, `/cs/docs/rest-api/`, and
@@ -320,7 +368,7 @@ all supported commands and options, run `vendor/bin/wbengine.php help`.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the code of conduct and the process for submitting pull requests.
+Please read [CONTRIBUTING](docs/CONTRIBUTING.md) for the code of conduct and the process for submitting pull requests.
 
 ## Improving this sample
 
@@ -328,7 +376,7 @@ The WBengine library and this sample application are open source and a volunteer
 
 ## License
 
-MIT, see [LICENSE.md](LICENSE.md).
+MIT, see [LICENSE](docs/LICENSE.md).
 
 
 ## WBengine 4.0 migration and HTTP verification
@@ -361,7 +409,7 @@ real login/CSRF/profile, rejected GET/invalid POST logout, successful POST logou
 public API v2 discovery and unchanged API v1 authorization. CI executes the same
 workflow against the framework development branch.
 
-[Migration checkpoint and remaining work](plan-wbengine-4.0-migration.md).
+[Migration checkpoint and remaining work](docs/plan-wbengine-4.0-migration.md).
 
 
 ## Izolovaný CMS benchmark WBengine 4.0
@@ -377,4 +425,4 @@ Runner vyžaduje WBENGINE_SMOKE marker a vlastní existující seed DB. Spustí 
 Výsledek tests/benchmark-cms-result.json obsahuje 15 kombinací cache/identity,20vzorků každé,p50/p95,throughput,HTTPerrors,SQL/spojení/paměť a skutečné HIT počty. Cookies ani hesla ve výsledku nejsou. Měření na malé lokální fixture není záruka produkčního výkonu. Throughput zahrnuje fork a sběr klientských procesů, paměť je vrchol alokovaných bajtů serveru, OPcacheCLI byl při uloženém běhu vypnutý.
 
 
-`tests/content-migration-smoke.php` ověřuje skutečné demo HTML články a překlady na dočasných kopiích:18suchýchplánů,8vratných bezpečných převodů a10 případů k ručnímu rozhodnutí. Původní obsah a schéma zůstávají bezezměn. Spusťte ve stejném smoke prostředí přes tools stejně jako benchmark; kompletní stav a důvody jsou v plan-wbengine-4.0-migration.md.
+`tests/content-migration-smoke.php` ověřuje skutečné demo HTML články a překlady na dočasných kopiích:18suchýchplánů,8vratných bezpečných převodů a10 případů k ručnímu rozhodnutí. Původní obsah a schéma zůstávají bezezměn. Spusťte ve stejném smoke prostředí přes tools stejně jako benchmark; kompletní stav a důvody jsou v docs/plan-wbengine-4.0-migration.md.

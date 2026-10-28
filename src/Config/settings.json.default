@@ -31,6 +31,10 @@
   "recaptcha": {
     "secretKey": ""
   },
+  "http": {
+    "trustedProxies": [],
+    "forwardedHeaders": []
+  },
   "cache": {
     "enabled": true,
     "driver": "file",
