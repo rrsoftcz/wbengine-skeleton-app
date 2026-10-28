@@ -102,6 +102,8 @@ For a clean Ubuntu VPS deployment, follow the [production Docker guide](docs/dep
 
 The files under `etc/nginx/` are for a separate PHP-FPM installation without the production Docker Compose stack. Do not use those PHP-FPM virtual hosts with `docker-compose.production.yml`.
 
+The production installer does this for you: it detects the Compose network gateway (the address host Nginx appears from) and writes it to `http.trustedProxies` together with the two forwarded headers below. Without it the framework treats every request as plain HTTP and, for example, `/integrations/` refuses to show a key. Configure it manually only for another proxy layout.
+
 When Nginx terminates TLS and proxies to a Docker web container, the framework sees the container-side proxy address rather than the browser. Set `http.trustedProxies` to the exact proxy peer address as seen by PHP, and enable only the forwarded headers the proxy overwrites:
 
 ```json

@@ -4,6 +4,13 @@
 
 ### Fixed
 
+- Behind host Nginx a fresh production install treated every request as plain HTTP (empty
+  `http.trustedProxies`), so `/integrations/` refused to issue a key. `bin/setup-production.sh` now detects
+  the Compose network gateway and configures `http.trustedProxies` and `http.forwardedHeaders`. The installer
+  also takes the public site address as its first argument instead of the hard-coded
+  `https://www.wbengine.org`.
+- The profile page links administrators to `/integrations/`, so the page no longer has to be typed by hand.
+  Guide text updated by `schemas/migrations/016-installer-site-url-and-proxy-docs.sql`.
 - The Integrations page (`/integrations/`) was inserted with `visible = 0`, but the framework resolves only
   visible pages, so it answered 404 for everyone. Migration 013 and the content dump now use `visible = 1`;
   installations that already applied 013 run `schemas/migrations/015-integrations-page-visible.sql`.

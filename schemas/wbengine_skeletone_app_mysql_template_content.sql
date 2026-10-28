@@ -568,3 +568,17 @@ WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = 
 
 -- Repair of the integrations page visibility (schemas/migrations/015-integrations-page-visible.sql).
 UPDATE cms_sites SET visible = 1 WHERE link = '/integrations/' AND visible = 0;
+
+-- Installer site address and trusted proxy (schemas/migrations/016-installer-site-url-and-proxy-docs.sql).
+
+UPDATE cms_articles
+SET bodytext = REPLACE(bodytext, './bin/setup-production.sh\n```\n\nThe installer generates private database and JWT secrets on the server,', './bin/setup-production.sh https://www.your-domain.tld\n```\n\nThe installer takes the public HTTPS address of the site as its argument, trusts the Docker network gateway as the proxy that forwards the HTTPS headers from host Nginx, generates private database and JWT secrets on the server,')
+WHERE id = 2
+  AND site_id = 10
+  AND LOCATE('takes the public HTTPS address of the site', bodytext) = 0;
+
+UPDATE cms_article_translations
+SET bodytext = REPLACE(bodytext, './bin/setup-production.sh\n```\n\nInstalátor na serveru vytvoří soukromé databázové a JWT klíče,', './bin/setup-production.sh https://www.vase-domena.cz\n```\n\nInstalátor přijme veřejnou HTTPS adresu webu jako argument, nastaví bránu Docker sítě jako důvěryhodnou proxy pro HTTPS hlavičky předávané z Nginx na hostiteli, na serveru vytvoří soukromé databázové a JWT klíče,')
+WHERE article_id = 2
+  AND locale = 'cs'
+  AND LOCATE('přijme veřejnou HTTPS adresu webu', bodytext) = 0;

@@ -62,6 +62,7 @@ $profile = $login->request('/profile/');
 $check($profile['status'] === 200 && str_contains($profile['body'], 'admin@example.com'), 'Private profile rendered');
 $check(preg_match('/<form[^>]*method="post"[^>]*action="\/login\/"[^>]*>.*?name="a" value="logout".*?name="token" value="([^"]+)"/s', $profile['body'], $logout), 'Layout has POST logout with purpose token');
 $check(!str_contains($profile['headers'], 'X-WBengine-Cache: HIT'), 'Private profile is not a shared HIT');
+$check(str_contains($profile['body'], 'href="/integrations/"') || str_contains($profile['body'], '/integrations/'), 'Administrator profile links to the integrations page');
 $getLogout = $login->request('/login/?a=logout');
 $check($getLogout['status'] === 405, 'GET logout rejected');
 $check($login->request('/profile/')['status'] === 200, 'GET logout leaves identity intact');
