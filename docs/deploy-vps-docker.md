@@ -32,6 +32,26 @@ replacing its password with an unknown random value. It does not enable native
 analytics collection. Keep `.env` and `Settings.json` private; both are ignored
 by Git.
 
+## Create your administrator
+
+Because the installer disables the demo password, nobody can sign in yet. After the
+containers are running, create your own administrator and sign in at `/login/`:
+
+```sh
+docker compose -f docker-compose.production.yml exec web php bin/wbe user:create --email=you@your-domain.tld --role=admin
+```
+
+The command asks for the password twice and does not show it. Then check the accounts
+and remove any leftover demo account:
+
+```sh
+docker compose -f docker-compose.production.yml exec web php bin/wbe user:list
+docker compose -f docker-compose.production.yml exec web php bin/wbe user:delete --example
+```
+
+The commands require WBengine 4.3 or newer. To manage the site from the central WBengine
+Admin, continue with "Connecting the site to WBengine Admin" in the README.
+
 ## Nginx and HTTPS
 
 Install Nginx and Certbot, create `/var/www/letsencrypt`, and install the

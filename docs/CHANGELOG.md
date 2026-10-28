@@ -4,6 +4,10 @@
 
 ### Added
 
+- `bin/wbe user:create|user:password|user:list|user:delete`: account management wrappers around the
+  framework CLI (requires WBengine 4.3), `bin/setup-production.sh` prints the next step, and the README,
+  `docs/deploy-vps-docker.md` and the site documentation (`schemas/migrations/014-users-and-site-connection-docs.sql`,
+  also appended to the fresh install content dump) explain the first login and connecting a site to WBengine Admin.
 - "Integrations" page (`/integrations/`, login required) where a local `ADMIN` issues,
   revokes and rotates API v2 integration keys for the central WBengine Admin:
   `App\Box\Central\Integrations` extends the framework box and

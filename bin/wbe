@@ -13,8 +13,28 @@ foreach ($args as $arg) {
     }
 }
 
+$userCommands = ['user:create', 'user:password', 'user:list', 'user:delete'];
+if (in_array($command, $userCommands, true)) {
+    // Account management is implemented by the framework CLI; this wrapper supplies the skeleton's paths.
+    $project = dirname(__DIR__);
+    $cli = $project . '/vendor/bin/wbengine.php';
+    if (!is_file($cli)) {
+        fwrite(STDERR, "Error: vendor/bin/wbengine.php is missing. Run bin/wbe install first (WBengine 4.3 or newer is required).\n");
+        exit(1);
+    }
+    $forward = [PHP_BINARY, $cli, $command, ...$args];
+    if (!isset($options['config'])) { $forward[] = '--config=' . $project . '/src/Config/Settings.json'; }
+    if (!isset($options['root'])) { $forward[] = '--root=' . $project . '/src'; }
+    $process = proc_open($forward, [0 => STDIN, 1 => STDOUT, 2 => STDERR], $pipes, $project);
+    exit(is_resource($process) ? proc_close($process) : 1);
+}
+
 if ($command !== 'install') {
     fwrite(STDERR, "Usage: bin/wbe install [--root=/path] [--skip-composer] [--no-dev]\n");
+    fwrite(STDERR, "       bin/wbe user:create --email=EMAIL [--username=NAME] [--role=user|editor|admin]\n");
+    fwrite(STDERR, "       bin/wbe user:password --email=EMAIL\n");
+    fwrite(STDERR, "       bin/wbe user:list\n");
+    fwrite(STDERR, "       bin/wbe user:delete --email=EMAIL | --example [--dry-run]\n");
     exit(2);
 }
 

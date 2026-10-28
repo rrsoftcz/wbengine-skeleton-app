@@ -7,6 +7,7 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 ### Skeleton App
 
 - [Production Docker VPS deployment](docs/deploy-vps-docker.md)
+- [Users and the first login](#users-and-the-first-login) and [connecting the site to WBengine Admin](#connecting-the-site-to-wbengine-admin)
 - [Plan: refresh the example content and documentation](docs/plan-skeleton-v4-content-refresh.md)
 - [WBengine 4 migration plan for the example site](docs/plan-wbengine-4.0-migration.md)
 - [Local HTTPS certificates](etc/cert/README.md)
@@ -58,7 +59,42 @@ Open http://localhost:8080 and sign in with the demo account:
 |--------|----------|
 | `admin@example.com` | `changeme` |
 
-Change this password before the application is reachable by anyone else.
+This demo account exists only in the local stack. Replace it with your own administrator as described in [Users and the first login](#users-and-the-first-login) before the application is reachable by anyone else. The production installer (`bin/setup-production.sh`) disables the demo password, so on a production server you must create an administrator before you can sign in at all.
+
+## Users and the first login
+
+Accounts live in `cms_users` and have one of the roles `user`, `editor` and `admin`. The role is read from the database on every privileged request. There is no public registration. Accounts are managed with `bin/wbe` (it requires WBengine 4.3 or newer). Run the commands inside the web container: `docker compose exec web php bin/wbe ...` for the local stack, `docker compose -f docker-compose.production.yml exec web php bin/wbe ...` in production, or plain `php bin/wbe ...` without Docker.
+
+The recommended order on a fresh install:
+
+```bash
+# 1. create your administrator (asks for the password twice, input is hidden)
+bin/wbe user:create --email=you@your-domain.tld --role=admin
+
+# 2. sign in at /login/ with that e-mail, then remove the demo account
+bin/wbe user:delete --example --dry-run
+bin/wbe user:delete --example
+```
+
+The password is never accepted as an argument or environment variable, so it does not reach the shell history or the process list. For automation, pipe one line on standard input and use `exec -T` without a terminal: `printf '%s\n' "$PASSWORD" | docker compose exec -T web php bin/wbe user:create --email=... --role=admin`.
+
+| Command | Purpose |
+|---------|---------|
+| `bin/wbe user:create --email=EMAIL [--username=NAME] [--role=user\|editor\|admin]` | create an account |
+| `bin/wbe user:password --email=EMAIL` | set a new password (reset a forgotten one), invalidates refresh tokens |
+| `bin/wbe user:list` | list accounts, never shows hashes |
+| `bin/wbe user:delete --email=EMAIL` | delete an account; the last administrator cannot be deleted |
+| `bin/wbe user:delete --example [--dry-run]` | delete every account with an e-mail in a reserved example domain (`example.com`, `example.org`, `example.net`, `.example`, `.test`, `.invalid`, `.localhost`); refuses if no other administrator would remain |
+
+## Connecting the site to WBengine Admin
+
+The central WBengine Admin manages many sites through the API v2. Requirements on this site: WBengine 4.2 or newer, `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework migrations `4.0.0/002` and `4.0.0/007` applied (`vendor/bin/wbengine.php migration:status`) and an `admin` account.
+
+1. Sign in as `admin` and open `/integrations/`. The page checks the requirements, asks for your password and issues an integration key once. Only its hash is stored on the site.
+2. In the central Admin (`npm run admin -- invite EMAIL global`, then `/accept` and multi-factor setup for the first account), open Sites, choose Add site and enter the name, the HTTPS address and the key. The key is verified before anything is saved.
+3. Rotate a key by issuing a new one, replacing it in the Admin and only then revoking the old one.
+
+The same steps, with the error messages, are on the live site under Central administration (Connecting a site step by step). The Admin's own README has the operator side.
 
 ## Nginx and production Docker deployment
 
@@ -361,6 +397,9 @@ vendor/bin/wbengine.php config:check --config=src/Config/Settings.json --root=sr
 vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
 vendor/bin/wbengine.php migration:status --config=src/Config/Settings.json --root=src
 ```
+
+Account management has its own wrapper, `bin/wbe user:create`, `user:password`, `user:list` and
+`user:delete`; see [Users and the first login](#users-and-the-first-login).
 
 `doctor` is read-only. Review its findings in both the CLI PHP environment and the
 web worker, since extensions, OPcache and filesystem permissions may differ. For
