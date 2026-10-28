@@ -7,8 +7,8 @@
 - "Integrations" page (`/integrations/`, login required) where a local `ADMIN` issues,
   revokes and rotates API v2 integration keys for the central WBengine Admin:
   `App\Box\Central\Integrations` extends the framework box and
-  `schemas/migrations/013-integrations-page.sql` adds the site and box rows (also in the
-  fresh install dump). Requires the first WBengine release after 4.1.0 (not released yet), API v2 enabled and
+  `schemas/migrations/013-integrations-page.sql` adds the site and box rows (also appended to the
+  fresh install content dump). Requires the first WBengine release after 4.1.0 (not released yet), API v2 enabled and
   the framework migrations `4.0.0/002` and `4.0.0/007`. Do not merge before that release.
 
 ### Changed
