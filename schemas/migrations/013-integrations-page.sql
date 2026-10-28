@@ -1,6 +1,6 @@
 -- Adds the "Integrations" page (/integrations/) for the central WBengine Admin key screen.
--- Requires WBengine 4.0.3 or newer, API v2 enabled and the framework migrations
--- 4.0.0/002-api-v2-integrations.sql and 4.0.3/001-api-integration-last-used.sql.
+-- Requires the first WBengine release after 4.1.0, API v2 enabled and the framework migrations
+-- 4.0.0/002-api-v2-integrations.sql and 4.0.0/007-api-integration-last-used.sql.
 -- The page requires login (acl = 1); the framework box additionally requires the ADMIN role.
 -- Safe to run more than once. Back up before applying.
 SET NAMES utf8mb4;
