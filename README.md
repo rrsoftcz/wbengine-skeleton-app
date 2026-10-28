@@ -357,6 +357,28 @@ curl -H "Authorization: Bearer <token>" http://localhost:8080/api/sections
 
 Every route except `/api/auth/login` needs a valid token. Currently available: `auth` (login, logout, identify, revalidate), `users` (list, get, create, patch, delete), `sections` (CRUD), `translations` (content translations, editor role), `cache/flush`.
 
+## Registered box types
+
+WBengine Admin can add only boxes that the website itself registers; HTTP input just selects a type ID.
+The registration is in `src/Application.php` (`registerBoxTypes()`), which runs at startup, before the
+early API v2 handling, so `GET /api/v2/capabilities` lists the types in `box_types` and reports
+`capabilities.boxes.write: true`. The skeleton registers one type:
+
+| Type | Module | Method | Sections |
+|------|--------|--------|----------|
+| `story` | `blog` | `story` | `central` |
+
+To add your own box, create the box method (for example `src/Box/Central/Gallery.php`, method `Photos`)
+and register it in `registerBoxTypes()`:
+
+```php
+$registry->register('gallery', 'gallery', 'photos', [], ['central']);
+```
+
+Arguments: type ID, module, method, settings (named lists of allowed string values, `[]` for none) and the
+section keys where the box may be placed. The identifiers use letters, digits and underscores. Registering
+the same type twice throws a `LogicException`, so keep the `typeFor()` guard.
+
 ## Security notes
 
 * The JWT keys and reCAPTCHA secret live in `Settings.json` (or the environment variables `WBENGINE_JWT_KEY`, `WBENGINE_JWT_REFRESH_KEY`, `WBENGINE_RECAPTCHA_SECRET`). Never commit them. `Settings.json` is ignored by git.

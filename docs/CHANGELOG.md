@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Added
+
+- The site registers the box type `story` (module `blog`, method `story`, section `central`) at startup in
+  `App\Application`, so API v2 reports it in `box_types` and `capabilities.boxes.write` is true. WBengine
+  Admin can now add the article box to a page. The HTTP smoke test checks both. The README explains how to
+  register your own box types.
+
 ### Fixed
 
 - Behind host Nginx a fresh production install treated every request as plain HTTP (empty
