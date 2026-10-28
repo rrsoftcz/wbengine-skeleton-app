@@ -44,6 +44,9 @@ $check($blog['status'] === 200 && !str_contains($blog['body'], '{$'), 'Article r
 $capabilities = $public->request('/api/v2/capabilities');
 $capabilityBody = json_decode($capabilities['body'], true, 512, JSON_THROW_ON_ERROR);
 $check($capabilities['status'] === 200 && ($capabilityBody['data']['api_version'] ?? '') === '2.0', 'API v2 discovery bypasses layout rendering');
+$boxTypes = array_column($capabilityBody['data']['box_types'] ?? [], 'type');
+$check(in_array('story', $boxTypes, true), 'API v2 capabilities list the registered story box type');
+$check(($capabilityBody['data']['capabilities']['boxes']['write'] ?? false) === true, 'API v2 capabilities allow writing boxes');
 $legacy = $public->request('/api/sections/');
 $check($legacy['status'] === 401, 'Legacy API still requires authentication');
 $integrations = $public->request('/integrations/');
