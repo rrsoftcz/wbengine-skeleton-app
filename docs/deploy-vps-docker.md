@@ -80,6 +80,10 @@ certbot renew --dry-run --no-random-sleep-on-renew
 The apex domain can continue redirecting to `www` at its existing DNS host. The
 VPS needs only the `www` DNS record and certificate.
 
+Redirects such as `/blog` to `/blog/` are produced by Apache inside the container, which only sees
+plain HTTP. The sample Nginx configuration therefore contains `proxy_redirect http://$host/ https://$host/;`
+so the browser is sent to the HTTPS address in one step. Keep that line when you adapt the file.
+
 ## Updates and checks
 
 Fetch the reviewed commit, then rebuild and restart:
