@@ -21,8 +21,13 @@ Clone this repository to `/opt/wbengine-skeleton-app`, then run:
 
 ```sh
 cd /opt/wbengine-skeleton-app
-./bin/setup-production.sh
+./bin/setup-production.sh https://www.your-domain.tld
 ```
+
+The argument is the public HTTPS address of the site (it becomes `i18n.baseUrl`). Without it
+the installer uses `https://www.wbengine.org`. It also detects the Docker network gateway and
+writes it to `http.trustedProxies` with the forwarded headers `x-forwarded-for` and
+`x-forwarded-proto`, so the framework recognises HTTPS behind the host Nginx.
 
 The script generates `.env` and `src/Config/Settings.json` with server-only
 random secrets, builds the production PHP image, creates an empty MySQL volume,

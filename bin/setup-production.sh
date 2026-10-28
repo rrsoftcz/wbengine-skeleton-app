@@ -4,6 +4,15 @@ set -eu
 cd "$(dirname "$0")/.."
 umask 077
 
+# Public address of the site: ./bin/setup-production.sh https://www.example.org (or SITE_URL=...).
+SITE_URL=${1:-${SITE_URL:-https://www.wbengine.org}}
+case "$SITE_URL" in
+    https://*) ;;
+    *) echo "Error: the site address must start with https:// (got: $SITE_URL)." >&2; exit 1 ;;
+esac
+SITE_URL=${SITE_URL%/}
+export SITE_URL
+
 if [ ! -f .env ]; then
     MYSQL_ROOT_PASSWORD=$(openssl rand -hex 32)
     MYSQL_PASSWORD=$(openssl rand -hex 32)
@@ -23,10 +32,10 @@ set +a
 
 if [ ! -f src/Config/Settings.json ]; then
     docker run --rm \
-        -e MYSQL_USER -e MYSQL_PASSWORD \
+        -e MYSQL_USER -e MYSQL_PASSWORD -e SITE_URL \
         -v "$PWD:/app" -w /app php:8.4-cli php -r '
         $settings = json_decode(file_get_contents("src/Config/settings.json.default"), true, 512, JSON_THROW_ON_ERROR);
-        $settings["i18n"]["baseUrl"] = "https://www.wbengine.org";
+        $settings["i18n"]["baseUrl"] = getenv("SITE_URL");
         $settings["dbAdapterDefinition"]["username"] = getenv("MYSQL_USER");
         $settings["dbAdapterDefinition"]["password"] = getenv("MYSQL_PASSWORD");
         $settings["debug"] = false;
@@ -41,6 +50,29 @@ if [ ! -f src/Config/Settings.json ]; then
 else
     echo "Using existing Settings.json."
 fi
+
+# Host Nginx terminates TLS and reaches the web container through the Compose network gateway.
+# Trust exactly that address for X-Forwarded-For and X-Forwarded-Proto; otherwise the framework
+# sees plain HTTP and, for example, refuses to show an integration key.
+docker compose -f docker-compose.production.yml up --no-start --build
+PROJECT=$(basename "$PWD" | tr 'A-Z' 'a-z' | tr -cd 'a-z0-9_-')
+NETWORK=$(docker network ls -q --filter "label=com.docker.compose.project=$PROJECT" --filter "label=com.docker.compose.network=default")
+GATEWAY=$(docker network inspect "$NETWORK" --format '{{(index .IPAM.Config 0).Gateway}}')
+if [ -z "$GATEWAY" ]; then
+    echo "Error: could not determine the Docker network gateway; set http.trustedProxies in src/Config/Settings.json manually." >&2
+    exit 1
+fi
+export GATEWAY
+docker run --rm -e GATEWAY -v "$PWD:/app" -w /app php:8.4-cli php -r '
+    $file = "src/Config/Settings.json";
+    $settings = json_decode(file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
+    if (empty($settings["http"]["trustedProxies"])) {
+        $settings["http"]["trustedProxies"] = [getenv("GATEWAY") . "/32"];
+        $settings["http"]["forwardedHeaders"] = ["x-forwarded-for", "x-forwarded-proto"];
+        file_put_contents($file, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n", LOCK_EX);
+        echo "Trusted proxy set to " . getenv("GATEWAY") . "/32.\n";
+    }
+'
 
 docker compose -f docker-compose.production.yml up -d --build --wait
 
