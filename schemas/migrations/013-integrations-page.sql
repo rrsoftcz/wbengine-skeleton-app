@@ -7,7 +7,7 @@ SET NAMES utf8mb4;
 START TRANSACTION;
 
 INSERT INTO cms_sites (parent_id, left_id, right_id, strict, visible, link, title, html_title, html_description, html_keywords, acl)
-SELECT 1, 1, 1, 1, 0, '/integrations/', 'Integrations', 'Integrations', 'Integration keys for the central WBengine Admin', 'integrations,api', 1
+SELECT 1, 1, 1, 1, 1, '/integrations/', 'Integrations', 'Integrations', 'Integration keys for the central WBengine Admin', 'integrations,api', 1
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM cms_sites WHERE link = '/integrations/');
 

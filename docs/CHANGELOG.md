@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- The Integrations page (`/integrations/`) was inserted with `visible = 0`, but the framework resolves only
+  visible pages, so it answered 404 for everyone. Migration 013 and the content dump now use `visible = 1`;
+  installations that already applied 013 run `schemas/migrations/015-integrations-page-visible.sql`.
+  The HTTP smoke test now checks that the page redirects anonymous visitors to the login.
+
 ### Added
 
 - `bin/wbe user:create|user:password|user:list|user:delete`: account management wrappers around the
