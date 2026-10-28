@@ -11,6 +11,8 @@
 
 ### Fixed
 
+- The sample Nginx configuration rewrites absolute `http://` redirects from the container (for example `/blog` to
+  `/blog/`) to HTTPS with `proxy_redirect`. WBengine updated to 4.5.0 (article source is optional free text).
 - Behind host Nginx a fresh production install treated every request as plain HTTP (empty
   `http.trustedProxies`), so `/integrations/` refused to issue a key. `bin/setup-production.sh` now detects
   the Compose network gateway and configures `http.trustedProxies` and `http.forwardedHeaders`. The installer
