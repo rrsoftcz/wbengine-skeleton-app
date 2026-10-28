@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- "Integrations" page (`/integrations/`, login required) where a local `ADMIN` issues,
+  revokes and rotates API v2 integration keys for the central WBengine Admin:
+  `App\Box\Central\Integrations` extends the framework box and
+  `schemas/migrations/012-integrations-page.sql` adds the site and box rows (also in the
+  fresh install dump). Requires WBengine 4.0.3 or newer (not released yet), API v2 enabled and
+  the framework migrations `4.0.0/002` and `4.0.3/001`. Do not merge before that release.
+
 ### Changed
 
 - Docker setup: PHP 8.4 image, MySQL 8.4, lowercase `public/` and `schemas/`

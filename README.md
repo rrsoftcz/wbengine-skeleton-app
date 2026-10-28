@@ -140,6 +140,16 @@ then check `/cs/docs/architecture/`, `/cs/docs/rest-api/`, and
 `/cs/docs/administration/`. Rebuilding containers alone does not
 apply this content migration to an existing database.
 
+To connect the site to the central WBengine Admin, update to WBengine 4.0.3 or newer
+(not released yet), enable `apiV2`, apply the framework migrations
+`4.0.0/002-api-v2-integrations.sql` and `4.0.3/001-api-integration-last-used.sql`, then
+back up the database and apply migration 012 once. An administrator then issues the key
+on `/integrations/` over HTTPS:
+
+```sh
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/012-integrations-page.sql
+```
+
 The database image runs files under `schemas/` only when its data volume is first
 created. Rebuilding the web image does not rerun schema initialization scripts. If
 the Czech guide contains text such as `Å˜eÅ¡enÃ­`, back it up and run:

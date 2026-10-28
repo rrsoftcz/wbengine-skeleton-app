@@ -88,7 +88,7 @@ CREATE TABLE `cms_boxes` (
 
 LOCK TABLES `cms_boxes` WRITE;
 /*!40000 ALTER TABLE `cms_boxes` DISABLE KEYS */;
-INSERT INTO `cms_boxes` VALUES (1,'Jumbotron','Jumbotron','jumbotron',4,1,0,1,0,0,1,'[\"1\"]'),(2,'Login box','login','login',1,1,0,1,0,0,2,'[\"7\"]'),(3,'API','restapi','restapi',5,1,0,1,0,1,0,'[\"8\"]'),(4,'User\'s Profile','profile','profile',1,1,0,1,0,1,1,'[\"9\"]'),(5,'About box','staticBoxes','about',1,1,0,1,0,0,0,'[\"3\"]'),(6,'Article blog box','blog','story',1,1,0,1,0,0,0,'[\"2\"]');
+INSERT INTO `cms_boxes` VALUES (1,'Jumbotron','Jumbotron','jumbotron',4,1,0,1,0,0,1,'[\"1\"]'),(2,'Login box','login','login',1,1,0,1,0,0,2,'[\"7\"]'),(3,'API','restapi','restapi',5,1,0,1,0,1,0,'[\"8\"]'),(4,'User\'s Profile','profile','profile',1,1,0,1,0,1,1,'[\"9\"]'),(5,'About box','staticBoxes','about',1,1,0,1,0,0,0,'[\"3\"]'),(6,'Article blog box','blog','story',1,1,0,1,0,0,0,'[\"2\"]'),(7,'Integrations','integrations','integrations',1,1,0,1,0,1,1,'[\"10\"]');
 /*!40000 ALTER TABLE `cms_boxes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,7 +302,7 @@ CREATE TABLE `cms_sites` (
 
 LOCK TABLES `cms_sites` WRITE;
 /*!40000 ALTER TABLE `cms_sites` DISABLE KEYS */;
-INSERT INTO `cms_sites` VALUES (1,1,1,0,1,1,'/','Wbengine','Wbengine','This is Wbengine skeleton application example','wbengine,php,oop',0),(2,1,4,5,1,1,'/blog/','Simple Blog','The Simple Blog','This is a simple blog example','simple,blog',0),(3,1,4,5,1,1,'/about/','About box','The About box example','This is an about static html box example','about,box',0),(7,0,0,0,1,1,'/login/','Login','Login','Login','login',0),(8,1,1,1,0,1,'/api/','API','Api','Api','Api',0),(9,1,1,1,1,1,'/profile/','User\'s Profile','User\'s Profile','User\'s Profile','user,profile',1);
+INSERT INTO `cms_sites` VALUES (1,1,1,0,1,1,'/','Wbengine','Wbengine','This is Wbengine skeleton application example','wbengine,php,oop',0),(2,1,4,5,1,1,'/blog/','Simple Blog','The Simple Blog','This is a simple blog example','simple,blog',0),(3,1,4,5,1,1,'/about/','About box','The About box example','This is an about static html box example','about,box',0),(7,0,0,0,1,1,'/login/','Login','Login','Login','login',0),(8,1,1,1,0,1,'/api/','API','Api','Api','Api',0),(9,1,1,1,1,1,'/profile/','User\'s Profile','User\'s Profile','User\'s Profile','user,profile',1),(10,1,1,1,1,0,'/integrations/','Integrations','Integrations','Integration keys for the central WBengine Admin','integrations,api',1);
 /*!40000 ALTER TABLE `cms_sites` ENABLE KEYS */;
 UNLOCK TABLES;
 
