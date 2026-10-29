@@ -4,6 +4,7 @@
 
 ### Added
 
+- WBengine updated to 4.7.0 (API lists the languages that have a translation). Documentation of how languages are chosen in the central Admin updated by `schemas/migrations/018-language-selection-docs.sql`.
 - Documentation of languages and translations (where languages are configured, how translations are stored, how to add a language or change the default) in the Central administration article, in English and Czech. Installed sites apply `schemas/migrations/017-languages-and-translations-docs.sql`.
 - The site registers the box type `story` (module `blog`, method `story`, section `central`) at startup in
   `App\Application`, so API v2 reports it in `box_types` and `capabilities.boxes.write` is true. WBengine
