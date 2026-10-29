@@ -79,6 +79,8 @@ return [
     'doc.security' => 'Security',
     'doc.rest_api' => 'REST API',
     'doc.administration' => 'Central administration',
+    'doc.settings' => 'Settings reference',
+    'doc.deployment' => 'Deployment',
     'doc.sidebar' => 'Documentation',
     'doc.pager' => 'Previous and next page',
     'doc.prev' => 'Previous',

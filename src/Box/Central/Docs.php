@@ -24,6 +24,8 @@ class Docs extends WbengineBoxAbstract
         array('/docs/security/', 'doc.security'),
         array('/docs/rest-api/', 'doc.rest_api'),
         array('/docs/administration/', 'doc.administration'),
+        array('/docs/settings/', 'doc.settings'),
+        array('/docs/deployment/', 'doc.deployment'),
     );
 
     /**

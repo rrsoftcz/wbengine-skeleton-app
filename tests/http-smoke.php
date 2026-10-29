@@ -41,6 +41,12 @@ $missing = $public->request('/no-such-smoke-page/');
 $check($missing['status'] === 404, 'Unknown page returns 404');
 $blog = $public->request('/blog/');
 $check($blog['status'] === 200 && !str_contains($blog['body'], '{$'), 'Article rendered through native template');
+foreach (['/docs/settings/', '/docs/deployment/', '/cs/docs/settings/', '/cs/docs/deployment/'] as $docPath) {
+    $docPage = $public->request($docPath);
+    $check($docPage['status'] === 200 && !str_contains($docPage['body'], '{$'), 'Documentation page ' . $docPath . ' renders (status ' . $docPage['status'] . ')');
+}
+$check(str_contains($public->request('/docs/settings/')['body'], 'googleAnalytics.measurementId'), 'Settings reference documents the Google Analytics key');
+$check(!str_contains($home['body'], 'id="cookie-banner"') && !str_contains($home['body'], 'cookie-consent.js'), 'Without googleAnalytics.measurementId the layout has no consent banner or analytics script');
 $capabilities = $public->request('/api/v2/capabilities');
 $capabilityBody = json_decode($capabilities['body'], true, 512, JSON_THROW_ON_ERROR);
 $check($capabilities['status'] === 200 && ($capabilityBody['data']['api_version'] ?? '') === '2.0', 'API v2 discovery bypasses layout rendering');

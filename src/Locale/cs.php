@@ -79,6 +79,8 @@ return [
     'doc.security' => 'Zabezpečení',
     'doc.rest_api' => 'REST API',
     'doc.administration' => 'Centrální administrace',
+    'doc.settings' => 'Přehled nastavení',
+    'doc.deployment' => 'Nasazení',
     'doc.sidebar' => 'Dokumentace',
     'doc.pager' => 'Předchozí a další stránka',
     'doc.prev' => 'Předchozí',

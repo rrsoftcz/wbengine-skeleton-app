@@ -1,8 +1,11 @@
 // Load the Google Analytics tag only after a visitor allows analytics storage.
 (function () {
   var storageKey = 'wbengine.analytics.consent.v1';
-  var measurementId = 'G-PRGMM4N3S6';
   var banner = document.getElementById('cookie-banner');
+  // The id comes from "googleAnalytics.measurementId" in Settings.json (data attribute of the banner).
+  // Without a valid id there is no banner and nothing is loaded.
+  var measurementId = banner ? (banner.getAttribute('data-measurement-id') || '') : '';
+  if (!/^G-[A-Z0-9]{4,20}$/.test(measurementId)) { return; }
   var settingsButton = document.getElementById('cookie-settings');
   var acceptButton = document.getElementById('cookie-accept');
   var rejectButton = document.getElementById('cookie-reject');
