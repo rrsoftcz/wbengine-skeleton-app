@@ -657,7 +657,7 @@ Secrets can come from the environment instead of the file: `WBENGINE_JWT_KEY`, `
 | Key | Type, default | Effect |
 |-----|---------------|--------|
 | `renderer.adapterName` | string, `NativeRenderer` | `NativeRenderer` or the optional `SmartyRenderer`. |
-| `renderer.autoEscape` | bool, `true` | Escapes `{$value}` output. `false` is only a migration aid for old templates. |
+| `renderer.autoEscape` | bool, `true` | Escapes the output of template variables. `false` is only a migration aid for old templates. |
 | `renderer.templatesDir` | string, `/View/` | Template directory under `src/`. |
 | `renderer.compiledDir` | string, `Compiled/` | Compiled templates, must be writable by the PHP user. |
 | `renderer.configDir` | string, `/Config/` | Template configuration directory. |
@@ -860,7 +860,7 @@ Tajné hodnoty mohou místo souboru pocházet z prostředí: `WBENGINE_JWT_KEY`,
 | Klíč | Typ, výchozí hodnota | Účinek |
 |------|----------------------|--------|
 | `renderer.adapterName` | řetězec, `NativeRenderer` | `NativeRenderer` nebo volitelný `SmartyRenderer`. |
-| `renderer.autoEscape` | bool, `true` | Escapuje výstup `{$value}`. `false` je jen pomůcka při migraci starých šablon. |
+| `renderer.autoEscape` | bool, `true` | Escapuje výstup proměnných v šablonách. `false` je jen pomůcka při migraci starých šablon. |
 | `renderer.templatesDir` | řetězec, `/View/` | Adresář šablon pod `src/`. |
 | `renderer.compiledDir` | řetězec, `Compiled/` | Zkompilované šablony, uživatel PHP do něj musí smět zapisovat. |
 | `renderer.configDir` | řetězec, `/Config/` | Adresář konfigurace šablon. |
