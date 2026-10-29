@@ -4,6 +4,11 @@
 
 ### Added
 
+- Settings reference page `/docs/settings/` (every `Settings.json` key, a production example, Google Analytics) and deployment page `/docs/deployment/`, in English and Czech, added by `schemas/migrations/020-settings-reference-docs.sql` and `021-deployment-docs.sql` and mirrored in the content dump. `Docs::PAGES` and the `doc.settings` and `doc.deployment` locale keys list them in the sidebar.
+- `docs/deploy-bare-metal.md`: installation without Docker (PHP-FPM with Nginx, Apache, permissions, migration order, cron, backups, health checks, external database, shared hosting limits, running a built image) and `etc/nginx/wbengine-fpm.conf`, a unix-socket server block.
+- `.github/workflows/image.yml` builds `Dockerfile.production` on `v*` tags and pushes `ghcr.io/rrsoftcz/wbengine-skeleton-app`.
+- `googleAnalytics.measurementId` setting. The measurement id is no longer hardcoded in `public/cookie-consent.js`: the layout passes it to the script through the banner, and an empty or missing id renders no cookie banner and loads nothing. `minimizeJs` and `googleAnalytics` are in `src/Config/settings.json.default` (the id is empty); a site that used Google Analytics sets its id in its own `Settings.json`.
+- WBengine updated to 4.8.0 (`composer.lock`). Logging and audit page `/docs/logging/` (English and Czech, `schemas/migrations/022-logging-docs.sql`): what is logged where, the API audit and change log, who/what/when queries, retention and `audit:prune`, privacy notes. `schemas/migrations/023-audit-settings-and-cron-docs.sql` adds the `audit.*` keys and the production example to the settings page and `audit:prune` and the framework migration `4.8.0/008-change-log-source.sql` to the deployment page (also `docs/deploy-bare-metal.md`). `bin/setup-production.sh` applies that framework migration; installed sites with API v2 apply it once (`doctor` fails without it) and schedule `audit:prune`.
 - Documentation update for the history of changes in the central Admin: `schemas/migrations/019-history-panel-docs.sql`.
 - WBengine updated to 4.7.0 (API lists the languages that have a translation). Documentation of how languages are chosen in the central Admin updated by `schemas/migrations/018-language-selection-docs.sql`.
 - Documentation of languages and translations (where languages are configured, how translations are stored, how to add a language or change the default) in the Central administration article, in English and Czech. Installed sites apply `schemas/migrations/017-languages-and-translations-docs.sql`.
@@ -11,6 +16,10 @@
   `App\Application`, so API v2 reports it in `box_types` and `capabilities.boxes.write` is true. WBengine
   Admin can now add the article box to a page. The HTTP smoke test checks both. The README explains how to
   register your own box types.
+
+### Changed
+
+- `etc/apache2/sites-available/wbengine-production.conf` is now a documented template without a hardcoded host or environment.
 
 ### Fixed
 

@@ -3,9 +3,13 @@
   "codePage": "utf8",
   "minimizeHtml": false,
   "minimizeCss": false,
+  "minimizeJs": false,
   "debug": false,
   "apiV2": {
     "enabled": true
+  },
+  "googleAnalytics": {
+    "measurementId": ""
   },
   "cdnPath": "",
   "renderer": {

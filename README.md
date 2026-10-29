@@ -7,6 +7,7 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 ### Skeleton App
 
 - [Production Docker VPS deployment](docs/deploy-vps-docker.md)
+- [Deployment without Docker: PHP-FPM, Nginx, Apache, hybrid layouts and published images](docs/deploy-bare-metal.md)
 - [Users and the first login](#users-and-the-first-login) and [connecting the site to WBengine Admin](#connecting-the-site-to-wbengine-admin)
 - [Plan: refresh the example content and documentation](docs/plan-skeleton-v4-content-refresh.md)
 - [WBengine 4 migration plan for the example site](docs/plan-wbengine-4.0-migration.md)
@@ -100,7 +101,7 @@ The same steps, with the error messages, are on the live site under Central admi
 
 For a clean Ubuntu VPS deployment, follow the [production Docker guide](docs/deploy-vps-docker.md). It runs PHP and MySQL in containers, binds the application to `127.0.0.1:8080`, and uses host Nginx and Certbot for HTTPS. MySQL has no public host port. The procedure does not require PHP or Composer on the host.
 
-The files under `etc/nginx/` are for a separate PHP-FPM installation without the production Docker Compose stack. Do not use those PHP-FPM virtual hosts with `docker-compose.production.yml`.
+The files under `etc/nginx/` are for a separate PHP-FPM installation without the production Docker Compose stack (`wbengine-fpm.conf` is the unix-socket server block, `docs/deploy-bare-metal.md` the full procedure). Do not use those PHP-FPM virtual hosts with `docker-compose.production.yml`.
 
 The production installer does this for you: it detects the Compose network gateway (the address host Nginx appears from) and writes it to `http.trustedProxies` together with the two forwarded headers below. Without it the framework treats every request as plain HTTP and, for example, `/integrations/` refuses to show a key. Configure it manually only for another proxy layout.
 
@@ -157,6 +158,8 @@ The override (`docker-compose.https.yml`) publishes port 443, mounts `etc/cert` 
 2. Create a database and import `schemas/wbengine_skeletone_app_mysql_template.sql` and `schemas/wbengine_skeletone_app_mysql_template_content.sql`.
 3. Edit `dbAdapterDefinition` in `src/Config/Settings.json` and set production secrets through environment variables or a private config.
 4. Point the web server document root at `public/` and grant the PHP-FPM user write access to `src/View/Compiled` using ownership or a restricted group permission. Do not use `chmod 777`.
+
+The complete procedure without Docker (PHP-FPM with Nginx, Apache, permissions, migration order, cron, backups, health checks, external database, shared hosting, built images) is in [docs/deploy-bare-metal.md](docs/deploy-bare-metal.md) and on the live site at `/docs/deployment/`.
 
 Upgrading an existing database: back it up, then run the applicable scripts in
 `schemas/migrations/` once and in order. `005-content-translations.sql` creates the
@@ -228,7 +231,7 @@ apply this content migration to an existing database.
 
 To connect the site to the central WBengine Admin, update to the first WBengine release after 4.1.0
 (not released yet), enable `apiV2`, apply the framework migrations
-`4.0.0/002-api-v2-integrations.sql` and `4.0.0/007-api-integration-last-used.sql`, then
+`4.0.0/002-api-v2-integrations.sql`, `4.0.0/007-api-integration-last-used.sql` and, with WBengine 4.8.0 or newer, `4.8.0/008-change-log-source.sql` (change log columns, `doctor` fails without it), then
 back up the database and apply migration 013 once. An administrator then issues the key
 on `/integrations/` over HTTPS:
 
@@ -243,6 +246,21 @@ the Czech guide contains text such as `Å˜eÅ¡enÃ­`, back it up and run:
 ```sh
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/009-repair-czech-installation-guide-encoding.sql
 ```
+
+The settings reference page (migration 020), the deployment page (021), the logging and audit page (022) and the audit additions to the settings and deployment pages (023) are added to an installed site the same way, once, after a backup. Both migrations are idempotent and only create rows that are missing:
+
+```sh
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/020-settings-reference-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/021-deployment-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/022-logging-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/023-audit-settings-and-cron-docs.sql
+```
+
+Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework migration `vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql` (WBengine 4.8.0 or newer) and schedules `audit:prune`; see `/docs/logging/`.
+
+Then check `/docs/settings/`, `/docs/deployment/`, `/docs/logging/` and their `/cs/` versions. For a production stack use `docker-compose.production.yml` in the command; without Docker pipe the file into `mysql` directly.
+
+The Google Analytics measurement id is a setting, not code: `googleAnalytics.measurementId` in `Settings.json`. Empty (the default) renders no cookie banner and loads nothing; with an id, `public/cookie-consent.js` loads Google's tag only after the visitor allows analytics. The live demo sets its id only in its own `Settings.json`.
 
 ## The demo site
 
@@ -259,6 +277,10 @@ The skeleton is a working site that explains WBengine with itself. Every documen
 | `/docs/caching/` | data cache, page cache, invalidation | build time, query count and the `X-WBengine-Cache` header (`Demo::Caching`) |
 | `/docs/security/` | the defences, the `acl` of a site | `/profile/` redirects to the login |
 | `/docs/rest-api/` | endpoints, roles, conventions | a console that calls the API (`Demo::Api`) |
+| `/docs/administration/` | the central WBengine Admin | |
+| `/docs/settings/` | every `Settings.json` key, a production example, Google Analytics | |
+| `/docs/logging/` | what is logged where, the API audit and change log, retention, `audit:prune`, privacy | |
+| `/docs/deployment/` | installation without Docker, mirrors `docs/deploy-bare-metal.md` | |
 | `/blog/` | the framework's `Article` box | |
 | `/about/` | a static box | |
 
