@@ -475,17 +475,17 @@ workflow against the framework development branch.
 [Migration checkpoint and remaining work](docs/plan-wbengine-4.0-migration.md).
 
 
-## Izolovaný CMS benchmark WBengine 4.0
+## Isolated CMS benchmark for WBengine 4.0
 
-Po přípravě stejného smoke prostředí lze spustit:
+After preparing the same smoke environment, you can run:
 
 ```sh
 docker compose -p wbengine-skeleton-modernization -f compose.smoke.yml run --rm tools php tests/benchmark-cms.php
 ```
 
-Runner vyžaduje WBENGINE_SMOKE marker a vlastní existující seed DB. Spustí pouze svůj čtyřprocesový HTTP server na interním loopback8081, použije skutečné CSRF přihlášení a DB sessions. Mění pouze konfiguraci jednotlivých testovacích requestů a čistí jen vlastní náhodný cache adresář před každou kohortou; hlavní konfiguraci ani server nemění. Testovací router přidává měřicí hlavičky pouze zde, ne v produkci.
+The runner requires the WBENGINE_SMOKE marker and its own existing seed DB. It starts only its own four-process HTTP server on the internal loopback 8081, and uses a real CSRF login and DB sessions. It changes only the configuration of individual test requests and cleans only its own random cache directory before each cohort; it does not change the main configuration or server. The test router adds measurement headers only here, not in production.
 
-Výsledek tests/benchmark-cms-result.json obsahuje 15 kombinací cache/identity,20vzorků každé,p50/p95,throughput,HTTPerrors,SQL/spojení/paměť a skutečné HIT počty. Cookies ani hesla ve výsledku nejsou. Měření na malé lokální fixture není záruka produkčního výkonu. Throughput zahrnuje fork a sběr klientských procesů, paměť je vrchol alokovaných bajtů serveru, OPcacheCLI byl při uloženém běhu vypnutý.
+The result tests/benchmark-cms-result.json contains 15 cache/identity combinations, 20 samples each, p50/p95, throughput, HTTP errors, SQL/connections/memory and actual HIT counts. The result contains no cookies or passwords. A measurement on a small local fixture is not a guarantee of production performance. Throughput includes forking and collecting the client processes, memory is the peak of allocated bytes of the server, and OPcache CLI was disabled during the stored run.
 
 
-`tests/content-migration-smoke.php` ověřuje skutečné demo HTML články a překlady na dočasných kopiích:18suchýchplánů,8vratných bezpečných převodů a10 případů k ručnímu rozhodnutí. Původní obsah a schéma zůstávají bezezměn. Spusťte ve stejném smoke prostředí přes tools stejně jako benchmark; kompletní stav a důvody jsou v docs/plan-wbengine-4.0-migration.md.
+`tests/content-migration-smoke.php` verifies the real demo HTML articles and translations on temporary copies: 18 dry-run plans, 8 reversible safe conversions and 10 cases for manual decision. The original content and schema remain unchanged. Run it in the same smoke environment via tools, like the benchmark; the complete status and reasons are in docs/plan-wbengine-4.0-migration.md.

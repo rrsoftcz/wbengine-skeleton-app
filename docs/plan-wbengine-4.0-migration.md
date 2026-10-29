@@ -1,66 +1,66 @@
-# Migrace vzorové aplikace na WBengine 4.0
+# Migration of the sample application to WBengine 4.0
 
-Stav k 2026-10-27. Skeleton WBengine 4 je nasazen na `www.wbengine.org`. Uživatel potvrdil opravu obsahu, přepínání jazyků a angličtinu jako výchozí jazyk. Framework `v4.0.2` je uzamčen v Composer locku; aktuální commity skeletonu na `main`: `d2898d5` (jazykový přepínač a migrace průvodce) a `45dc494` (angličtina jako výchozí jazyk). Migrace obsahu `010` a nastavení `i18n.default=en`, `i18n.detect=[url]` byly nasazeny na live podle potvrzení uživatele. Historické poznámky níže o nenasazené databázi popisují tehdejší stav a tento kontrolní bod je nahrazuje.
+Status as of 2026-10-27. The WBengine 4 skeleton is deployed on `www.wbengine.org`. The user confirmed the content fix, language switching and English as the default language. Framework `v4.0.2` is locked in the Composer lock; current skeleton commits on `main`: `d2898d5` (language switcher and guide migration) and `45dc494` (English as the default language). Content migration `010` and the settings `i18n.default=en`, `i18n.detect=[url]` were deployed to live according to the user's confirmation. The historical notes below about the undeployed database describe the state at that time and this checkpoint supersedes them.
 
-## DOC-01: veřejný přehled systému a centrální správa
+## DOC-01: public system overview and central administration
 
-2026-10-27: Dokončeno a nasazeno na live. Stránka Architektura popisuje Application → Site → Section → Box → Model/Renderer/Template, průchod požadavku, rozdělení databáze a PHP a postup rozšiřování. Stránka REST API rozlišuje existující CMS API `/api/` od volitelného serverového integračního API `/api/v2`. Anglická i česká stránka centrální SvelteKit administrace popisuje její vícewebový tok přes HTTPS/API v2, role, návrhy, náhledy, publikování a řešení konfliktů; výslovně uvádí oddělenou distribuci a soukromý zdroj/release. Navigace dokumentace a úvodní stránka jsou propojené. Migrace 011 byla aplikována na live a uživatel potvrdil, že stránky fungují. Produkční obsah se při buildu automaticky nemění.
+2026-10-27: Completed and deployed to live. The Architecture page describes Application → Site → Section → Box → Model/Renderer/Template, the request flow, the split between database and PHP, and the extension procedure. The REST API page distinguishes the existing CMS API `/api/` from the optional server integration API `/api/v2`. The English and Czech pages of the central SvelteKit administration describe its multi-site flow over HTTPS/API v2, roles, proposals, previews, publishing and conflict resolution; they explicitly state the separate distribution and the private source/release. Documentation navigation and the home page are linked together. Migration 011 was applied to live and the user confirmed that the pages work. Production content is not changed automatically during the build.
 
-Akceptace: splněna podle potvrzení uživatele po nasazení. Dokumentace nevydává privátní administraci za součást PHP balíčku; další redakční rozšíření lze dělat průběžně podle zpětné vazby.
+Acceptance: met according to the user's confirmation after deployment. The documentation does not present the private administration as part of the PHP package; further editorial extensions can be made continuously based on feedback.
 
-Migrační projekt je dokončen. Dvouwebový pilot vzdálené administrace je ověřen v izolované CI a administrace zůstává samostatným SvelteKit projektem. Dalším krokem je připravit její nezávislé vydání po rozhodnutí o viditelnosti a schválení publikace. Deset historických HTML položek ponechaných pro ruční posouzení se převede jen po redakčním rozhodnutí.
+The migration project is complete. The two-site pilot of the remote administration is verified in isolated CI and the administration remains a separate SvelteKit project. The next step is to prepare its independent release after the visibility decision and publication approval. Ten historical HTML items left for manual review will be converted only after an editorial decision.
 
-## Kontrolní bod Google Analytics a souhlasu s cookies
+## Google Analytics and cookie consent checkpoint
 
-2026-10-27: Na živém webu ověřen souhlasový tok GA4 `G-PRGMM4N3S6`: při povolení se načetl `gtag.js` a odeslal měřicí požadavek; po odmítnutí se po reloadu nenačetl Google tag ani měřicí požadavek; opětovné povolení tag načetlo; následné odvolání souhlasu vedlo k reloadu bez Google tagu a měření. Původní volba uživatele byla po testu obnovena na povoleno. Lišta je dvojjazyčná a volbu ukládá pouze do localStorage. Technické ověření live je hotové. Před označením informací o cookies za úplné ještě doplnit a publikovat zásady soukromí s ověřenou identitou správce, účely, právním základem, dobou uchování, příjemci a případnými mezinárodními přenosy; tyto právní a provozní údaje nelze odvodit z kódu.
+2026-10-27: The GA4 `G-PRGMM4N3S6` consent flow was verified on the live site: on allow, `gtag.js` loaded and sent a measurement request; after refusal, neither the Google tag nor a measurement request loaded after a reload; allowing again loaded the tag; the following withdrawal of consent led to a reload without the Google tag and measurement. The user's original choice was restored to allowed after the test. The banner is bilingual and stores the choice only in localStorage. Technical verification on live is done. Before the cookie information is marked complete, a privacy policy still needs to be added and published with the verified identity of the controller, purposes, legal basis, retention period, recipients and any international transfers; these legal and operational details cannot be derived from the code.
 
-- [x] Oddělený worktree a Compose projekt, bez pevných jmen kontejnerů a veřejných portů.
-- [x] App Application/Site zachovávají lazy strom frameworku a připravují layout až po page-cache gate.
-- [x] POST logout s auth.logout CSRF, žádný GET odhlašovací odkaz, diagnostické údaje pouze při dostupnosti.
-- [x] Composer cíl ^4.0 a oddělený dev smoke manifest. Ignorovaný místní composer.lock byl aktualizován na v4.0.0 a produkční composer install proběhl; vendor obsahuje WBengine v4.0.0 bez Smarty/Texy. Soubor composer.lock zůstává ignorovaný podle existující konvence projektu.
-- [x] Reálná HTTP sada 20 kontrol lokálně zelená. RED nejprve chybějící cache HIT kvůli předčasnému user/session; potom chybějící POST logout. Login navíc odhalil Url null deprecation bez Apache aliasu, opraveno ve frameworku samostatnou regresí a commitem.
-- [x] CI workflow používá framework tag v4.0.0 a spouští izolovanou přípravu i HTTP kontroly. Přidána také kontrola produkčního Composer manifestu/locku, aby smoke profil nemohl skrýt jejich nesoulad.
-- [x] Commit/push35d2d54, draft PR#1 a jeho skutečná CI prošla.
-- [x] TPL-03: čerstvé vendor bez Smarty, kontrola dependency profilu a vyčištěné cache, znovu20HTTP kontrol green. Framework checkpoint80208da/08dc79e.
-- [x] MD-03/04: skutečných9článků+9překladů ověřeno naTEMPkopiích:18HTMLplánů,8safeapply/rollback,10manualreview bezaplikace. Původnířádky/hashe/schéma bezezměny; stávajícíHTML zůstává legacy_html.
-- [x] Finální release gate a opakovaný smoke prošly v CI pro vydaný framework tag v4.0.0. PR migrace je sloučeno; produkční nasazení ani převod provozních dat se neprovádí.
+- [x] Separate worktree and Compose project, no fixed container names and public ports.
+- [x] The App Application/Site keep the framework's lazy tree and prepare the layout only after the page-cache gate.
+- [x] POST logout with auth.logout CSRF, no GET logout link, diagnostic data only when available.
+- [x] Composer target ^4.0 and a separate dev smoke manifest. The ignored local composer.lock was updated to v4.0.0 and the production composer install ran; vendor contains WBengine v4.0.0 without Smarty/Texy. The composer.lock file remains ignored according to the project's existing convention.
+- [x] A real HTTP suite of 20 checks green locally. RED first the missing cache HIT because of a premature user/session; then the missing POST logout. The login also revealed a Url null deprecation without an Apache alias, fixed in the framework with a separate regression and commit.
+- [x] The CI workflow uses framework tag v4.0.0 and runs isolated preparation and HTTP checks. A check of the production Composer manifest/lock was also added, so that the smoke profile cannot hide a mismatch between them.
+- [x] Commit/push 35d2d54, draft PR #1 and its real CI passed.
+- [x] TPL-03: fresh vendor without Smarty, dependency profile check and cleaned caches, again 20 HTTP checks green. Framework checkpoint 80208da/08dc79e.
+- [x] MD-03/04: real 9 articles + 9 translations verified on TEMP copies: 18 HTML plans, 8 safe apply/rollback, 10 manual review without apply. Original rows/hashes/schema unchanged; existing HTML remains legacy_html.
+- [x] The final release gate and repeated smoke passed in CI for the released framework tag v4.0.0. The migration PR is merged; production deployment and conversion of operational data are not performed.
 
-Postup opakování je v README. Tests setup/seed se odmítnou spustit bez markeru izolovaného smoke prostředí. K odstranění použít pouze Compose projekt, který byl právě vytvořen, ne obecné zastavování cizích kontejnerů.
+The repeat procedure is in the README. Tests setup/seed refuse to run without the marker of the isolated smoke environment. For removal, use only the Compose project that was just created, not a general stopping of other people's containers.
 
-Rollback aplikačních změn: obnovit odpovídající public bootstrap, App služby, layout a Composer verzi, vyčistit kompilované/page/fragment/externí HTML cache. Samotné přepnutí adaptéru nestačí pro native-only set/t syntax. SQL obsahové migrace mají vlastní plán a originály; tento checkpoint je nespouští.
+Rollback of application changes: restore the corresponding public bootstrap, App services, layout and Composer version, clear the compiled/page/fragment/external HTML caches. Switching the adapter alone is not enough for the native-only set/t syntax. The SQL content migrations have their own plan and originals; this checkpoint does not run them.
 
-Kontrolní bod TPL-03: dependency-profile a reset-smoke-cache odmítají běh mimo označené izolované prostředí. CI provádí obě kontroly před HTTP sadou. Následuje MD-04 čerstvá instalace bez Texy a izolovaný obsahový pilot.
-
-
-## DX-03 a MD-04 kontrolní bod 2026-10-26
-
-Čerstvá instalace bez Smarty/Texy má pouze JWT a WBengine.20HTTPgreen, obě skutečné Composer bin proxy fungují. CI nově kontroluje i tento profil. Example apiV2.enabled=true používá časné API předCMS; obsahové endpointy vyžadují explicitní SQL002/003/005, produkční migrace se tímto neprovádí.
-
-Skutečná CMS matice dokončena:300requestů/0chyb,15kohort,konkurence4,PHP8.4.27/MySQL8.4.13,14stránek/9článků/20boxů/2uživatelé,OPcacheCLI0. Off veřejný request6SQL/1spojení,datováwarm1SQL/1spojení,pagewarm20/20HIT a0SQL/0spojení. Privátní profile a customAPI nikdysharedHIT. Přesné naměřené latence, metodika a omezení v benchmark-cms-result.json. Reálný adminformlogin+CSRF a DBsession ověřeny, konfigurace a hlavní server bezezměn.
-
-Další krok společný HTTPSAPI/adminpilot v samostatném prostředí a finálníreleasegate.
+TPL-03 checkpoint: dependency-profile and reset-smoke-cache refuse to run outside the marked isolated environment. CI runs both checks before the HTTP suite. Next is MD-04 fresh installation without Texy and an isolated content pilot.
 
 
-## Poslední ověření původu a převodu obsahu
+## DX-03 and MD-04 checkpoint 2026-10-26
 
-Zdrojové SQL obsahuje skutečné HTML fragmenty a escapované HTML ukázky. Zmínka Texy v próze neznamená Texy syntaxi, formát se neodhaduje. Nový tests/content-migration-smoke.php s markerem/DB/cache guardem kopíruje skutečné články i překlady do connection-local TEMP InnoDB a používá skutečný core Migrator/HtmlConverter a SQL004 ledger. Na původní tabulky ani schéma nezapisuje.
+A fresh installation without Smarty/Texy has only JWT and WBengine. 20 HTTP green, both real Composer bin proxies work. CI now also checks this profile. Example apiV2.enabled=true uses the early API before the CMS; content endpoints require explicit SQL 002/003/005, production migrations are not run by this.
 
-18plánů:8bezpečných (1,1:cs,5,5:cs,6,6:cs,9,9:cs) schváleno hashem pouze vTEMP, aplikováno a přesněrollbacknuto;10ručních (2,2:cs,3,3:cs,4,4:cs,7,7:cs,8,8:cs) ponecháno bezezměn. Důvody8unsupported element a2semantic mismatch. Dryrun nemění obsah ani ledger, sourceSHA256/plnéřádky/schémata shodné před/po.
+Real CMS matrix completed: 300 requests/0 errors, 15 cohorts, concurrency 4, PHP 8.4.27/MySQL 8.4.13, 14 pages/9 articles/20 boxes/2 users, OPcache CLI 0. Off public request 6 SQL/1 connection, data warm 1 SQL/1 connection, page warm 20/20 HIT and 0 SQL/0 connections. Private profile and custom API never shared HIT. Exact measured latencies, methodology and limitations are in benchmark-cms-result.json. Real admin form login + CSRF and DB session verified, configuration and main server unchanged.
 
-Jde o validní původníHTML mimo konzervativní převodní subset, nikoli vadnádata. Jeho zachování jako legacy_html je vědomá bezpečná migrační volba. Pokud provozovatel zvolí převod i těchto záznamů, musí jednotlivé layoutové/HTML konstrukce ručně přepracovat a znovu zkontrolovat render; nic se automaticky nebo ztrátově nepřepíše. Nové standardní texty používajíMarkdown. CI spouští stejné ověření předHTTPsmoke.
-
-Finální technickábrána jádra i centrály prošla na dvou nezávislých HTTPS webech včetně revokace/výpadků a skutečného dump/restore. Zbývá sloučení a zveřejnění nové verze, aktuální společný stav v plan-framework-improvements.md jádra.
+The next step is a joint HTTPS API/admin pilot in a separate environment and the final release gate.
 
 
-## Publikace
+## Last verification of content origin and conversion
 
-2026-10-26: Jádro bylo sloučeno do master jako cf710e5adbc25809868a864e615f8b9fc62a7489 a tag v4.0.0 ukazuje na tento commit. Následně byly aktualizovány CI reference na tag a sloučeny vzorová aplikace i administrace. GitHub release v4.0.0 byl vytvořen. Produkční nasazení nebylo provedeno.
+The source SQL contains real HTML fragments and escaped HTML examples. A mention of Texy in the prose does not mean Texy syntax; the format is not guessed. The new tests/content-migration-smoke.php with a marker/DB/cache guard copies the real articles and translations into connection-local TEMP InnoDB and uses the real core Migrator/HtmlConverter and the SQL004 ledger. It writes to neither the original tables nor the schema.
+
+18 plans: 8 safe (1, 1:cs, 5, 5:cs, 6, 6:cs, 9, 9:cs) approved by hash only in TEMP, applied and exactly rolled back; 10 manual (2, 2:cs, 3, 3:cs, 4, 4:cs, 7, 7:cs, 8, 8:cs) left unchanged. Reasons: 8 unsupported element and 2 semantic mismatch. Dry run changes neither content nor ledger, source SHA256/full rows/schemas identical before/after.
+
+This is valid original HTML outside the conservative conversion subset, not bad data. Keeping it as legacy_html is a deliberate safe migration choice. If the operator chooses to convert these records too, they must manually rework the individual layout/HTML constructs and re-check the render; nothing is rewritten automatically or lossily. New standard texts use Markdown. CI runs the same verification before the HTTP smoke.
+
+The final technical gate of the core and the central administration passed on two independent HTTPS sites including revocation/outages and a real dump/restore. What remains is merging and publishing the new version; the current joint status is in the core's plan-framework-improvements.md.
 
 
-## Lokální adopce v4.0 a Composer kontrola
+## Publication
 
-2026-10-26: Čistý místní checkout ../wbengine-skeleton-app byl fast-forward aktualizován na migrační commit 19fde667530a273e95ce05a118bd438c705520b5. Větev `main` nebyla přepisována; následující oprava probíhá v `codex/skeleton-app-v4-composer-lock`.
+2026-10-26: The core was merged into master as cf710e5adbc25809868a864e615f8b9fc62a7489 and tag v4.0.0 points to this commit. CI references to the tag were then updated and both the sample application and the administration were merged. GitHub release v4.0.0 was created. Production deployment was not performed.
 
-Běžná `composer validate` odhalila, že commit aplikace změnil constraint na `^4.0`, ale nepřepočítal `composer.lock`, který stále obsahoval framework v3.5.0. CI tuto zastaralou lokální lock kopii nemohla zachytit, protože `composer.lock` je v `.gitignore`; její smoke workflow navíc používalo pouze alternativní `composer.smoke.json` s path repository. Lokální lock byl aktualizován Composerem na vydaný tag v4.0.0, bez Smarty/Texy; `composer validate --no-check-publish --strict` a skutečný produkční `composer install --no-dev` prošly. Místní vendor byl aktualizován; databáze a produkční data nebyla změněna.
 
-Přidána regresní kontrola běžného `composer.json` a locku do CI před instalací odděleného smoke profilu. Ověřeno a dokončeno: PR #2 sloučeno jako b1c303460565cfbaa6023de3530a3a396b4c278d; CI main run 40390173093 úspěšně prošlo. Produkční nasazení ani úprava databáze nebyly provedeny.
+## Local adoption of v4.0 and Composer check
+
+2026-10-26: The clean local checkout ../wbengine-skeleton-app was fast-forward updated to migration commit 19fde667530a273e95ce05a118bd438c705520b5. The `main` branch was not overwritten; the following fix runs in `codex/skeleton-app-v4-composer-lock`.
+
+A regular `composer validate` revealed that the application commit changed the constraint to `^4.0` but did not recompute `composer.lock`, which still contained framework v3.5.0. CI could not catch this stale local lock copy because `composer.lock` is in `.gitignore`; its smoke workflow moreover used only the alternative `composer.smoke.json` with a path repository. The local lock was updated by Composer to the released tag v4.0.0, without Smarty/Texy; `composer validate --no-check-publish --strict` and a real production `composer install --no-dev` passed. The local vendor was updated; the database and production data were not changed.
+
+A regression check of the regular `composer.json` and the lock was added to CI before installing the separate smoke profile. Verified and completed: PR #2 merged as b1c303460565cfbaa6023de3530a3a396b4c278d; CI main run 40390173093 passed successfully. Production deployment and database modification were not performed.
