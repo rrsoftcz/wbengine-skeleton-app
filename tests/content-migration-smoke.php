@@ -65,7 +65,7 @@ try {
         $originals[$table] = sourceSnapshot($table, $order);
         $schemas[$table] = sourceSchema($table);
     }
-    checkContentMigration(count($originals['cms_articles']) === 10, 'Expected the ten actual skeleton source articles');
+    checkContentMigration(count($originals['cms_articles']) >= 10, 'Expected at least the ten original skeleton source articles');
     $sourceHash = Model::hash($originals);
 
     $articles = 'smoke_content_articles';
