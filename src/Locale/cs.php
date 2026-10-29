@@ -81,6 +81,7 @@ return [
     'doc.administration' => 'Centrální administrace',
     'doc.settings' => 'Přehled nastavení',
     'doc.deployment' => 'Nasazení',
+    'doc.logging' => 'Logování a audit',
     'doc.sidebar' => 'Dokumentace',
     'doc.pager' => 'Předchozí a další stránka',
     'doc.prev' => 'Předchozí',

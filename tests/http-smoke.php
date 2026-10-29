@@ -41,7 +41,7 @@ $missing = $public->request('/no-such-smoke-page/');
 $check($missing['status'] === 404, 'Unknown page returns 404');
 $blog = $public->request('/blog/');
 $check($blog['status'] === 200 && !str_contains($blog['body'], '{$'), 'Article rendered through native template');
-foreach (['/docs/settings/', '/docs/deployment/', '/cs/docs/settings/', '/cs/docs/deployment/'] as $docPath) {
+foreach (['/docs/settings/', '/docs/deployment/', '/docs/logging/', '/cs/docs/settings/', '/cs/docs/deployment/', '/cs/docs/logging/'] as $docPath) {
     $docPage = $public->request($docPath);
     $check($docPage['status'] === 200 && !str_contains($docPage['body'], '{$'), 'Documentation page ' . $docPath . ' renders (status ' . $docPage['status'] . ')');
 }

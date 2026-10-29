@@ -41,9 +41,10 @@ mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template_cont
 for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
     mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
 done
+mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql
 ```
 
-These are the same four framework migrations the Docker installer applies. `001` (an optional index) and `003`/`004` (Markdown columns and a conversion ledger) are not needed on a fresh install because the skeleton schema already has `content_format`. The content dump is a fresh-install seed: it is not idempotent, so never import it into a database that already has content.
+These are the same framework migrations the Docker installer applies. `4.8.0/008` (change log columns, framework 4.8.0 or newer) is required for sites that use API v2: `doctor` fails without it. `001` (an optional index) and `003`/`004` (Markdown columns and a conversion ledger) are not needed on a fresh install because the skeleton schema already has `content_format`. The content dump is a fresh-install seed: it is not idempotent, so never import it into a database that already has content.
 
 An existing installation that is upgraded to a new release applies only the new files from `schemas/migrations/` once and in numeric order (each content migration is idempotent), after a backup. A new framework release may add files under `vendor/wbengine/wbengine/migrations/`; check with `vendor/bin/wbengine.php migration:status`.
 
@@ -134,7 +135,11 @@ Native analytics keeps daily aggregates for `analytics.retentionDays`. Prune the
 17 3 * * * www-data /usr/bin/php /var/www/wbengine-skeleton-app/vendor/bin/wbengine.php analytics:prune --config=/var/www/wbengine-skeleton-app/src/Config/Settings.json --root=/var/www/wbengine-skeleton-app/src >> /var/log/wbengine-cron.log 2>&1
 ```
 
-The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line). A matching `audit:prune` command arrives with framework 4.8.0 and will be added to this schedule then.
+The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line). Framework 4.8.0 adds the change log and audit tables, which also need daily pruning (`audit.retentionDays`, see the page Logging and audit at `/docs/logging/`):
+
+```cron
+27 3 * * * www-data /usr/bin/php /var/www/wbengine-skeleton-app/vendor/bin/wbengine.php audit:prune --config=/var/www/wbengine-skeleton-app/src/Config/Settings.json --root=/var/www/wbengine-skeleton-app/src >> /var/log/wbengine-cron.log 2>&1
+```
 
 ## 9. Updates, backup and rollback
 

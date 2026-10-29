@@ -26,6 +26,7 @@ class Docs extends WbengineBoxAbstract
         array('/docs/administration/', 'doc.administration'),
         array('/docs/settings/', 'doc.settings'),
         array('/docs/deployment/', 'doc.deployment'),
+        array('/docs/logging/', 'doc.logging'),
     );
 
     /**

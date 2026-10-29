@@ -76,10 +76,11 @@ docker run --rm -e GATEWAY -v "$PWD:/app" -w /app php:8.4-cli php -r '
 
 docker compose -f docker-compose.production.yml up -d --build --wait
 
-# Prepare framework API and analytics tables from the exact installed release (007 needs WBengine 4.2 or newer).
-for migration in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
+# Prepare framework API, analytics and change log tables from the exact installed release
+# (007 needs WBengine 4.2 or newer, 008 needs 4.8.0 or newer).
+for migration in 4.0.0/002-api-v2-integrations.sql 4.0.0/005-api-content.sql 4.0.0/006-analytics.sql 4.0.0/007-api-integration-last-used.sql 4.8.0/008-change-log-source.sql; do
     docker compose -f docker-compose.production.yml exec -T web \
-        cat "vendor/wbengine/wbengine/migrations/4.0.0/$migration" \
+        cat "vendor/wbengine/wbengine/migrations/$migration" \
         | docker compose -f docker-compose.production.yml exec -T db \
             sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot wbengine_skeleton_app'
 done
