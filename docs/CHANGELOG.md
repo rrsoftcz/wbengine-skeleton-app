@@ -8,6 +8,7 @@
 
 ### Added
 
+- `schemas/migrations/028-integrations-install-docs.sql` documents the `integrations:install` command in the Connecting a site section, in English and Czech; mirrored in the content dump.
 - WBengine updated to 4.11.0 (`composer.lock`): `vendor/bin/wbengine.php integrations:install` creates the page and box for the Integrations screen on a site that lacks them.
 - WBengine updated to 4.10.1 (`composer.lock`): the integrations page lists active keys as cards and folds revoked keys away.
 - WBengine updated to 4.10.0 (`composer.lock`). `bin/update-database.sh` and `bin/setup-production.sh` also apply the remote user management update. `schemas/migrations/027-site-users-docs.sql` documents the site users and settings pages of the central administration, in English and Czech, and fixes one wording that named a release; mirrored in the content dump.
