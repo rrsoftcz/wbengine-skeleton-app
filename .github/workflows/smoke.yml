@@ -37,6 +37,9 @@ jobs:
       - name: Verify reversible content migration on temporary source copies
         working-directory: app
         run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/content-migration-smoke.php
+      - name: Verify the Google Analytics setting gates the consent banner
+        working-directory: app
+        run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/analytics-setting.php
       - name: Verify dependency profile and clear smoke caches
         working-directory: app
         run: |
