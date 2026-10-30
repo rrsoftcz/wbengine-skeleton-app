@@ -26,7 +26,7 @@ return [
     'cookies.accept' => 'Povolit analytiku',
     'cookies.reject' => 'Odmítnout volitelné cookies',
     'jumbotron.download' => 'Stáhnout kostru',
-    'hero.badge' => 'Verze 5: nativní šablony, Markdown, API v2',
+    'hero.badge' => 'Nativní šablony, Markdown, API v2',
     'hero.title_a' => 'Stavějte stránky z',
     'hero.title_b' => 'databázových řádků, ne ze šablonového balastu.',
     'hero.lead' => 'WBengine skládá každou stránku z webů, sekcí a boxů uložených v MySQL. Rychlé nativní šablony, automatické escapování, API s integračními klíči s omezeným oprávněním, dvouúrovňová cache a skutečná internacionalizace v frameworku, který přečtete za odpoledne.',

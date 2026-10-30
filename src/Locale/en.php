@@ -26,7 +26,7 @@ return [
     'cookies.accept' => 'Allow analytics',
     'cookies.reject' => 'Reject optional cookies',
     'jumbotron.download' => 'Get the skeleton',
-    'hero.badge' => 'Version 5: native templates, Markdown, API v2',
+    'hero.badge' => 'Native templates, Markdown, API v2',
     'hero.title_a' => 'Build pages from',
     'hero.title_b' => 'database rows, not boilerplate.',
     'hero.lead' => 'WBengine assembles every page from sites, sections and boxes stored in MySQL. Fast native templates, automatic escaping, an API with scoped integration keys, two level caching and real internationalisation, in a framework small enough to read in an afternoon.',
