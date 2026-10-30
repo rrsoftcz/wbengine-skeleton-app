@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Apache rewrite keeps the query string, so API v2 filters and dates (for example the analytics period) reach the framework. A client supplied `link` parameter is rejected.
+- Apache rewrite keeps the query string, so API v2 filters and dates (for example the analytics period) reach the framework.
 
 ### Added
 
