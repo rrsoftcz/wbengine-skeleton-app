@@ -22,7 +22,7 @@ UPDATE `cms_menu` SET `order`=3, `description`='Articles with the bundled box' W
 UPDATE `cms_menu` SET `order`=4, `description`='About WBengine' WHERE `menu_id`=3;
 INSERT INTO `cms_menu` (`menu_id`,`site_id`,`type`,`name`,`description`,`visible`,`order`,`parent`) VALUES (4,10,1,'Documentation','Guides and live demos',1,2,0);
 
-UPDATE `cms_articles` SET `title`='Articles with the bundled box', `introtext`='WBengine 4.0 renders article content through the bundled Article box. New articles can use safe Markdown, while existing HTML stays explicitly marked as legacy HTML.', `bodytext`='## What the Article box does
+UPDATE `cms_articles` SET `title`='Articles with the bundled box', `introtext`='WBengine renders article content through the bundled Article box. New articles can use safe Markdown, while existing HTML stays explicitly marked as legacy HTML.', `bodytext`='## What the Article box does
 
 The framework box reads the article attached to the current site, applies its declared content format, and renders the result through its own template. Translated fields live in `cms_article_translations`; each translation has its own `content_format`.
 
@@ -41,14 +41,14 @@ Write the body in Markdown.'', ''markdown'', UNIX_TIMESTAMP(), ''Editor'');
 
 Use bound parameters for application queries. Add the matching `cms_boxes` row to select the bundled `blog` box, then clear the page cache after publishing. See [Boxes](/docs/boxes/) for the page tree.', `content_format`='markdown', `author`='RRSOFT', `source`='https://github.com/rrsoftcz/wbengine' WHERE `id`=1;
 INSERT INTO `cms_articles` (`id`,`site_id`,`grouped`,`futured`,`c_enabled`,`views`,`title`,`introtext`,`bodytext`,`content_format`,`published`,`author`,`source`) VALUES
-(2,10,0,0,0,0,'Getting started','Install the WBengine 4.0 skeleton, review its Composer requirements, and run the bundled site locally before changing its content.','## Requirements
+(2,10,0,0,0,0,'Getting started','Install the WBengine skeleton, review its Composer requirements, and run the bundled site locally before changing its content.','## Requirements
 
 - PHP 8.3 or newer with `mysqli` and the extensions required by Composer dependencies.
 - MySQL 8 or MariaDB 10.6 or newer.
 - Apache with `mod_rewrite`, or Nginx with PHP-FPM.
 - Composer 2. Docker is optional.
 
-The application requires `wbengine/wbengine:^4.0`. The framework currently brings `firebase/php-jwt`; its template engine and Markdown parser are included. Check package metadata for the exact PHP platform requirements of the release you install.
+The application requires the Composer package `wbengine/wbengine`. The framework brings `firebase/php-jwt`; its template engine and Markdown parser are included. Check the package metadata for the exact PHP requirements.
 
 ## Docker quick start
 
@@ -137,7 +137,7 @@ class Welcome extends WbengineBoxAbstract
 ```
 
 Create `src/View/Central/Welcome.tpl` and bind module `welcome`, method `welcome` to a section and site in `cms_boxes`. Pass SQL values as bound parameters. Keep database access in a model when the box needs reusable query logic.','markdown',1761000000,NULL,NULL),
-(5,13,0,0,0,0,'Templates and Markdown','WBengine 4.0 uses its own compiled template engine. Markdown can be a template source file or the explicit format of an article stored in the database.','## Native templates
+(5,13,0,0,0,0,'Templates and Markdown','WBengine uses its own compiled template engine. Markdown can be a template source file or the explicit format of an article stored in the database.','## Native templates
 
 The native engine compiles `.tpl` files to PHP and can use OPcache. `{$value}` is HTML-escaped by default; `|raw` is for HTML that the application has deliberately rendered or trusted.
 
@@ -228,7 +228,7 @@ The demo credentials are for local use only. Replace them before exposing the ap
 
 Login is public. User and section administration and cache flushing require an administrator. Translation reads and writes require the editor role or higher. A missing or invalid token returns `401`; an authenticated user without the required role receives `403`. Write routes validate allowed fields.
 
-For deployment diagnostics use `vendor/bin/wbengine.php doctor`; it does not change the schema. The endpoint list and request console below this article show the CMS routes enabled by this skeleton. API v2 is enabled separately in application configuration and needs its explicit schema migrations for protected content operations. Its discovery, capabilities, resources, scopes and concurrency rules are described in the [WBengine API v2 reference](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). See also the [central administration guide](/docs/administration/).','markdown',1761000000,NULL,NULL);
+For deployment diagnostics use `vendor/bin/wbengine.php doctor`; it does not change the schema. The endpoint list and request console below this article show the CMS routes enabled by this skeleton. API v2 is enabled separately in application configuration and needs its database tables for protected content operations (see the Deployment page). Its discovery, capabilities, resources, scopes and concurrency rules are described in the [WBengine API v2 reference](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). See also the [central administration guide](/docs/administration/).','markdown',1761000000,NULL,NULL);
 
 INSERT INTO `cms_articles` (`id`,`site_id`,`grouped`,`futured`,`c_enabled`,`views`,`title`,`introtext`,`bodytext`,`content_format`,`published`,`author`,`source`) VALUES
 (10,18,0,0,0,0,'Central administration','The central administration is a separate SvelteKit application for managing content on multiple WBengine websites. It connects to each site through the optional API v2; it is not installed as a PHP or Composer dependency.','## Separate application, connected sites
@@ -243,13 +243,13 @@ Depending on the site API capabilities and the central account role, an editor c
 
 The editor handles simultaneous changes safely. Every write includes the version it was based on. If another editor or local process changed the same content, the API reports a conflict instead of silently overwriting it. The editor preserves the typed text and lets the user review the current remote version before making a new explicit save.
 
-Images supported by this release are public raster media, not private draft attachments. Box choices come from a site-side allowlist. The central client cannot choose arbitrary PHP classes, methods, SQL statements, templates or filesystem paths.
+Supported images are public raster media, not private draft attachments. Box choices come from a site-side allowlist. The central client cannot choose arbitrary PHP classes, methods, SQL statements, templates or filesystem paths.
 
 ## What it does not replace
 
 The central service is an optional content client. It does not replace WBengine, the site database, source control, deployment pipeline or server administration. Developers still change PHP classes and templates in the site project and deploy them through the normal deployment workflow for that project. Sites continue serving pages independently if the central administration is unavailable.
 
-The administration is distributed separately from the PHP framework. Its current `v0.1.0` source release is private and is not a public Composer package or public container image. The public documentation describes its architecture and supported workflow; access to the tool is managed separately.','markdown',1761000000,NULL,'https://www.wbengine.org/');
+The administration is distributed separately from the PHP framework. Its source is private and it is not a public Composer package or public container image. The public documentation describes its architecture and supported workflow; access to the tool is managed separately.','markdown',1761000000,NULL,'https://www.wbengine.org/');
 
 INSERT INTO `cms_boxes` (`id`,`name`,`module`,`method`,`section_id`,`static`,`shared`,`device_min`,`device_strict`,`acl`,`order`,`sites`) VALUES
 (7,'Features','staticBoxes','features',1,1,0,1,0,0,0,'["1"]'),
@@ -289,7 +289,7 @@ REPLACE INTO `cms_menu_translations` (`menu_id`,`locale`,`name`,`description`) V
 (4,'cs','Dokumentace','Průvodce a živé ukázky');
 
 REPLACE INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`,`content_format`) VALUES
-(1,'cs','Články s dodávaným boxem','Články vykresluje box Article dodávaný s WBengine 4.0. Nový obsah může používat bezpečný Markdown, zatímco původní HTML zůstává označené jako legacy HTML.','## Co dělá box Article
+(1,'cs','Články s dodávaným boxem','Články vykresluje box Article dodávaný s WBengine. Nový obsah může používat bezpečný Markdown, zatímco původní HTML zůstává označené jako legacy HTML.','## Co dělá box Article
 
 Frameworkový box načte článek přiřazený k webu, zpracuje jeho výslovně zvolený formát a vykreslí výsledek vlastní šablonou. Přeložená pole jsou v `cms_article_translations`; každý překlad má vlastní `content_format`.
 
@@ -305,14 +305,14 @@ VALUES (18, ''Nová stránka'', ''Krátký úvod.'', ''## Podrobnosti\\n\\nText 
 ```
 
 V aplikačních dotazech používejte vázané parametry. Přidejte odpovídající řádek `cms_boxes` pro box `blog` a po publikaci zneplatněte cache stránky. Další informace jsou v části [Boxy](/cs/docs/boxes/).','markdown'),
-(2,'cs','Začínáme','Nainstalujte skeleton WBengine 4.0, ověřte jeho Composer požadavky a spusťte web lokálně, než začnete měnit jeho obsah.','## Požadavky
+(2,'cs','Začínáme','Nainstalujte skeleton WBengine, ověřte jeho Composer požadavky a spusťte web lokálně, než začnete měnit jeho obsah.','## Požadavky
 
 - PHP 8.3 nebo novější s rozšířením `mysqli` a rozšířeními vyžadovanými Composer balíčky.
 - MySQL 8 nebo MariaDB 10.6 a novější.
 - Apache s `mod_rewrite` nebo Nginx s PHP-FPM.
 - Composer 2. Docker je volitelný.
 
-Aplikace vyžaduje `wbengine/wbengine:^4.0`. Framework aktuálně přináší `firebase/php-jwt`; template engine i parser Markdownu jsou jeho součástí. Přesné požadavky na PHP ověřte v metadatech instalované verze.
+Aplikace vyžaduje balíček Composeru `wbengine/wbengine`. Framework přináší `firebase/php-jwt`; template engine i parser Markdownu jsou jeho součástí. Přesné požadavky na PHP ověřte v metadatech balíčku.
 
 ## Rychlé spuštění v Dockeru
 
@@ -385,7 +385,7 @@ class Welcome extends WbengineBoxAbstract
 ```
 
 Vytvořte `src/View/Central/Welcome.tpl` a v `cms_boxes` spojte modul `welcome` a metodu `welcome` se sekcí a webem. Hodnoty SQL předávejte jako vázané parametry. Opakovaně použitelnou databázovou logiku umístěte do modelu.','markdown'),
-(5,'cs','Šablony a Markdown','WBengine 4.0 používá vlastní kompilovaný template engine. Markdown lze použít jako samostatný zdrojový soubor šablony i jako výslovný formát článku v databázi.','## Nativní šablony
+(5,'cs','Šablony a Markdown','WBengine používá vlastní kompilovaný template engine. Markdown lze použít jako samostatný zdrojový soubor šablony i jako výslovný formát článku v databázi.','## Nativní šablony
 
 Nativní engine kompiluje `.tpl` do PHP a může využívat OPcache. `{$value}` se standardně escapuje pro HTML; `|raw` používejte pouze pro HTML, které aplikace záměrně vykreslila nebo kterému důvěřuje.
 
@@ -476,7 +476,7 @@ Demo údaje používejte pouze lokálně. Před zveřejněním aplikace heslo zm
 
 Přihlášení je veřejné. Správa uživatelů a sekcí i vyprázdnění cache vyžadují administrátora. Čtení a změna překladů vyžadují roli editor nebo vyšší. Chybějící či neplatný token vrací `401`; přihlášený uživatel bez potřebné role dostane `403`. Zapisovací cesty kontrolují povolená pole.
 
-Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. Seznam endpointů a konzole pod tímto článkem ukazují CMS trasy zapnuté v této aplikaci. API v2 se zapíná samostatně v konfiguraci a pro chráněné obsahové operace vyžaduje explicitní migrace schématu. Discovery, capabilities, zdroje, scopes a pravidla souběžných změn popisuje [referenční dokumentace WBengine API v2](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). Viz také [centrální administrace](/cs/docs/administration/).','markdown');
+Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. Seznam endpointů a konzole pod tímto článkem ukazují CMS trasy zapnuté v této aplikaci. API v2 se zapíná samostatně v konfiguraci a pro chráněné obsahové operace vyžaduje své databázové tabulky (viz stránka Nasazení). Discovery, capabilities, zdroje, scopes a pravidla souběžných změn popisuje [referenční dokumentace WBengine API v2](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). Viz také [centrální administrace](/cs/docs/administration/).','markdown');
 
 REPLACE INTO `cms_article_translations` (`article_id`,`locale`,`title`,`introtext`,`bodytext`,`content_format`) VALUES
 (10,'cs','Centrální administrace','Centrální administrace je samostatná aplikace SvelteKit pro správu obsahu na více webech WBengine. Ke každému webu se připojuje přes volitelné API v2; není součástí PHP ani Composer balíčku.','## Samostatná aplikace, připojené weby
@@ -497,7 +497,7 @@ Obrázky podporované touto verzí jsou veřejná rastrová média, nikoli soukr
 
 Centrální služba je volitelný obsahový klient. Nenahrazuje WBengine, databázi webu, správu zdrojového kódu, nasazovací postup ani správu serveru. Vývojář mění PHP třídy a šablony v projektu webu a nasazuje je jeho běžným postupem. Weby dál fungují, i když centrální administrace není dostupná.
 
-Administrace se distribuuje odděleně od PHP frameworku. Její současné zdrojové vydání `v0.1.0` je soukromé a nejde o veřejný Composer balíček ani veřejný kontejner. Veřejná dokumentace popisuje architekturu a podporovaný postup; přístup k nástroji se řeší samostatně.','markdown');
+Administrace se distribuuje odděleně od PHP frameworku. Její zdrojový kód je soukromý a nejde o veřejný Composer balíček ani veřejný kontejner. Veřejná dokumentace popisuje architekturu a podporovaný postup; přístup k nástroji se řeší samostatně.','markdown');
 
 UPDATE `cms_articles`
 SET `introtext`='Learn which Markdown syntax WBengine supports, how source becomes safe HTML, and how file and database content differ.',
@@ -514,7 +514,7 @@ SET NAMES utf8mb4;
 
 UPDATE cms_articles
 SET introtext = 'Install and run the WBengine skeleton locally, or deploy a clean instance to an Ubuntu VPS with Docker and HTTPS.',
-    bodytext = CONCAT(bodytext, '\n\n## Clean VPS deployment with Docker\n\nThis procedure is for a new, empty Ubuntu server. It creates a new database from the schema and content committed to this repository. It does not copy a database from a development or existing website. Do not run the clean-install script against an existing database. For an existing site, first back it up and follow the versioned upgrade migrations instead.\n\nThe PHP application and MySQL run in Docker. Nginx and Certbot run on the Ubuntu host. The application port is bound to `127.0.0.1:8080`, and MySQL is not published on a host port. The optional WBengine Admin is a separate SvelteKit application and is not installed by this procedure; it can remain on a development computer and connect through a separately configured API v2 integration.\n\n### 1. Prepare DNS and firewall\n\nPoint `www.wbengine.org` to the VPS IPv4 address. Allow inbound SSH on port 22 and web traffic on ports 80 and 443 in the VPS firewall. The apex domain `wbengine.org` may continue to redirect to `www` from its current DNS host. The sample Nginx configuration serves `www.wbengine.org`.\n\n### 2. Install Docker\n\nInstall Docker Engine and the Docker Compose plugin using the [official Ubuntu instructions](https://docs.docker.com/engine/install/ubuntu/). The host does not need PHP or Composer. PHP, Composer and MySQL are provided by the application containers.\n\n### 3. Create the clean application and database\n\nInstall Git, OpenSSL, Nginx and Certbot, then clone the repository and run the production installer:\n\n```bash\napt-get update\napt-get install -y git openssl nginx certbot\ngit clone https://github.com/rrsoftcz/wbengine-skeleton-app.git /opt/wbengine-skeleton-app\ncd /opt/wbengine-skeleton-app\n./bin/setup-production.sh\n```\n\nThe installer generates private database and JWT secrets on the server, builds the production PHP image, initializes a new MySQL volume from the tracked schema and content seed, applies the API and analytics schema migrations, and replaces the documented demo password with a random unusable password. Keep `.env` and `src/Config/Settings.json` private. The script leaves analytics collection disabled. It does not import data from another database.\n\n### 4. Configure HTTPS in Nginx\n\nCreate the ACME webroot and enable the temporary HTTP-only configuration so Let''s Encrypt can verify the hostname:\n\n```bash\ninstall -d -m 755 /var/www/letsencrypt\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org-http.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nrm -f /etc/nginx/sites-enabled/default\nnginx -t && systemctl reload nginx\ncertbot certonly --webroot -w /var/www/letsencrypt -d www.wbengine.org\n```\n\nAfter the certificate is issued, switch to the TLS reverse-proxy configuration and verify renewal:\n\n```bash\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nnginx -t && systemctl reload nginx\ncertbot renew --dry-run --no-random-sleep-on-renew\n```\n\n### 5. Verify and update\n\nCheck the public site and both container health states:\n\n```bash\ncurl -I https://www.wbengine.org/\ndocker compose -f docker-compose.production.yml ps\ndocker compose -f docker-compose.production.yml logs --tail=100 web db\n```\n\nFor a later application update, fetch the reviewed commit and rebuild the web image:\n\n```bash\ngit pull --ff-only\ndocker compose -f docker-compose.production.yml up -d --build --wait\n```\n\nThe database volume persists across image rebuilds. New database migrations must be reviewed and applied once as described by their release notes. Never expose MySQL port 3306 publicly. The complete versioned procedure is also in [the repository deployment guide](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md).')
+    bodytext = CONCAT(bodytext, '\n\n## Clean VPS deployment with Docker\n\nThis procedure is for a new, empty Ubuntu server. It creates a new database from the schema and content committed to this repository. It does not copy a database from a development or existing website. Do not run the clean-install script against an existing database. For an existing site, first back it up and follow the upgrade procedure instead.\n\nThe PHP application and MySQL run in Docker. Nginx and Certbot run on the Ubuntu host. The application port is bound to `127.0.0.1:8080`, and MySQL is not published on a host port. The optional WBengine Admin is a separate SvelteKit application and is not installed by this procedure; it can remain on a development computer and connect through a separately configured API v2 integration.\n\n### 1. Prepare DNS and firewall\n\nPoint `www.wbengine.org` to the VPS IPv4 address. Allow inbound SSH on port 22 and web traffic on ports 80 and 443 in the VPS firewall. The apex domain `wbengine.org` may continue to redirect to `www` from its current DNS host. The sample Nginx configuration serves `www.wbengine.org`.\n\n### 2. Install Docker\n\nInstall Docker Engine and the Docker Compose plugin using the [official Ubuntu instructions](https://docs.docker.com/engine/install/ubuntu/). The host does not need PHP or Composer. PHP, Composer and MySQL are provided by the application containers.\n\n### 3. Create the clean application and database\n\nInstall Git, OpenSSL, Nginx and Certbot, then clone the repository and run the production installer:\n\n```bash\napt-get update\napt-get install -y git openssl nginx certbot\ngit clone https://github.com/rrsoftcz/wbengine-skeleton-app.git /opt/wbengine-skeleton-app\ncd /opt/wbengine-skeleton-app\n./bin/setup-production.sh\n```\n\nThe installer generates private database and JWT secrets on the server, builds the production PHP image, initializes a new MySQL volume from the tracked schema and content seed, creates the API and analytics tables, and replaces the documented demo password with a random unusable password. Keep `.env` and `src/Config/Settings.json` private. The script leaves analytics collection disabled. It does not import data from another database.\n\n### 4. Configure HTTPS in Nginx\n\nCreate the ACME webroot and enable the temporary HTTP-only configuration so Let''s Encrypt can verify the hostname:\n\n```bash\ninstall -d -m 755 /var/www/letsencrypt\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org-http.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nrm -f /etc/nginx/sites-enabled/default\nnginx -t && systemctl reload nginx\ncertbot certonly --webroot -w /var/www/letsencrypt -d www.wbengine.org\n```\n\nAfter the certificate is issued, switch to the TLS reverse-proxy configuration and verify renewal:\n\n```bash\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nnginx -t && systemctl reload nginx\ncertbot renew --dry-run --no-random-sleep-on-renew\n```\n\n### 5. Verify and update\n\nCheck the public site and both container health states:\n\n```bash\ncurl -I https://www.wbengine.org/\ndocker compose -f docker-compose.production.yml ps\ndocker compose -f docker-compose.production.yml logs --tail=100 web db\n```\n\nFor a later application update, fetch the reviewed commit and rebuild the web image:\n\n```bash\ngit pull --ff-only\ndocker compose -f docker-compose.production.yml up -d --build --wait\n```\n\nThe database volume persists across image rebuilds. Database updates of a newer version must be applied once, after a backup (see the Deployment page). Never expose MySQL port 3306 publicly. The complete procedure is also in [the repository deployment guide](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md).')
 WHERE id = 2
   AND site_id = 10
   AND title = 'Getting started'
@@ -522,7 +522,7 @@ WHERE id = 2
 
 UPDATE cms_article_translations
 SET introtext = 'Nainstalujte WBengine skeleton lokálně nebo nasaďte čistou instalaci na Ubuntu VPS pomocí Dockeru a HTTPS.',
-    bodytext = CONCAT(bodytext, '\n\n## Čisté nasazení na VPS pomocí Dockeru\n\nTento postup je určený pro nový, prázdný server s Ubuntu. Vytvoří novou databázi z aktuálního schématu a obsahu v tomto repozitáři. Nekopíruje databázi z vývojového ani již provozovaného webu. Instalační skript pro čistou instalaci nespouštějte nad existující databází. Při upgradu existujícího webu nejprve vytvořte zálohu a postupujte podle verzovaných databázových migrací.\n\nPHP aplikace a MySQL poběží v Dockeru. Nginx a Certbot poběží přímo na serveru Ubuntu. Aplikační port bude dostupný pouze přes `127.0.0.1:8080` a MySQL nebude publikováno na port serveru. Volitelná administrace WBengine Admin je samostatná aplikace SvelteKit a tento postup ji neinstaluje. Může zůstat na vývojovém počítači a připojit se přes samostatně nastavenou integraci API v2.\n\n### 1. Připravte DNS a firewall\n\nNasměrujte `www.wbengine.org` na IPv4 adresu VPS. Ve firewallu povolte příchozí SSH na portu 22 a webový provoz na portech 80 a 443. Doména `wbengine.org` může dál přesměrovávat na `www` ze svého současného DNS hostingu. Přiložená konfigurace Nginx obsluhuje `www.wbengine.org`.\n\n### 2. Nainstalujte Docker\n\nNainstalujte Docker Engine a plugin Docker Compose podle [oficiálního návodu pro Ubuntu](https://docs.docker.com/engine/install/ubuntu/). Na hostiteli není potřeba PHP ani Composer. PHP, Composer a MySQL poskytují aplikační kontejnery.\n\n### 3. Vytvořte čistou aplikaci a databázi\n\nNainstalujte Git, OpenSSL, Nginx a Certbot, potom naklonujte repozitář a spusťte produkční instalátor:\n\n```bash\napt-get update\napt-get install -y git openssl nginx certbot\ngit clone https://github.com/rrsoftcz/wbengine-skeleton-app.git /opt/wbengine-skeleton-app\ncd /opt/wbengine-skeleton-app\n./bin/setup-production.sh\n```\n\nInstalátor na serveru vytvoří soukromé databázové a JWT klíče, sestaví produkční PHP image, naplní nový svazek MySQL verzovaným schématem a obsahem, aplikuje databázové migrace API a analytiky a nahradí veřejně známé demo heslo náhodným nepoužitelným heslem. Soubory `.env` a `src/Config/Settings.json` chraňte jako tajné. Sběr vlastní analytiky zůstane vypnutý. Skript nepřenáší data z jiné databáze.\n\n### 4. Nastavte HTTPS v Nginx\n\nVytvořte webroot ACME a zapněte dočasnou HTTP konfiguraci, aby Let''s Encrypt ověřil doménu:\n\n```bash\ninstall -d -m 755 /var/www/letsencrypt\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org-http.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nrm -f /etc/nginx/sites-enabled/default\nnginx -t && systemctl reload nginx\ncertbot certonly --webroot -w /var/www/letsencrypt -d www.wbengine.org\n```\n\nPo vydání certifikátu přepněte na TLS reverse proxy a ověřte obnovu:\n\n```bash\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nnginx -t && systemctl reload nginx\ncertbot renew --dry-run --no-random-sleep-on-renew\n```\n\n### 5. Ověřte a aktualizujte web\n\nZkontrolujte veřejný web a stav obou kontejnerů:\n\n```bash\ncurl -I https://www.wbengine.org/\ndocker compose -f docker-compose.production.yml ps\ndocker compose -f docker-compose.production.yml logs --tail=100 web db\n```\n\nPři pozdější aktualizaci aplikace stáhněte schválený commit a znovu sestavte webový image:\n\n```bash\ngit pull --ff-only\ndocker compose -f docker-compose.production.yml up -d --build --wait\n```\n\nDatabázový svazek zůstává zachovaný při sestavení nového image. Nové databázové migrace nejprve zkontrolujte a aplikujte jednou podle poznámek konkrétní verze. Nikdy veřejně nevystavujte port MySQL 3306. Kompletní verzovaný postup je také v [produkčním návodu repozitáře](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md).')
+    bodytext = CONCAT(bodytext, '\n\n## Čisté nasazení na VPS pomocí Dockeru\n\nTento postup je určený pro nový, prázdný server s Ubuntu. Vytvoří novou databázi z aktuálního schématu a obsahu v tomto repozitáři. Nekopíruje databázi z vývojového ani již provozovaného webu. Instalační skript pro čistou instalaci nespouštějte nad existující databází. Při upgradu existujícího webu nejprve vytvořte zálohu a postupujte podle postupu pro upgrade.\n\nPHP aplikace a MySQL poběží v Dockeru. Nginx a Certbot poběží přímo na serveru Ubuntu. Aplikační port bude dostupný pouze přes `127.0.0.1:8080` a MySQL nebude publikováno na port serveru. Volitelná administrace WBengine Admin je samostatná aplikace SvelteKit a tento postup ji neinstaluje. Může zůstat na vývojovém počítači a připojit se přes samostatně nastavenou integraci API v2.\n\n### 1. Připravte DNS a firewall\n\nNasměrujte `www.wbengine.org` na IPv4 adresu VPS. Ve firewallu povolte příchozí SSH na portu 22 a webový provoz na portech 80 a 443. Doména `wbengine.org` může dál přesměrovávat na `www` ze svého současného DNS hostingu. Přiložená konfigurace Nginx obsluhuje `www.wbengine.org`.\n\n### 2. Nainstalujte Docker\n\nNainstalujte Docker Engine a plugin Docker Compose podle [oficiálního návodu pro Ubuntu](https://docs.docker.com/engine/install/ubuntu/). Na hostiteli není potřeba PHP ani Composer. PHP, Composer a MySQL poskytují aplikační kontejnery.\n\n### 3. Vytvořte čistou aplikaci a databázi\n\nNainstalujte Git, OpenSSL, Nginx a Certbot, potom naklonujte repozitář a spusťte produkční instalátor:\n\n```bash\napt-get update\napt-get install -y git openssl nginx certbot\ngit clone https://github.com/rrsoftcz/wbengine-skeleton-app.git /opt/wbengine-skeleton-app\ncd /opt/wbengine-skeleton-app\n./bin/setup-production.sh\n```\n\nInstalátor na serveru vytvoří soukromé databázové a JWT klíče, sestaví produkční PHP image, naplní nový svazek MySQL schématem a obsahem, vytvoří tabulky API a analytiky a nahradí veřejně známé demo heslo náhodným nepoužitelným heslem. Soubory `.env` a `src/Config/Settings.json` chraňte jako tajné. Sběr vlastní analytiky zůstane vypnutý. Skript nepřenáší data z jiné databáze.\n\n### 4. Nastavte HTTPS v Nginx\n\nVytvořte webroot ACME a zapněte dočasnou HTTP konfiguraci, aby Let''s Encrypt ověřil doménu:\n\n```bash\ninstall -d -m 755 /var/www/letsencrypt\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org-http.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nrm -f /etc/nginx/sites-enabled/default\nnginx -t && systemctl reload nginx\ncertbot certonly --webroot -w /var/www/letsencrypt -d www.wbengine.org\n```\n\nPo vydání certifikátu přepněte na TLS reverse proxy a ověřte obnovu:\n\n```bash\nln -sfn /opt/wbengine-skeleton-app/deploy/nginx/www.wbengine.org.conf /etc/nginx/sites-enabled/www.wbengine.org.conf\nnginx -t && systemctl reload nginx\ncertbot renew --dry-run --no-random-sleep-on-renew\n```\n\n### 5. Ověřte a aktualizujte web\n\nZkontrolujte veřejný web a stav obou kontejnerů:\n\n```bash\ncurl -I https://www.wbengine.org/\ndocker compose -f docker-compose.production.yml ps\ndocker compose -f docker-compose.production.yml logs --tail=100 web db\n```\n\nPři pozdější aktualizaci aplikace stáhněte schválený commit a znovu sestavte webový image:\n\n```bash\ngit pull --ff-only\ndocker compose -f docker-compose.production.yml up -d --build --wait\n```\n\nDatabázový svazek zůstává zachovaný při sestavení nového image. Databázové aktualizace nové verze použijte jednou po záloze (viz stránka Nasazení). Nikdy veřejně nevystavujte port MySQL 3306. Kompletní postup je také v [produkčním návodu repozitáře](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md).')
 WHERE article_id = 2
   AND locale = 'cs'
   AND LOCATE('## Čisté nasazení na VPS pomocí Dockeru', bodytext) = 0;
@@ -555,13 +555,13 @@ WHERE article_id = 2
   AND LOCATE('## Uživatelé a první přihlášení', bodytext) = 0;
 
 UPDATE cms_articles
-SET bodytext = CONCAT(bodytext, '\n\n## Connecting a site step by step\n\nThe central WBengine Admin is a separate application (for example at https://admin.example.org) that manages many sites through the API v2. A site is connected once; afterwards editors work in the central application.\n\nRequirements on the site: WBengine 4.2 or newer, `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework migrations `4.0.0/002` and `4.0.0/007` applied (check with `vendor/bin/wbengine.php migration:status`) and an account with the role `admin` (see Users and the first login on the Getting started page).\n\n1. On the site, sign in as administrator and open `/integrations/`. If something is missing, the page lists what to fix before it issues a key.\n2. Confirm your password, keep the suggested name and issue the key. The key, the site address and the suggested name are shown once. The site stores only a hash of the key, so a lost key cannot be shown again: issue a new one.\n3. In the central Admin, sign in with your password and the one-time code from your authenticator app. Every central account uses multi-factor authentication. The operator creates accounts with `npm run admin -- invite EMAIL global` on the Admin server, and the person activates the account at `/accept`.\n4. Open Sites, choose Add site and enter the name, the HTTPS address and the key. Before anything is saved, the Admin verifies the key against the site (`capabilities` and `identity`, all 17 scopes of the Site management profile). The key is then stored encrypted and is never sent to the browser again.\n5. The site appears in the list at once. To rotate a key, issue a new one on the site, paste it under Replace integration key in the Admin and only then revoke the old key on the site''s `/integrations/` page.\n\nTypical problems and their meaning:\n\n- *The key is not valid or was revoked*: issue a new key on the site.\n- *The key lacks permissions*: issue the key again with the full Site management profile.\n- *API v2 is not available*: enable `apiV2` and apply the framework migrations, then reload.\n- *Too many failed attempts*: the site limits failures per address, wait a few minutes.\n- *The site is already registered*: the address is unique in the central Admin.')
+SET bodytext = CONCAT(bodytext, '\n\n## Connecting a site step by step\n\nThe central WBengine Admin is a separate application (for example at https://admin.example.org) that manages many sites through the API v2. A site is connected once; afterwards editors work in the central application.\n\nRequirements on the site: `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework database updates applied (`sh bin/update-database.sh`, check with `vendor/bin/wbengine.php migration:status`) and an account with the role `admin` (see Users and the first login on the Getting started page).\n\n1. On the site, sign in as administrator and open `/integrations/`. If something is missing, the page lists what to fix before it issues a key.\n2. Confirm your password, keep the suggested name and issue the key. The key, the site address and the suggested name are shown once. The site stores only a hash of the key, so a lost key cannot be shown again: issue a new one.\n3. In the central Admin, sign in with your password and the one-time code from your authenticator app. Every central account uses multi-factor authentication. The operator creates accounts with `npm run admin -- invite EMAIL global` on the Admin server, and the person activates the account at `/accept`.\n4. Open Sites, choose Add site and enter the name, the HTTPS address and the key. Before anything is saved, the Admin verifies the key against the site (`capabilities` and `identity`, all 17 scopes of the Site management profile). The key is then stored encrypted and is never sent to the browser again.\n5. The site appears in the list at once. To rotate a key, issue a new one on the site, paste it under Replace integration key in the Admin and only then revoke the old key on the site''s `/integrations/` page.\n\nTypical problems and their meaning:\n\n- *The key is not valid or was revoked*: issue a new key on the site.\n- *The key lacks permissions*: issue the key again with the full Site management profile.\n- *API v2 is not available*: enable `apiV2` and apply the framework database updates, then reload.\n- *Too many failed attempts*: the site limits failures per address, wait a few minutes.\n- *The site is already registered*: the address is unique in the central Admin.')
 WHERE site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/administration/' ORDER BY site_id LIMIT 1)
   AND title = 'Central administration'
   AND LOCATE('## Connecting a site step by step', bodytext) = 0;
 
 UPDATE cms_article_translations
-SET bodytext = CONCAT(bodytext, '\n\n## Připojení webu krok za krokem\n\nCentrální WBengine Admin je samostatná aplikace (například na https://admin.example.org), která spravuje více webů přes API v2. Web se připojuje jednou, poté redaktoři pracují v centrální aplikaci.\n\nPožadavky na webu: WBengine 4.2 nebo novější, v `Settings.json` nastavené `apiV2.enabled` na `true`, HTTPS, aplikované migrace frameworku `4.0.0/002` a `4.0.0/007` (ověřte příkazem `vendor/bin/wbengine.php migration:status`) a účet s rolí `admin` (viz Uživatelé a první přihlášení na stránce Začínáme).\n\n1. Na webu se přihlaste jako správce a otevřete `/integrations/`. Pokud něco chybí, stránka vypíše, co je třeba opravit, než klíč vydá.\n2. Potvrďte heslo, ponechte navržený název a vydejte klíč. Klíč, adresa webu a navržený název se zobrazí jen jednou. Web ukládá pouze hash klíče, takže ztracený klíč nelze znovu zobrazit: vydejte nový.\n3. V centrálním Adminu se přihlaste heslem a jednorázovým kódem z autentizační aplikace. Každý centrální účet používá vícefázové ověření. Účty zakládá provozovatel na serveru Adminu příkazem `npm run admin -- invite EMAIL global`, osoba účet aktivuje na `/accept`.\n4. Otevřete Weby, zvolte Přidat web a vyplňte název, HTTPS adresu a klíč. Před uložením Admin klíč ověří proti webu (`capabilities` a `identity`, všech 17 oprávnění profilu Správa webu). Klíč se poté uloží šifrovaně a do prohlížeče se už nikdy nevrací.\n5. Web se ihned objeví v seznamu. Klíč vyměníte tak, že na webu vydáte nový, vložíte jej v Adminu do části Vyměnit integrační klíč a teprve potom odvoláte starý klíč na stránce `/integrations/` webu.\n\nTypické potíže a jejich význam:\n\n- *Klíč není platný nebo byl odvolán*: vydejte na webu nový klíč.\n- *Klíč nemá všechna oprávnění*: vydejte klíč znovu s úplným profilem Správa webu.\n- *API v2 není dostupné*: zapněte `apiV2`, aplikujte migrace frameworku a načtěte stránku znovu.\n- *Příliš mnoho neúspěšných pokusů*: web omezuje neúspěchy podle adresy, počkejte několik minut.\n- *Web už je zaregistrovaný*: adresa je v centrálním Adminu jednoznačná.')
+SET bodytext = CONCAT(bodytext, '\n\n## Připojení webu krok za krokem\n\nCentrální WBengine Admin je samostatná aplikace (například na https://admin.example.org), která spravuje více webů přes API v2. Web se připojuje jednou, poté redaktoři pracují v centrální aplikaci.\n\nPožadavky na webu: v `Settings.json` nastavené `apiV2.enabled` na `true`, HTTPS, použité databázové aktualizace frameworku (`sh bin/update-database.sh`, ověřte příkazem `vendor/bin/wbengine.php migration:status`) a účet s rolí `admin` (viz Uživatelé a první přihlášení na stránce Začínáme).\n\n1. Na webu se přihlaste jako správce a otevřete `/integrations/`. Pokud něco chybí, stránka vypíše, co je třeba opravit, než klíč vydá.\n2. Potvrďte heslo, ponechte navržený název a vydejte klíč. Klíč, adresa webu a navržený název se zobrazí jen jednou. Web ukládá pouze hash klíče, takže ztracený klíč nelze znovu zobrazit: vydejte nový.\n3. V centrálním Adminu se přihlaste heslem a jednorázovým kódem z autentizační aplikace. Každý centrální účet používá vícefázové ověření. Účty zakládá provozovatel na serveru Adminu příkazem `npm run admin -- invite EMAIL global`, osoba účet aktivuje na `/accept`.\n4. Otevřete Weby, zvolte Přidat web a vyplňte název, HTTPS adresu a klíč. Před uložením Admin klíč ověří proti webu (`capabilities` a `identity`, všech 17 oprávnění profilu Správa webu). Klíč se poté uloží šifrovaně a do prohlížeče se už nikdy nevrací.\n5. Web se ihned objeví v seznamu. Klíč vyměníte tak, že na webu vydáte nový, vložíte jej v Adminu do části Vyměnit integrační klíč a teprve potom odvoláte starý klíč na stránce `/integrations/` webu.\n\nTypické potíže a jejich význam:\n\n- *Klíč není platný nebo byl odvolán*: vydejte na webu nový klíč.\n- *Klíč nemá všechna oprávnění*: vydejte klíč znovu s úplným profilem Správa webu.\n- *API v2 není dostupné*: zapněte `apiV2`, použijte databázové aktualizace frameworku a načtěte stránku znovu.\n- *Příliš mnoho neúspěšných pokusů*: web omezuje neúspěchy podle adresy, počkejte několik minut.\n- *Web už je zaregistrovaný*: adresa je v centrálním Adminu jednoznačná.')
 WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/administration/' ORDER BY site_id LIMIT 1) AND title = 'Central administration' ORDER BY id LIMIT 1) AS a)
   AND locale = 'cs'
   AND LOCATE('## Připojení webu krok za krokem', bodytext) = 0;
@@ -598,12 +598,12 @@ WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = 
 
 -- Language selection in the central Admin (schemas/migrations/018-language-selection-docs.sql).
 UPDATE cms_articles
-SET bodytext = REPLACE(bodytext, 'Open an article, a page or a menu item. The right column shows **Language versions**: every language of the site with the state **Original**, **Translation exists** or **Translation missing**. Use **Edit original** for the large form, or **Edit translation** and **Add translation** for the language you chose.', 'The lists of articles, pages and menu items have a **Languages** column such as "3 of 20 languages"; expanding it shows which languages are missing. In a record, the **Content language** select above the form groups the languages as original, translated and missing. Choosing a language loads its content into the same form. The history of changes is hidden until you click **Show history**. The status of translations needs WBengine 4.7.0 or newer on the site.')
+SET bodytext = REPLACE(bodytext, 'Open an article, a page or a menu item. The right column shows **Language versions**: every language of the site with the state **Original**, **Translation exists** or **Translation missing**. Use **Edit original** for the large form, or **Edit translation** and **Add translation** for the language you chose.', 'The lists of articles, pages and menu items have a **Languages** column such as "3 of 20 languages"; expanding it shows which languages are missing. In a record, the **Content language** select above the form groups the languages as original, translated and missing. Choosing a language loads its content into the same form. The history of changes is hidden until you click **Show history**.')
 WHERE id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/administration/' ORDER BY site_id LIMIT 1) AND title = 'Central administration' ORDER BY id LIMIT 1) AS a)
   AND LOCATE('Content language', bodytext) = 0;
 
 UPDATE cms_article_translations
-SET bodytext = REPLACE(bodytext, 'Otevřete článek, stránku nebo položku menu. V pravém sloupci jsou **Jazykové verze**: každý jazyk webu se stavem **Originál**, **Překlad existuje** nebo **Překlad zatím chybí**. Pro velký formulář použijte **Upravit originál**, pro vybraný jazyk **Upravit překlad** nebo **Přidat překlad**.', 'V seznamech článků, stránek a menu je sloupec **Jazyky**, například „3 z 20 jazyků“. Po rozkliknutí se ukáže, které jazyky chybí. V záznamu je nad formulářem roletka **Jazyk obsahu**, která jazyky seskupuje na originál, přeloženo a chybí. Po výběru jazyka se jeho obsah načte do téhož formuláře. Historie změn je skrytá, dokud neklepnete na **Zobrazit historii**. Stav překladů vyžaduje na webu WBengine 4.7.0 nebo novější.')
+SET bodytext = REPLACE(bodytext, 'Otevřete článek, stránku nebo položku menu. V pravém sloupci jsou **Jazykové verze**: každý jazyk webu se stavem **Originál**, **Překlad existuje** nebo **Překlad zatím chybí**. Pro velký formulář použijte **Upravit originál**, pro vybraný jazyk **Upravit překlad** nebo **Přidat překlad**.', 'V seznamech článků, stránek a menu je sloupec **Jazyky**, například „3 z 20 jazyků“. Po rozkliknutí se ukáže, které jazyky chybí. V záznamu je nad formulářem roletka **Jazyk obsahu**, která jazyky seskupuje na originál, přeloženo a chybí. Po výběru jazyka se jeho obsah načte do téhož formuláře. Historie změn je skrytá, dokud neklepnete na **Zobrazit historii**.')
 WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/administration/' ORDER BY site_id LIMIT 1) AND title = 'Central administration' ORDER BY id LIMIT 1) AS a)
   AND locale = 'cs'
   AND LOCATE('Jazyk obsahu', bodytext) = 0;
@@ -645,7 +645,7 @@ Secrets can come from the environment instead of the file: `WBENGINE_JWT_KEY`, `
 | `timeZone` | string, `Europe/Prague` | PHP time zone of the application. Required. |
 | `codePage` | string, `utf8` | Charset sent in the HTML header. Keep `utf8`. |
 | `debug` | bool, `false` | Shows the debug bar and detailed errors. Never `true` in production. `WBENGINE_DEBUG` overrides it. |
-| `minimizeHtml` | bool, `false` | Deprecated and ignored by the dispatcher since 4.0. Kept in the default file for old templates. |
+| `minimizeHtml` | bool, `false` | Deprecated and ignored by the dispatcher. Kept in the default file for old templates. |
 | `minimizeCss` | bool, `false` | Combines and minimizes the files listed in `cssFiles`. |
 | `minimizeJs` | bool, `false` | Same for scripts. Not in older files: add it explicitly, the framework reads the key directly. |
 | `cssFiles` | array, `[]` | CSS files combined when `minimizeCss` is on. |
@@ -738,7 +738,7 @@ The rate limit uses the client address, so it only works correctly when `http.tr
 
 | Key | Type, default | Effect |
 |-----|---------------|--------|
-| `analytics.enabled` | bool, `false` | Collects identity-free daily aggregates (no cookies, no addresses). Needs the framework migration `006-analytics.sql`. |
+| `analytics.enabled` | bool, `false` | Collects identity-free daily aggregates (no cookies, no addresses). Needs the analytics tables (see the Deployment page). |
 | `analytics.timezone` | string, `UTC` | IANA time zone in which days are cut. Invalid values throw. |
 | `analytics.retentionDays` | int, `62` | How long daily rows are kept, 31 to 365. Run `analytics:prune` from cron daily. |
 
@@ -760,7 +760,7 @@ The skeleton does not load Google''s tag on its own. When the id is set, the lay
 
 | Key | Type, default | Effect |
 |-----|---------------|--------|
-| `apiV2.enabled` | bool, `false` (the skeleton sets `true`) | Turns on the server-to-server API v2 used by the central Admin. Needs HTTPS and the framework migrations. |
+| `apiV2.enabled` | bool, `false` (the skeleton sets `true`) | Turns on the server-to-server API v2 used by the central Admin. Needs HTTPS and the API tables. |
 | `apiV2.imageDirectory` | string, unset | Absolute directory for images uploaded through API v2. Unset means image upload is unavailable. Overridden by `WBENGINE_IMAGE_DIR`. Keep it outside `public/`, writable by PHP. Files are PNG, JPEG or WebP up to 512 KiB. |
 
 ## Production example
@@ -848,7 +848,7 @@ Tajné hodnoty mohou místo souboru pocházet z prostředí: `WBENGINE_JWT_KEY`,
 | `timeZone` | řetězec, `Europe/Prague` | Časové pásmo PHP aplikace. Povinné. |
 | `codePage` | řetězec, `utf8` | Znaková sada v hlavičce HTML. Ponechte `utf8`. |
 | `debug` | bool, `false` | Zobrazí ladicí lištu a podrobné chyby. V produkci nikdy `true`. Přepíše ho `WBENGINE_DEBUG`. |
-| `minimizeHtml` | bool, `false` | Zastaralé, od verze 4.0 ho dispečer ignoruje. Zůstává ve výchozím souboru kvůli starým šablonám. |
+| `minimizeHtml` | bool, `false` | Zastaralé, dispečer ho ignoruje. Zůstává ve výchozím souboru kvůli starým šablonám. |
 | `minimizeCss` | bool, `false` | Spojí a zmenší soubory z `cssFiles`. |
 | `minimizeJs` | bool, `false` | Totéž pro skripty. Ve starších souborech chybí: přidejte ho výslovně, framework klíč čte přímo. |
 | `cssFiles` | pole, `[]` | Soubory CSS spojované při zapnutém `minimizeCss`. |
@@ -941,7 +941,7 @@ Limit pokusů používá adresu klienta, proto za proxy funguje správně jen p�
 
 | Klíč | Typ, výchozí hodnota | Účinek |
 |------|----------------------|--------|
-| `analytics.enabled` | bool, `false` | Sbírá denní souhrny bez identity (žádné cookies, žádné adresy). Vyžaduje migraci frameworku `006-analytics.sql`. |
+| `analytics.enabled` | bool, `false` | Sbírá denní souhrny bez identity (žádné cookies, žádné adresy). Vyžaduje tabulky analytiky (viz stránka Nasazení). |
 | `analytics.timezone` | řetězec, `UTC` | Časové pásmo IANA, ve kterém se dny dělí. Neplatná hodnota vyvolá chybu. |
 | `analytics.retentionDays` | celé číslo, `62` | Jak dlouho se denní řádky drží, 31 až 365. Spouštějte `analytics:prune` z cronu denně. |
 
@@ -963,7 +963,7 @@ Kostra značku Google sama nenačítá. Po nastavení ID layout zobrazí lištu 
 
 | Klíč | Typ, výchozí hodnota | Účinek |
 |------|----------------------|--------|
-| `apiV2.enabled` | bool, `false` (kostra nastavuje `true`) | Zapne serverové API v2, které používá centrální Admin. Vyžaduje HTTPS a migrace frameworku. |
+| `apiV2.enabled` | bool, `false` (kostra nastavuje `true`) | Zapne serverové API v2, které používá centrální Admin. Vyžaduje HTTPS a tabulky API. |
 | `apiV2.imageDirectory` | řetězec, nenastaveno | Absolutní adresář pro obrázky nahrané přes API v2. Nenastaveno znamená, že nahrávání obrázků není dostupné. Přepíše ho `WBENGINE_IMAGE_DIR`. Držte ho mimo `public/` a zapisovatelný pro PHP. Soubory PNG, JPEG nebo WebP do 512 KiB. |
 
 ## Produkční příklad
@@ -1045,16 +1045,16 @@ WHERE NOT EXISTS (SELECT 1 FROM cms_boxes WHERE name = 'Docs: Settings reference
 
 SET @deployment_site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/deployment/' ORDER BY site_id LIMIT 1);
 INSERT INTO cms_sites (parent_id, left_id, right_id, strict, visible, link, title, html_title, html_description, html_keywords, acl)
-SELECT 1, 0, 0, 1, 1, '/docs/deployment/', 'Deployment', 'Deployment', 'Install the skeleton without Docker: PHP-FPM with Nginx, Apache, permissions, migrations, cron, HTTPS, backups, and built container images.', 'deployment,nginx,apache,php-fpm', 0
+SELECT 1, 0, 0, 1, 1, '/docs/deployment/', 'Deployment', 'Deployment', 'Install the skeleton without Docker: PHP-FPM with Nginx, Apache, permissions, database updates, cron, HTTPS, backups, and built container images.', 'deployment,nginx,apache,php-fpm', 0
 WHERE @deployment_site_id IS NULL;
 SET @deployment_site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/deployment/' ORDER BY site_id LIMIT 1);
 
 INSERT INTO cms_site_translations (site_id, locale, title, html_title, html_description, html_keywords)
-SELECT @deployment_site_id, 'cs', 'Nasazení', 'Nasazení', 'Instalace kostry bez Dockeru: PHP-FPM s Nginxem, Apache, oprávnění, migrace, cron, HTTPS, zálohy a sestavené image kontejnerů.', 'nasazení,nginx,apache,php-fpm'
+SELECT @deployment_site_id, 'cs', 'Nasazení', 'Nasazení', 'Instalace kostry bez Dockeru: PHP-FPM s Nginxem, Apache, oprávnění, aktualizace databáze, cron, HTTPS, zálohy a sestavené image kontejnerů.', 'nasazení,nginx,apache,php-fpm'
 WHERE NOT EXISTS (SELECT 1 FROM cms_site_translations WHERE site_id = @deployment_site_id AND locale = 'cs');
 
 INSERT INTO cms_articles (site_id, grouped, futured, c_enabled, views, title, introtext, bodytext, content_format, published, author, source)
-SELECT @deployment_site_id, 0, 0, 0, 0, 'Deployment', 'Install and run the skeleton on a server you manage yourself: requirements, PHP-FPM with Nginx or Apache, writable paths, database and migrations, cron, HTTPS and proxies, backups, health checks, hybrid layouts and published container images.', 'This page mirrors `docs/deploy-bare-metal.md` in the repository. It installs the site on a server where you manage PHP, the web server and the database yourself: a VPS, a dedicated machine or a managed host. The Docker route has its own guide: [Deploy to a clean Ubuntu VPS with Docker](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md). Every key of `Settings.json` is explained in the [settings reference](/docs/settings/).
+SELECT @deployment_site_id, 0, 0, 0, 0, 'Deployment', 'Install and run the skeleton on a server you manage yourself: requirements, PHP-FPM with Nginx or Apache, writable paths, database and updates, cron, HTTPS and proxies, backups, health checks, hybrid layouts and published container images.', 'This page mirrors `docs/deploy-bare-metal.md` in the repository. It installs the site on a server where you manage PHP, the web server and the database yourself: a VPS, a dedicated machine or a managed host. The Docker route has its own guide: [Deploy to a clean Ubuntu VPS with Docker](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md). Every key of `Settings.json` is explained in the [settings reference](/docs/settings/).
 
 ## Requirements
 
@@ -1077,7 +1077,7 @@ php bin/wbe install --no-dev
 
 The document root of the web server is the `public/` directory. Never point it at the project root: `src/`, `vendor/`, `schemas/` and `bin/` must not be reachable from the web.
 
-## 2. Database and migration order
+## 2. Database
 
 Create an empty database with the `utf8mb4` character set and a user that has rights only on it:
 
@@ -1087,19 +1087,17 @@ CREATE USER ''wbengine''@''127.0.0.1'' IDENTIFIED BY ''a long random password'';
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP ON wbengine_skeleton_app.* TO ''wbengine''@''127.0.0.1'';
 ```
 
-The schema and the content dump are imported in this order, then the framework migrations that belong to the installed release, taken from `vendor` so they always match the framework version:
+The schema and the content dump are imported in this order, then the framework tables (API, analytics and change log) are created from the files shipped with the installed framework, so they always match its version:
 
 ```sh
 mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template.sql
 mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template_content.sql
-for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
+sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-These are the same four framework migrations the Docker installer applies. `001` (an optional index) and `003`/`004` (Markdown columns and a conversion ledger) are not needed on a fresh install because the skeleton schema already has `content_format`. The content dump is a fresh-install seed: it is not idempotent, so never import it into a database that already has content.
+The script applies the same framework updates as the Docker installer and is safe to run again. The content dump is a fresh-install seed: it is not idempotent, so never import it into a database that already has content.
 
-An existing installation that is upgraded to a new release applies only the new files from `schemas/migrations/` once and in numeric order (each content migration is idempotent), after a backup. A new framework release may add files under `vendor/wbengine/wbengine/migrations/`; check with `vendor/bin/wbengine.php migration:status`.
+An existing installation takes the database updates of a newer version after a backup: the new files from `schemas/migrations/`, once and in order, and the framework updates with `sh bin/update-database.sh DATABASE`. `vendor/bin/wbengine.php migration:status` shows whether the framework tables are complete.
 
 Then edit `dbAdapterDefinition` in `Settings.json` (host, database, user, password, `charset`). Create your own administrator and remove the demo account (`admin@example.com` / `changeme`, never leave it enabled):
 
@@ -1188,7 +1186,7 @@ Native analytics keeps daily aggregates for `analytics.retentionDays`. Prune the
 17 3 * * * www-data /usr/bin/php /var/www/wbengine-skeleton-app/vendor/bin/wbengine.php analytics:prune --config=/var/www/wbengine-skeleton-app/src/Config/Settings.json --root=/var/www/wbengine-skeleton-app/src >> /var/log/wbengine-cron.log 2>&1
 ```
 
-The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line). A matching `audit:prune` command arrives with framework 4.8.0 and will be added to this schedule then.
+The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line).
 
 ## 9. Updates, backup and rollback
 
@@ -1204,7 +1202,8 @@ Update:
 ```sh
 git fetch --tags && git checkout <new tag>
 composer install --no-dev --optimize-autoloader
-# apply new files from schemas/migrations/ (in order) and framework migrations, if any
+# apply new files from schemas/migrations/ (in order), then the framework updates:
+sh bin/update-database.sh wbengine_skeleton_app
 rm -f src/View/Compiled/*
 php vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
 systemctl reload php8.4-fpm
@@ -1212,7 +1211,7 @@ systemctl reload php8.4-fpm
 
 Flush the cache with `POST /api/cache/flush` (administrator), or remove the files in `cache.dir`. For APCu cache restart PHP-FPM.
 
-Rollback: check out the previous tag, run `composer install --no-dev`, empty the compiled directory, reload PHP-FPM. Migrations are not reversed automatically: if one changed the schema, restore the database dump taken before the deploy. Content migrations only change text and are safe to leave in place.
+Rollback: check out the previous tag, run `composer install --no-dev`, empty the compiled directory, reload PHP-FPM. Database updates are not reversed automatically: if one changed the schema, restore the database dump taken before the deploy. Content updates only change text and are safe to leave in place.
 
 ## 10. Logs
 
@@ -1245,7 +1244,7 @@ Run PHP and MySQL in Docker and keep TLS on the host. This is exactly the setup 
 
 ### External managed database
 
-Point `dbAdapterDefinition.hostname` at the managed MySQL or MariaDB service and import the schema, content and migrations of section 2 with the `mysql` client from a machine that can reach it (the `docker-entrypoint-initdb.d` import only exists for the bundled database). Use a dedicated user and database, allow connections only from the application host, and enable TLS on the server side when it crosses a network. In a Compose file, remove the `db` service and the `depends_on` entry. Check that the database version meets the requirements (`JSON_SEARCH`).
+Point `dbAdapterDefinition.hostname` at the managed MySQL or MariaDB service and import the schema, content and framework updates of section 2 with the `mysql` client from a machine that can reach it (the `docker-entrypoint-initdb.d` import only exists for the bundled database). Use a dedicated user and database, allow connections only from the application host, and enable TLS on the server side when it crosses a network. In a Compose file, remove the `db` service and the `depends_on` entry. Check that the database version meets the requirements (`JSON_SEARCH`).
 
 ### Shared hosting
 
@@ -1253,7 +1252,7 @@ It works when the host offers PHP 8.3 or newer with the extensions above, MySQL 
 
 ## Built images
 
-Version tags (`v*`) run the workflow `.github/workflows/image.yml`, which builds `Dockerfile.production` and pushes `ghcr.io/rrsoftcz/wbengine-skeleton-app` tagged with the version (`1.2.3`, `1.2`) and `latest`. The image contains the code and the production Composer dependencies and no secrets. Pull and run it with `Settings.json` mounted read-only and a volume for the compiled templates:
+Container images are published as `ghcr.io/rrsoftcz/wbengine-skeleton-app` tagged with the version (`1.2.3`, `1.2`) and `latest`. The image contains the code and the production Composer dependencies and no secrets. Pull and run it with `Settings.json` mounted read-only and a volume for the compiled templates:
 
 ```sh
 docker pull ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3
@@ -1265,12 +1264,12 @@ docker run -d --name wbengine --restart unless-stopped \\
   ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3
 ```
 
-Pin a version tag in production rather than `latest`. The container serves plain HTTP on port 80: put host Nginx in front (see the VPS guide) and set `http.trustedProxies` to the address the container sees the proxy from. The database is not part of the image; use the bundled Compose file or an external database as described above. To update, pull the new tag, apply the new migrations, then `docker rm -f wbengine` and run again; the compiled volume is reused (empty it when `compileCheck` is `false`).', 'markdown', UNIX_TIMESTAMP(), 'RRSOFT', 'https://www.wbengine.org/'
+Pin a version tag in production rather than `latest`. The container serves plain HTTP on port 80: put host Nginx in front (see the VPS guide) and set `http.trustedProxies` to the address the container sees the proxy from. The database is not part of the image; use the bundled Compose file or an external database as described above. To update, pull the new tag, apply the database updates, then `docker rm -f wbengine` and run again; the compiled volume is reused (empty it when `compileCheck` is `false`).', 'markdown', UNIX_TIMESTAMP(), 'RRSOFT', 'https://www.wbengine.org/'
 WHERE NOT EXISTS (SELECT 1 FROM cms_articles WHERE site_id = @deployment_site_id);
 SET @deployment_article_id = (SELECT id FROM cms_articles WHERE site_id = @deployment_site_id ORDER BY id LIMIT 1);
 
 INSERT INTO cms_article_translations (article_id, locale, title, introtext, bodytext, content_format)
-SELECT @deployment_article_id, 'cs', 'Nasazení', 'Instalace a provoz kostry na vlastním serveru: požadavky, PHP-FPM s Nginxem nebo Apache, zapisovatelné cesty, databáze a migrace, cron, HTTPS a proxy, zálohy, kontroly stavu, hybridní uspořádání a publikované image kontejnerů.', 'Tento návod instaluje web na server, kde si PHP, webový server a databázi spravujete sami: VPS, vyhrazený stroj nebo spravovaný hosting. Postup s Dockerem má vlastní návod: [Nasazení na čisté VPS s Ubuntu pomocí Dockeru](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md). Každý klíč `Settings.json` vysvětluje [přehled nastavení](/cs/docs/settings/).
+SELECT @deployment_article_id, 'cs', 'Nasazení', 'Instalace a provoz kostry na vlastním serveru: požadavky, PHP-FPM s Nginxem nebo Apache, zapisovatelné cesty, databáze a aktualizace, cron, HTTPS a proxy, zálohy, kontroly stavu, hybridní uspořádání a publikované image kontejnerů.', 'Tento návod instaluje web na server, kde si PHP, webový server a databázi spravujete sami: VPS, vyhrazený stroj nebo spravovaný hosting. Postup s Dockerem má vlastní návod: [Nasazení na čisté VPS s Ubuntu pomocí Dockeru](https://github.com/rrsoftcz/wbengine-skeleton-app/blob/main/docs/deploy-vps-docker.md). Každý klíč `Settings.json` vysvětluje [přehled nastavení](/cs/docs/settings/).
 
 ## Požadavky
 
@@ -1293,7 +1292,7 @@ php bin/wbe install --no-dev
 
 Kořenem webového serveru je adresář `public/`. Nikdy ho nesměrujte na kořen projektu: `src/`, `vendor/`, `schemas/` a `bin/` nesmí být dostupné z webu.
 
-## 2. Databáze a pořadí migrací
+## 2. Databáze
 
 Vytvořte prázdnou databázi se znakovou sadou `utf8mb4` a uživatele s právy jen na ni:
 
@@ -1303,19 +1302,17 @@ CREATE USER ''wbengine''@''127.0.0.1'' IDENTIFIED BY ''dlouhé náhodné heslo''
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP ON wbengine_skeleton_app.* TO ''wbengine''@''127.0.0.1'';
 ```
 
-Schéma a obsah se importují v tomto pořadí, poté migrace frameworku odpovídající nainstalovanému vydání, převzaté z `vendor`, takže vždy sedí na verzi frameworku:
+Schéma a obsah se importují v tomto pořadí, poté se z přibalených souborů nainstalovaného frameworku vytvoří jeho tabulky (API, analytika a záznam změn), takže vždy sedí na jeho verzi:
 
 ```sh
 mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template.sql
 mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template_content.sql
-for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
+sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-Jsou to stejné čtyři migrace frameworku, které použije instalátor pro Docker. Migrace `001` (volitelný index) a `003`/`004` (sloupce Markdown a záznam převodu) na čisté instalaci netřeba, protože schéma kostry už `content_format` má. Soubor s obsahem je počáteční naplnění nové instalace: není idempotentní, proto ho nikdy neimportujte do databáze, která už obsah má.
+Skript použije stejné aktualizace frameworku jako instalátor pro Docker a lze ho bezpečně spustit znovu. Soubor s obsahem je počáteční naplnění nové instalace: není idempotentní, proto ho nikdy neimportujte do databáze, která už obsah má.
 
-Existující instalace při přechodu na nové vydání po záloze spustí jen nové soubory ze `schemas/migrations/` jednou a v číselném pořadí (obsahové migrace jsou idempotentní). Nové vydání frameworku může přidat soubory v `vendor/wbengine/wbengine/migrations/`; zjistíte to příkazem `vendor/bin/wbengine.php migration:status`.
+Existující instalace po záloze použije databázové aktualizace novější verze: nové soubory ze `schemas/migrations/` jednou a v pořadí a aktualizace frameworku příkazem `sh bin/update-database.sh DATABASE`. Příkaz `vendor/bin/wbengine.php migration:status` ukáže, zda jsou tabulky frameworku úplné.
 
 Poté upravte `dbAdapterDefinition` v `Settings.json` (hostitel, databáze, uživatel, heslo, `charset`). Vytvořte vlastního správce a odstraňte demo účet (`admin@example.com` / `changeme`, nikdy ho nenechávejte zapnutý):
 
@@ -1404,7 +1401,7 @@ Vlastní analytika drží denní souhrny po dobu `analytics.retentionDays`. Pro�
 17 3 * * * www-data /usr/bin/php /var/www/wbengine-skeleton-app/vendor/bin/wbengine.php analytics:prune --config=/var/www/wbengine-skeleton-app/src/Config/Settings.json --root=/var/www/wbengine-skeleton-app/src >> /var/log/wbengine-cron.log 2>&1
 ```
 
-Úloha čte stejné tajné hodnoty z prostředí, proto ji spouštějte pod webovým uživatelem se stejnými proměnnými (například načtením souboru vlastněného rootem v řádku crontabu). Odpovídající příkaz `audit:prune` přijde s frameworkem 4.8.0 a do tohoto rozvrhu se přidá až tehdy.
+Úloha čte stejné tajné hodnoty z prostředí, proto ji spouštějte pod webovým uživatelem se stejnými proměnnými (například načtením souboru vlastněného rootem v řádku crontabu).
 
 ## 9. Aktualizace, záloha a návrat
 
@@ -1420,7 +1417,8 @@ Aktualizace:
 ```sh
 git fetch --tags && git checkout <nová značka>
 composer install --no-dev --optimize-autoloader
-# spusťte nové soubory ze schemas/migrations/ (v pořadí) a případné migrace frameworku
+# spusťte nové soubory ze schemas/migrations/ (v pořadí), potom aktualizace frameworku:
+sh bin/update-database.sh wbengine_skeleton_app
 rm -f src/View/Compiled/*
 php vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
 systemctl reload php8.4-fpm
@@ -1428,7 +1426,7 @@ systemctl reload php8.4-fpm
 
 Cache vyprázdníte voláním `POST /api/cache/flush` (správce) nebo smazáním souborů v `cache.dir`. U cache APCu restartujte PHP-FPM.
 
-Návrat: přepněte na předchozí značku, spusťte `composer install --no-dev`, vyprázdněte adresář zkompilovaných šablon a reloadujte PHP-FPM. Migrace se automaticky nevracejí: pokud některá změnila schéma, obnovte zálohu databáze pořízenou před nasazením. Obsahové migrace mění jen text a lze je ponechat.
+Návrat: přepněte na předchozí značku, spusťte `composer install --no-dev`, vyprázdněte adresář zkompilovaných šablon a reloadujte PHP-FPM. Databázové aktualizace se automaticky nevracejí: pokud některá změnila schéma, obnovte zálohu databáze pořízenou před nasazením. Obsahové aktualizace mění jen text a lze je ponechat.
 
 ## 10. Logy
 
@@ -1461,7 +1459,7 @@ PHP a MySQL běží v Dockeru a TLS zůstává na hostiteli. Přesně takové je
 
 ### Externí spravovaná databáze
 
-Nasměrujte `dbAdapterDefinition.hostname` na spravovanou službu MySQL nebo MariaDB a importujte schéma, obsah a migrace z části 2 klientem `mysql` ze stroje, který na ni dosáhne (import přes `docker-entrypoint-initdb.d` existuje jen pro přibalenou databázi). Použijte vyhrazeného uživatele a databázi, povolte připojení jen z hostitele aplikace a při přenosu po síti zapněte TLS na straně serveru. V souboru Compose odeberte službu `db` a položku `depends_on`. Ověřte, že verze databáze splňuje požadavky (`JSON_SEARCH`).
+Nasměrujte `dbAdapterDefinition.hostname` na spravovanou službu MySQL nebo MariaDB a importujte schéma, obsah a aktualizace frameworku z části 2 klientem `mysql` ze stroje, který na ni dosáhne (import přes `docker-entrypoint-initdb.d` existuje jen pro přibalenou databázi). Použijte vyhrazeného uživatele a databázi, povolte připojení jen z hostitele aplikace a při přenosu po síti zapněte TLS na straně serveru. V souboru Compose odeberte službu `db` a položku `depends_on`. Ověřte, že verze databáze splňuje požadavky (`JSON_SEARCH`).
 
 ### Sdílený hosting
 
@@ -1469,7 +1467,7 @@ Funguje, pokud hosting nabízí PHP 8.3 nebo novější s výše uvedenými roz�
 
 ## Sestavené image
 
-Značky verzí (`v*`) spouštějí workflow `.github/workflows/image.yml`, které sestaví `Dockerfile.production` a publikuje `ghcr.io/rrsoftcz/wbengine-skeleton-app` se značkami verze (`1.2.3`, `1.2`) a `latest`. Image obsahuje kód a produkční závislosti Composeru a žádná tajemství. Stáhněte a spusťte ho s `Settings.json` připojeným jen pro čtení a svazkem pro zkompilované šablony:
+Image kontejneru se publikuje jako `ghcr.io/rrsoftcz/wbengine-skeleton-app` se značkami verze (`1.2.3`, `1.2`) a `latest`. Image obsahuje kód a produkční závislosti Composeru a žádná tajemství. Stáhněte a spusťte ho s `Settings.json` připojeným jen pro čtení a svazkem pro zkompilované šablony:
 
 ```sh
 docker pull ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3
@@ -1481,7 +1479,7 @@ docker run -d --name wbengine --restart unless-stopped \\
   ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3
 ```
 
-V produkci připněte značku verze, ne `latest`. Kontejner obsluhuje prosté HTTP na portu 80: postavte před něj hostitelský Nginx (viz návod pro VPS) a nastavte `http.trustedProxies` na adresu, ze které kontejner proxy vidí. Databáze součástí image není; použijte přibalený soubor Compose nebo externí databázi popsanou výše. Při aktualizaci stáhněte novou značku, spusťte nové migrace, pak `docker rm -f wbengine` a spusťte znovu; svazek se zkompilovanými šablonami se použije znovu (při `compileCheck` na `false` ho vyprázdněte).', 'markdown'
+V produkci připněte značku verze, ne `latest`. Kontejner obsluhuje prosté HTTP na portu 80: postavte před něj hostitelský Nginx (viz návod pro VPS) a nastavte `http.trustedProxies` na adresu, ze které kontejner proxy vidí. Databáze součástí image není; použijte přibalený soubor Compose nebo externí databázi popsanou výše. Při aktualizaci stáhněte novou značku, použijte databázové aktualizace, pak `docker rm -f wbengine` a spusťte znovu; svazek se zkompilovanými šablonami se použije znovu (při `compileCheck` na `false` ho vyprázdněte).', 'markdown'
 WHERE @deployment_article_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM cms_article_translations WHERE article_id = @deployment_article_id AND locale = 'cs');
 
 INSERT INTO cms_boxes (name, module, method, section_id, static, shared, device_min, device_strict, acl, `order`, sites)
@@ -1502,7 +1500,7 @@ SELECT @logging_site_id, 'cs', 'Logování a audit', 'Logování a audit', 'Co w
 WHERE NOT EXISTS (SELECT 1 FROM cms_site_translations WHERE site_id = @logging_site_id AND locale = 'cs');
 
 INSERT INTO cms_articles (site_id, grouped, futured, c_enabled, views, title, introtext, bodytext, content_format, published, author, source)
-SELECT @logging_site_id, 0, 0, 0, 0, 'Logging and audit', 'What is logged where (PHP errors, web server logs, the API audit and the change log), what is not, who-what-when queries, retention and audit:prune, the framework migration 008 and privacy notes.', 'This page explains what a WBengine site records, where, for how long, and how to ask "who changed what and when". It describes WBengine 4.8.0 or newer with the skeleton migrations applied.
+SELECT @logging_site_id, 0, 0, 0, 0, 'Logging and audit', 'What is logged where (PHP errors, web server logs, the API audit and the change log), what is not, who-what-when queries, retention and audit:prune, the change log tables and privacy notes.', 'This page explains what a WBengine site records, where, for how long, and how to ask "who changed what and when".
 
 ## What is logged where
 
@@ -1607,13 +1605,13 @@ Nothing is deleted automatically. The keys in `Settings.json` (both default to 3
 
 `audit:prune --dry-run` only counts, `--days=N` overrides both keys for one run. The newest change of every resource stays however old (its id is part of the structure ETag and of recovery) and so does every revision referenced by a draft. Each real run records itself as a `cli` change of the resource `audit`. In Docker run the command with `docker compose -f docker-compose.production.yml exec -T web php vendor/bin/wbengine.php audit:prune ...`, from the host cron.
 
-## Applying the framework migration 008
+## Preparing the change log tables
 
-Sites that use API v2 must apply `vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql` once, after the framework migrations 002 and 005 and after a backup. It adds `source`, `local_user_id`, `detail` and the `created_at` indexes and is safe to run again. `vendor/bin/wbengine.php doctor` reports `migration.008` as failed until it is applied; until then the new columns are skipped and nothing else changes.
+Sites that use API v2 need the change log columns `source`, `local_user_id` and `detail` and the `created_at` indexes. Run `sh bin/update-database.sh DATABASE` once, after a backup; it is safe to run again. `vendor/bin/wbengine.php doctor` reports a failed check until the columns exist; until then they are skipped and nothing else changes.
 
 ```sh
-mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql
-docker compose -f docker-compose.production.yml exec -T web cat vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql \\
+sh bin/update-database.sh wbengine_skeleton_app
+docker compose -f docker-compose.production.yml exec -T web sh bin/update-database.sh --print \\
   | docker compose -f docker-compose.production.yml exec -T db sh -c ''MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot wbengine_skeleton_app''
 ```
 
@@ -1629,7 +1627,7 @@ WHERE NOT EXISTS (SELECT 1 FROM cms_articles WHERE site_id = @logging_site_id);
 SET @logging_article_id = (SELECT id FROM cms_articles WHERE site_id = @logging_site_id ORDER BY id LIMIT 1);
 
 INSERT INTO cms_article_translations (article_id, locale, title, introtext, bodytext, content_format)
-SELECT @logging_article_id, 'cs', 'Logování a audit', 'Co se loguje kam (chyby PHP, logy webového serveru, audit API a záznam změn), co ne, dotazy kdo-co-kdy, uchování a audit:prune, migrace frameworku 008 a poznámky k soukromí.', 'Tato stránka vysvětluje, co web na WBengine zaznamenává, kam, jak dlouho a jak se zeptat „kdo, co a kdy změnil“. Popisuje WBengine 4.8.0 nebo novější s použitými migracemi kostry.
+SELECT @logging_article_id, 'cs', 'Logování a audit', 'Co se loguje kam (chyby PHP, logy webového serveru, audit API a záznam změn), co ne, dotazy kdo-co-kdy, uchování a audit:prune, tabulky záznamu změn a poznámky k soukromí.', 'Tato stránka vysvětluje, co web na WBengine zaznamenává, kam, jak dlouho a jak se zeptat „kdo, co a kdy změnil“.
 
 ## Co se loguje kam
 
@@ -1734,13 +1732,13 @@ Nic se nemaže automaticky. Klíče v `Settings.json` (oba mají výchozí hodno
 
 `audit:prune --dry-run` jen spočítá, `--days=N` přepíše oba klíče pro jedno spuštění. Nejnovější změna každého zdroje zůstává, ať je jakkoli stará (její id je součástí ETagu struktury a obnovy), stejně jako každá revize, na kterou odkazuje koncept. Každé skutečné spuštění se zapíše jako změna `cli` zdroje `audit`. V Dockeru spusťte příkaz z cronu na hostiteli jako `docker compose -f docker-compose.production.yml exec -T web php vendor/bin/wbengine.php audit:prune ...`.
 
-## Použití migrace frameworku 008
+## Příprava tabulek záznamu změn
 
-Weby, které používají API v2, musí jednou použít `vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql`, po migracích frameworku 002 a 005 a po záloze. Přidá `source`, `local_user_id`, `detail` a indexy `created_at` a lze ji bezpečně spustit znovu. `vendor/bin/wbengine.php doctor` hlásí `migration.008` jako neúspěšnou, dokud není použita; do té doby se nové sloupce přeskakují a nic jiného se nemění.
+Weby, které používají API v2, potřebují sloupce záznamu změn `source`, `local_user_id` a `detail` a indexy `created_at`. Jednou po záloze spusťte `sh bin/update-database.sh DATABASE`; lze ho bezpečně spustit znovu. `vendor/bin/wbengine.php doctor` hlásí neúspěšnou kontrolu, dokud sloupce neexistují; do té doby se přeskakují a nic jiného se nemění.
 
 ```sh
-mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql
-docker compose -f docker-compose.production.yml exec -T web cat vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql \\
+sh bin/update-database.sh wbengine_skeleton_app
+docker compose -f docker-compose.production.yml exec -T web sh bin/update-database.sh --print \\
   | docker compose -f docker-compose.production.yml exec -T db sh -c ''MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot wbengine_skeleton_app''
 ```
 
@@ -1769,7 +1767,7 @@ SET bodytext = REPLACE(REPLACE(bodytext, '## Images and the API', '## Audit and 
 | `audit.retentionDays` | int, `365` | How long `cms_api_audit` and `cms_api_changes` rows are kept, 30 to 3650. Invalid values throw. |
 | `audit.revisionRetentionDays` | int, `365` | How long `cms_api_revisions` (article draft history) are kept, 30 to 3650. |
 
-Nothing is deleted automatically: run `audit:prune` from cron (`--dry-run` only counts, `--days=N` overrides both keys). The newest change of every resource and every revision a draft still uses are always kept. The tables need the framework migration `4.8.0/008-change-log-source.sql` when API v2 is enabled. What is recorded is described in [Logging and audit](/docs/logging/).
+Nothing is deleted automatically: run `audit:prune` from cron (`--dry-run` only counts, `--days=N` overrides both keys). The newest change of every resource and every revision a draft still uses are always kept. The tables need the change log columns (`sh bin/update-database.sh DATABASE`) when API v2 is enabled. What is recorded is described in [Logging and audit](/docs/logging/).
 
 ## Images and the API'), '  "googleAnalytics": { "measurementId": "" }
 }', '  "audit": { "retentionDays": 365, "revisionRetentionDays": 365 },
@@ -1786,7 +1784,7 @@ SET bodytext = REPLACE(REPLACE(bodytext, '## Obrázky a API', '## Audit a zázna
 | `audit.retentionDays` | celé číslo, `365` | Jak dlouho se drží řádky `cms_api_audit` a `cms_api_changes`, 30 až 3650. Neplatná hodnota vyvolá chybu. |
 | `audit.revisionRetentionDays` | celé číslo, `365` | Jak dlouho se drží `cms_api_revisions` (historie konceptů článků), 30 až 3650. |
 
-Nic se nemaže automaticky: spouštějte `audit:prune` z cronu (`--dry-run` jen počítá, `--days=N` přepíše oba klíče). Nejnovější změna každého zdroje a každá revize, kterou koncept ještě používá, se vždy ponechá. Při zapnutém API v2 tabulky vyžadují migraci frameworku `4.8.0/008-change-log-source.sql`. Co se zaznamenává, popisuje [Logování a audit](/cs/docs/logging/).
+Nic se nemaže automaticky: spouštějte `audit:prune` z cronu (`--dry-run` jen počítá, `--days=N` přepíše oba klíče). Nejnovější změna každého zdroje a každá revize, kterou koncept ještě používá, se vždy ponechá. Při zapnutém API v2 tabulky vyžadují sloupce záznamu změn (`sh bin/update-database.sh DATABASE`). Co se zaznamenává, popisuje [Logování a audit](/cs/docs/logging/).
 
 ## Obrázky a API'), '  "googleAnalytics": { "measurementId": "" }
 }', '  "audit": { "retentionDays": 365, "revisionRetentionDays": 365 },
@@ -1797,18 +1795,13 @@ WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = 
   AND LOCATE('## Audit a záznam změn', bodytext) = 0;
 
 UPDATE cms_articles
-SET bodytext = REPLACE(REPLACE(bodytext, 'for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
+SET bodytext = REPLACE(REPLACE(bodytext, 'sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-These are the same four framework migrations the Docker installer applies.', 'for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
-mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql
+The script applies the same framework updates as the Docker installer and is safe to run again.', 'sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-These are the same framework migrations the Docker installer applies. `4.8.0/008` (change log columns, framework 4.8.0 or newer) is required for sites that use API v2: `doctor` fails without it.'), 'The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line). A matching `audit:prune` command arrives with framework 4.8.0 and will be added to this schedule then.', 'The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line). Framework 4.8.0 adds the change log and audit tables, which also need daily pruning (`audit.retentionDays`, see [Logging and audit](/docs/logging/)):
+The script applies the same framework updates as the Docker installer and is safe to run again. The change log columns are required for sites that use API v2: `doctor` fails without them.'), 'The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line).', 'The job reads the same environment secrets, so run it as the web user with the same variables (for example by sourcing a root-owned file in the crontab line). The change log and audit tables also need daily pruning (`audit.retentionDays`, see [Logging and audit](/docs/logging/)):
 
 ```cron
 27 3 * * * www-data /usr/bin/php /var/www/wbengine-skeleton-app/vendor/bin/wbengine.php audit:prune --config=/var/www/wbengine-skeleton-app/src/Config/Settings.json --root=/var/www/wbengine-skeleton-app/src >> /var/log/wbengine-cron.log 2>&1
@@ -1817,18 +1810,13 @@ WHERE id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT 
   AND LOCATE('4.8.0/008-change-log-source.sql', bodytext) = 0;
 
 UPDATE cms_article_translations
-SET bodytext = REPLACE(REPLACE(bodytext, 'for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
+SET bodytext = REPLACE(REPLACE(bodytext, 'sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-Jsou to stejné čtyři migrace frameworku, které použije instalátor pro Docker.', 'for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
-mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql
+Skript použije stejné aktualizace frameworku jako instalátor pro Docker a lze ho bezpečně spustit znovu.', 'sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-Jsou to stejné migrace frameworku, které použije instalátor pro Docker. `4.8.0/008` (sloupce záznamu změn, framework 4.8.0 nebo novější) je nutná pro weby s API v2: bez ní `doctor` selže.'), 'Úloha čte stejné tajné hodnoty z prostředí, proto ji spouštějte pod webovým uživatelem se stejnými proměnnými (například načtením souboru vlastněného rootem v řádku crontabu). Odpovídající příkaz `audit:prune` přijde s frameworkem 4.8.0 a do tohoto rozvrhu se přidá až tehdy.', 'Úloha čte stejné tajné hodnoty z prostředí, proto ji spouštějte pod webovým uživatelem se stejnými proměnnými (například načtením souboru vlastněného rootem v řádku crontabu). Framework 4.8.0 přidává tabulky záznamu změn a auditu, které je také třeba denně mazat (`audit.retentionDays`, viz [Logování a audit](/cs/docs/logging/)):
+Skript použije stejné aktualizace frameworku jako instalátor pro Docker a lze ho bezpečně spustit znovu. Sloupce záznamu změn jsou nutné pro weby s API v2: bez nich `doctor` selže.'), 'Úloha čte stejné tajné hodnoty z prostředí, proto ji spouštějte pod webovým uživatelem se stejnými proměnnými (například načtením souboru vlastněného rootem v řádku crontabu).', 'Úloha čte stejné tajné hodnoty z prostředí, proto ji spouštějte pod webovým uživatelem se stejnými proměnnými (například načtením souboru vlastněného rootem v řádku crontabu). Tabulky záznamu změn a auditu je také třeba denně mazat (`audit.retentionDays`, viz [Logování a audit](/cs/docs/logging/)):
 
 ```cron
 27 3 * * * www-data /usr/bin/php /var/www/wbengine-skeleton-app/vendor/bin/wbengine.php audit:prune --config=/var/www/wbengine-skeleton-app/src/Config/Settings.json --root=/var/www/wbengine-skeleton-app/src >> /var/log/wbengine-cron.log 2>&1
