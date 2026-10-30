@@ -5,7 +5,7 @@
 ### Added
 
 - `bin/update-database.sh` applies the framework database updates (API, analytics and change log tables) from `vendor`, or prints the SQL with `--print` to pipe into another mysql client. The public documentation pages refer to it instead of naming migration files.
-- Public documentation wording: `schemas/migrations/024-public-docs-cleanup.sql` removes release numbers, migration file names and CI details from the documentation pages (mirrored in the content dump).
+- Public documentation wording: `schemas/migrations/024-public-docs-cleanup.sql` removes release numbers, migration file names and CI details from the documentation pages (mirrored in the content dump); `025-public-docs-cleanup-2.sql` removes the remaining migration numbers from the deployment page of sites that applied the earlier updates one by one.
 - Settings reference page `/docs/settings/` (every `Settings.json` key, a production example, Google Analytics) and deployment page `/docs/deployment/`, in English and Czech, added by `schemas/migrations/020-settings-reference-docs.sql` and `021-deployment-docs.sql` and mirrored in the content dump. `Docs::PAGES` and the `doc.settings` and `doc.deployment` locale keys list them in the sidebar.
 - `docs/deploy-bare-metal.md`: installation without Docker (PHP-FPM with Nginx, Apache, permissions, migration order, cron, backups, health checks, external database, shared hosting limits, running a built image) and `etc/nginx/wbengine-fpm.conf`, a unix-socket server block.
 - `.github/workflows/image.yml` builds `Dockerfile.production` on `v*` tags and pushes `ghcr.io/rrsoftcz/wbengine-skeleton-app`.
