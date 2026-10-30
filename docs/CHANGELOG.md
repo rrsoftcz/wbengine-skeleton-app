@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- WBengine 5.1.0 (`composer.json` `^5.1`, `composer.lock`): an integration key is issued with permission groups, and the Integrations box needs no class in the application. The skeleton class `src/Box/Central/Integrations.php` is removed: the box row alone connects the page. `schemas/migrations/031-key-groups-docs.sql` updates the Connecting a site section of the public documentation, in English and Czech; mirrored in the content dump. The smoke test now also renders the page for an administrator.
+
 ### Changed (breaking)
 
 - WBengine 5.0.0 (`composer.json` `^5.0`, `composer.lock`): API v2 is the only API. The former routes under `/api/auth`, `/api/users`, `/api/sections`, `/api/translations` and `/api/cache/flush` and the JWT login are gone, and so is the `jwt` section of `Settings.json` (an existing file keeps working, the section is ignored). `bin/wbe install` and `bin/setup-production.sh` no longer generate signing keys. The database update `bin/update-database.sh` drops the unused table `cms_refresh_tokens`. The live request console and the box `src/Box/Api/Restapi.php` are removed. `schemas/migrations/029-api-v2-only-docs.sql` updates the public documentation accordingly, in English and Czech; mirrored in the content dump. The skeleton migrations 003 and 004 for the refresh token table are removed.

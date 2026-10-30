@@ -94,7 +94,7 @@ The password is never accepted as an argument or environment variable, so it doe
 
 ## Connecting the site to WBengine Admin
 
-The central WBengine Admin manages many sites through the API v2. Requirements on this site: `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework database updates applied (`sh bin/update-database.sh DATABASE`, check with `vendor/bin/wbengine.php migration:status`) and an `admin` account. A site without the integrations page gets it with `vendor/bin/wbengine.php integrations:install --root=src --config=src/Config/Settings.json` (add `--apply` to write; it never changes existing records).
+The central WBengine Admin manages many sites through the API v2. Requirements on this site: `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework database updates applied (`sh bin/update-database.sh DATABASE`, check with `vendor/bin/wbengine.php migration:status`) and an `admin` account. A site without the integrations page gets it with `vendor/bin/wbengine.php integrations:install --config=src/Config/Settings.json` (add `--apply` to write; it never changes existing records). The box ships with the framework, so a site needs no class of its own for it; when issuing a key the administrator chooses permission groups (Content, Publishing, Structure, Images, Site administration, History, optionally Analytics).
 
 1. Sign in as `admin` and open `/integrations/`. The page checks the requirements, asks for your password and issues an integration key once. Only its hash is stored on the site.
 2. In the central Admin (`npm run admin -- invite EMAIL global`, then `/accept` and multi-factor setup for the first account), open Sites, choose Add site and enter the name, the HTTPS address and the key. The key is verified before anything is saved.
@@ -264,6 +264,7 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/028-integrations-install-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/029-api-v2-only-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/030-framework-5-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/031-key-groups-docs.sql
 ```
 
 Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework updates with `sh bin/update-database.sh DATABASE` and schedules `audit:prune`; see `/docs/logging/`.
@@ -453,7 +454,7 @@ Further commands of `vendor/bin/wbengine.php` (all take `--config` and `--root`)
 vendor/bin/wbengine.php analytics:prune --config=src/Config/Settings.json   # remove expired analytics rows, run daily from cron
 vendor/bin/wbengine.php audit:prune [--days=N] [--dry-run] --config=src/Config/Settings.json
 vendor/bin/wbengine.php audit:list [--limit=N] [--resource=NAME] [--actor=ACTOR] --config=src/Config/Settings.json
-vendor/bin/wbengine.php integrations:install --root=src [--apply] --config=src/Config/Settings.json
+vendor/bin/wbengine.php integrations:install [--apply] --config=src/Config/Settings.json
 vendor/bin/wbengine.php generate:box --root=src --namespace=App --section=Central --module=Welcome --method=welcome [--write]
 ```
 
