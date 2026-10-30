@@ -33,18 +33,15 @@ CREATE USER 'wbengine'@'127.0.0.1' IDENTIFIED BY 'a long random password';
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP ON wbengine_skeleton_app.* TO 'wbengine'@'127.0.0.1';
 ```
 
-The schema and the content dump are imported in this order, then the framework migrations that belong to the installed release, taken from `vendor` so they always match the framework version:
+The schema and the content dump are imported in this order, then the framework tables (API, analytics and change log) are created from the files shipped with the installed framework, so they always match its version:
 
 ```sh
 mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template.sql
 mysql wbengine_skeleton_app < schemas/wbengine_skeletone_app_mysql_template_content.sql
-for m in 002-api-v2-integrations.sql 005-api-content.sql 006-analytics.sql 007-api-integration-last-used.sql; do
-    mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.0.0/$m
-done
-mysql wbengine_skeleton_app < vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql
+sh bin/update-database.sh wbengine_skeleton_app
 ```
 
-These are the same framework migrations the Docker installer applies. `4.8.0/008` (change log columns, framework 4.8.0 or newer) is required for sites that use API v2: `doctor` fails without it. `001` (an optional index) and `003`/`004` (Markdown columns and a conversion ledger) are not needed on a fresh install because the skeleton schema already has `content_format`. The content dump is a fresh-install seed: it is not idempotent, so never import it into a database that already has content.
+The script applies the same framework updates as the Docker installer and is safe to run again. The change log columns are required for sites that use API v2: `doctor` fails without them.
 
 An existing installation that is upgraded to a new release applies only the new files from `schemas/migrations/` once and in numeric order (each content migration is idempotent), after a backup. A new framework release may add files under `vendor/wbengine/wbengine/migrations/`; check with `vendor/bin/wbengine.php migration:status`.
 
