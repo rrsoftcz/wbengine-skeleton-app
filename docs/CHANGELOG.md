@@ -4,6 +4,7 @@
 
 ### Changed
 
+- WBengine 5.1.1 (`composer.lock`): the permission groups of the key form on `/integrations/` are cards with soft pastel colors.
 - WBengine 5.1.0 (`composer.json` `^5.1`, `composer.lock`): an integration key is issued with permission groups, and the Integrations box needs no class in the application. The skeleton class `src/Box/Central/Integrations.php` is removed: the box row alone connects the page. `schemas/migrations/031-key-groups-docs.sql` updates the Connecting a site section of the public documentation, in English and Czech; mirrored in the content dump. The smoke test now also renders the page for an administrator.
 
 ### Changed (breaking)
