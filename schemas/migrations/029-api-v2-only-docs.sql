@@ -88,3 +88,6 @@ Klíč nese scopes, které určují, co smí. Chybějící či neplatný klíč 
 Pro diagnostiku nasazení použijte `vendor/bin/wbengine.php doctor`; příkaz schéma nemění. API v2 se zapíná samostatně v konfiguraci a pro chráněné obsahové operace vyžaduje své databázové tabulky (viz stránka Nasazení). Discovery, capabilities, zdroje, scopes a pravidla souběžných změn popisuje [referenční dokumentace WBengine API v2](https://github.com/rrsoftcz/wbengine/blob/main/ref-api-v2.md). Viz také [centrální administrace](/cs/docs/administration/).' WHERE article_id = 9 AND locale = 'cs' AND LOCATE('/api/auth/login', bodytext) > 0;
 
 DELETE FROM cms_boxes WHERE module = 'demo' AND method = 'api';
+DELETE FROM cms_boxes WHERE module = 'restapi' AND method = 'restapi';
+DELETE FROM cms_sites WHERE link = '/api/';
+DELETE FROM cms_sections WHERE `key` = 'api';
