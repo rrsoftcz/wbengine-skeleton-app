@@ -57,16 +57,14 @@ try {
             throw new RuntimeException('Could not read the default configuration.');
         }
         $settings = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
-        if (!is_array($settings) || !isset($settings['jwt']['accessKey'], $settings['jwt']['refreshKey'])) {
-            throw new RuntimeException('Default configuration is invalid: expected JWT accessKey and refreshKey.');
+        if (!is_array($settings)) {
+            throw new RuntimeException('Default configuration is invalid: expected a JSON object.');
         }
-        $settings['jwt']['accessKey'] = bin2hex(random_bytes(32));
-        $settings['jwt']['refreshKey'] = bin2hex(random_bytes(32));
         $encoded = json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n";
         if (file_put_contents($config, $encoded, LOCK_EX) === false) {
             throw new RuntimeException('Cannot create src/Config/Settings.json. Make src/Config writable by the installer.');
         }
-        fwrite(STDOUT, "Created src/Config/Settings.json with new random JWT keys.\n");
+        fwrite(STDOUT, "Created src/Config/Settings.json from the default configuration.\n");
     } else {
         fwrite(STDOUT, "src/Config/Settings.json already exists; preserving it.\n");
     }

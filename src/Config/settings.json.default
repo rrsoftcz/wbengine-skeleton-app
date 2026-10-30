@@ -28,10 +28,6 @@
     "username": "dev_user",
     "password": "dev_password"
   },
-  "jwt": {
-    "accessKey": "CHANGE_ME",
-    "refreshKey": "CHANGE_ME"
-  },
   "recaptcha": {
     "secretKey": ""
   },

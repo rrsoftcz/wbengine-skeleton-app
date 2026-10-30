@@ -31,14 +31,14 @@ try {
     $settingsPath = $root . '/src/Config/Settings.json';
     $settings = json_decode((string) file_get_contents($settingsPath));
     $assert(is_object($settings), 'Created settings are not a JSON object.');
-    $assert(strlen($settings->jwt->accessKey ?? '') >= 64 && ($settings->jwt->accessKey ?? '') !== 'CHANGE_ME', 'Access key was not generated.');
-    $assert(strlen($settings->jwt->refreshKey ?? '') >= 64 && ($settings->jwt->refreshKey ?? '') !== 'CHANGE_ME', 'Refresh key was not generated.');
-    $assert($settings->jwt->accessKey !== $settings->jwt->refreshKey, 'JWT keys must be different.');
+    $assert(!isset($settings->jwt), 'Settings must not carry signing keys: the framework has no JWT login.');
+    $assert(isset($settings->dbAdapterDefinition), 'Settings were not created from the default configuration.');
+    $created = (string) file_get_contents($settingsPath);
     $assert(is_dir($root . '/src/View/Compiled') && is_writable($root . '/src/View/Compiled'), 'Compiled template directory is not writable.');
     [$code] = $run($root);
     $assert($code === 0, 'Repeated install must be safe.');
     $again = json_decode((string) file_get_contents($settingsPath));
-    $assert($again->jwt->accessKey === $settings->jwt->accessKey, 'Repeated install replaced existing keys.');
+    $assert((string) file_get_contents($settingsPath) === $created, 'Repeated install replaced the existing settings.');
 
     file_put_contents($settingsPath, '{broken json');
     [$code, $stdout, $stderr] = $run($root);

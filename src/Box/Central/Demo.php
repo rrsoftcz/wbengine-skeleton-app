@@ -97,12 +97,4 @@ class Demo extends WbengineBoxAbstract
             'ttl' => isset($pages['ttl']) ? (int) $pages['ttl'] : 0,
         ));
     }
-
-    /**
-     * A small console that calls the REST API of this application from the browser.
-     */
-    public function Api()
-    {
-        return $this->getRenderer()->render($this->getBoxTemplatePath());
-    }
 }
