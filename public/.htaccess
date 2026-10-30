@@ -12,9 +12,13 @@ RewriteCond %{REQUEST_URI} !^/api(/|$)
 RewriteCond %{REQUEST_URI} !\.[[:alnum:]]+$
 RewriteRule ^(.+[^/])$ /$1/ [R=301,QSA,L]
 
+# The router owns the link parameter; a client supplied one would override the rewritten path
+RewriteCond %{QUERY_STRING} (^|&)link= [NC]
+RewriteRule ^ - [R=400,L]
+
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-RewriteRule  ^(.+)$   index.php?link=$1 [L]
+RewriteRule  ^(.+)$   index.php?link=$1 [QSA,L]
 
-RewriteRule  ^$   index.php?link=front
+RewriteRule  ^$   index.php?link=front [QSA,L]

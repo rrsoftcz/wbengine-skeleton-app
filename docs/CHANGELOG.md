@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Apache rewrite keeps the query string, so API v2 filters and dates (for example the analytics period) reach the framework. A client supplied `link` parameter is rejected.
+
 ### Added
 
 - WBengine updated to 4.10.0 (`composer.lock`). `bin/update-database.sh` and `bin/setup-production.sh` also apply the remote user management update. `schemas/migrations/027-site-users-docs.sql` documents the site users and settings pages of the central administration, in English and Czech, and fixes one wording that named a release; mirrored in the content dump.
