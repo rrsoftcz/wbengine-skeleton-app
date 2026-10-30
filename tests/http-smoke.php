@@ -54,7 +54,7 @@ $boxTypes = array_column($capabilityBody['data']['box_types'] ?? [], 'type');
 $check(in_array('story', $boxTypes, true), 'API v2 capabilities list the registered story box type');
 $check(($capabilityBody['data']['capabilities']['boxes']['write'] ?? false) === true, 'API v2 capabilities allow writing boxes');
 $legacy = $public->request('/api/sections/');
-$check($legacy['status'] === 401, 'Legacy API still requires authentication');
+$check($legacy['status'] === 404, 'The former API routes are gone');
 $integrations = $public->request('/integrations/');
 $check($integrations['status'] === 302 && stripos($integrations['headers'], '/login/') !== false, 'Integrations page resolves and sends anonymous visitors to the login (status ' . $integrations['status'] . ')');
 $login = new SmokeClient();
