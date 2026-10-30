@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ff9b20c726972458f11de354914342c",
+    "content-hash": "51523e94ca047f83641cf085c02f1e9a",
     "packages": [
         {
             "name": "wbengine/wbengine",
-            "version": "v6.0.0",
+            "version": "v6.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rrsoftcz/wbengine.git",
-                "reference": "2b51903dacc0010385bb65ae2207f4e2eca1f0bd"
+                "reference": "b97f607d8bf535cf39d04cda90c4f718ace303b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/2b51903dacc0010385bb65ae2207f4e2eca1f0bd",
-                "reference": "2b51903dacc0010385bb65ae2207f4e2eca1f0bd",
+                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/b97f607d8bf535cf39d04cda90c4f718ace303b9",
+                "reference": "b97f607d8bf535cf39d04cda90c4f718ace303b9",
                 "shasum": ""
             },
             "require": {
@@ -61,10 +61,10 @@
             ],
             "support": {
                 "issues": "https://github.com/rrsoftcz/wbengine/issues",
-                "source": "https://github.com/rrsoftcz/wbengine/tree/v6.0.0"
+                "source": "https://github.com/rrsoftcz/wbengine/tree/v6.1.0"
             },
-            "time": "2026-10-30T22:38:17+00:00",
-            "published-time": "2026-10-30T22:38:26+00:00"
+            "time": "2026-10-30T23:08:24+00:00",
+            "published-time": "2026-10-30T23:09:48+00:00"
         }
     ],
     "packages-dev": [],

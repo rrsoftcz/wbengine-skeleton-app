@@ -4,6 +4,7 @@
 
 ### Changed
 
+- WBengine 6.1.0 (`composer.json` `^6.1`, `composer.lock`): an integration key can be bound to IP addresses. `bin/update-database.sh` and `bin/setup-production.sh` also apply the update for it. `schemas/migrations/033-key-address-docs.sql` describes it in the Connecting a site section of the public documentation, in English and Czech; mirrored in the content dump.
 - WBengine 6.0.0 (`composer.json` `^6.0`, `composer.lock`): the unused settings `codePage`, `cdnPath`, `cssFiles`, `ipAdmins`, `minimizeHtml`, `minimizeCss` and `minimizeJs` are removed from `settings.json.default`; an existing `Settings.json` keeps working, the keys are ignored. `schemas/migrations/032-unused-settings-docs.sql` removes them from the Settings reference page, in English and Czech; mirrored in the content dump. The home page badge no longer names a version.
 - WBengine 5.2.0 (`composer.json` `^5.2`, `composer.lock`): the permission groups of the key form on `/integrations/` are one row each with None, Read and Write buttons, colored red, blue and green by the choice.
 - WBengine 5.1.1 (`composer.lock`): the permission groups of the key form on `/integrations/` are cards with soft pastel colors.
