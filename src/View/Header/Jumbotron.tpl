@@ -18,7 +18,7 @@
             </div>
             <dl class="mt-10 grid max-w-xl grid-cols-2 gap-6 sm:grid-cols-4">
                 <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_php'}</dt><dd class="m-0 text-xl font-bold text-white">8.3 &ndash; 8.5</dd></div>
-                <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_tests'}</dt><dd class="m-0 text-xl font-bold text-white">2</dd></div>
+                <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_tests'}</dt><dd class="m-0 text-xl font-bold text-white">0</dd></div>
                 <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_cached'}</dt><dd class="m-0 text-xl font-bold text-white">0 SQL</dd></div>
                 <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_license'}</dt><dd class="m-0 text-xl font-bold text-white">MIT</dd></div>
             </dl>

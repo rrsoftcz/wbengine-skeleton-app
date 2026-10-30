@@ -8,6 +8,7 @@
 
 ### Fixed
 
+- README, deployment guides, interface texts and public documentation match WBengine 5: the PHP extensions, the removed refresh tokens, the API v2 cache flush and translation routes, the current CLI commands, the local stack database updates (`bin/update-database.sh`), the home page counter of runtime packages (0) and the home and API page titles. The Czech Architecture page is the full translation of the English one. `schemas/migrations/030-framework-5-docs.sql` updates the public pages in English and Czech; mirrored in the content dump.
 - Apache rewrite keeps the query string, so API v2 filters and dates (for example the analytics period) reach the framework.
 
 ### Added

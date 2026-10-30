@@ -1,6 +1,6 @@
 # wbengine-skeleton-app
 
-A minimal application built on the [WBengine](https://packagist.org/packages/wbengine/wbengine) PHP framework. Use it as a starting point for a website or a backend: it shows a static page, a database driven blog article, a login, a user profile and the REST API.
+A minimal application built on the [WBengine](https://packagist.org/packages/wbengine/wbengine) PHP framework. Use it as a starting point for a website or a backend: it shows a static page, a database driven blog article, a login, a user profile and API v2 for integrations.
 
 ## Documentation index
 
@@ -26,7 +26,7 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 
 ## Requirements
 
-* PHP 8.3 or newer (8.4 recommended) with the `mysqli` extension
+* PHP 8.3 or newer (8.4 recommended) with the `mysqli`, `json` and `mbstring` extensions
 * MySQL 8 or MariaDB 10.6+
 * Apache with `mod_rewrite` and `AllowOverride All` for `public/` (or an equivalent Nginx rewrite to `public/index.php`)
 * Composer
@@ -49,6 +49,12 @@ docker compose up --build             # http://localhost:8080, MySQL seeded from
 
 The web container runs `bin/wbe install` before Apache starts. It creates `src/Config/Settings.json` from the default configuration when missing, validates the JSON, prepares the writable compiled-template directory, and runs `composer install` from the committed lock file in the PHP 8.4 container. Existing settings are preserved and validated. Every container start reconciles installed packages with the lock file, so a framework version update is applied on restart. You do not need host PHP or Composer. The installer never uses `chmod 777`.
 
+The local stack seeds the database from `schemas/` only. The API v2 tables (integration keys, analytics, change log, users) are created from the files of the installed framework; run this once after the first start, and after every framework update, to enable `/integrations/` and the central administration:
+
+```bash
+docker compose exec -T web sh bin/update-database.sh --print | docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"'
+```
+
 To run the installer again manually, use `docker compose exec web php bin/wbe install`. `bin/setup.sh` remains as a backwards-compatible alias. You can also run `bin/wbe install` directly when PHP 8.3+ and Composer 2 are installed locally.
 
 If setup stops, read the `Install error:` message in the container output. For a running stack, inspect `docker compose logs web`. The installer reports missing default settings, invalid JSON, unreadable settings, unwritable `src/View/Compiled`, and Composer failures separately. For local debugging only, set `"debug": true` in `src/Config/Settings.json` and restart the web container. Debug output includes file paths and stack traces, so keep it off on public sites. An invalid or missing config is diagnosed by the framework's safe error page; for detailed startup diagnostics, set `WBENGINE_DEBUG=1` only in your private development environment, then remove it before going live.
@@ -63,7 +69,7 @@ This demo account exists only in the local stack. Replace it with your own admin
 
 ## Users and the first login
 
-Accounts live in `cms_users` and have one of the roles `user`, `editor` and `admin`. The role is read from the database on every privileged request. There is no public registration. Accounts are managed with `bin/wbe` (it requires WBengine 4.3 or newer). Run the commands inside the web container: `docker compose exec web php bin/wbe ...` for the local stack, `docker compose -f docker-compose.production.yml exec web php bin/wbe ...` in production, or plain `php bin/wbe ...` without Docker.
+Accounts live in `cms_users` and have one of the roles `user`, `editor` and `admin`. The role is read from the database on every privileged request. There is no public registration. Accounts are managed with `bin/wbe`. Run the commands inside the web container: `docker compose exec web php bin/wbe ...` for the local stack, `docker compose -f docker-compose.production.yml exec web php bin/wbe ...` in production, or plain `php bin/wbe ...` without Docker.
 
 The recommended order on a fresh install:
 
@@ -81,14 +87,14 @@ The password is never accepted as an argument or environment variable, so it doe
 | Command | Purpose |
 |---------|---------|
 | `bin/wbe user:create --email=EMAIL [--username=NAME] [--role=user\|editor\|admin]` | create an account |
-| `bin/wbe user:password --email=EMAIL` | set a new password (reset a forgotten one), invalidates refresh tokens |
+| `bin/wbe user:password --email=EMAIL` | set a new password (reset a forgotten one), ends the user's web sessions |
 | `bin/wbe user:list` | list accounts, never shows hashes |
 | `bin/wbe user:delete --email=EMAIL` | delete an account; the last administrator cannot be deleted |
 | `bin/wbe user:delete --example [--dry-run]` | delete every account with an e-mail in a reserved example domain (`example.com`, `example.org`, `example.net`, `.example`, `.test`, `.invalid`, `.localhost`); refuses if no other administrator would remain |
 
 ## Connecting the site to WBengine Admin
 
-The central WBengine Admin manages many sites through the API v2. Requirements on this site: WBengine 4.2 or newer, `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework migrations `4.0.0/002` and `4.0.0/007` applied (`vendor/bin/wbengine.php migration:status`) and an `admin` account.
+The central WBengine Admin manages many sites through the API v2. Requirements on this site: `apiV2.enabled` set to `true` in `Settings.json`, HTTPS, the framework database updates applied (`sh bin/update-database.sh DATABASE`, check with `vendor/bin/wbengine.php migration:status`) and an `admin` account. A site without the integrations page gets it with `vendor/bin/wbengine.php integrations:install --root=src --config=src/Config/Settings.json` (add `--apply` to write; it never changes existing records).
 
 1. Sign in as `admin` and open `/integrations/`. The page checks the requirements, asks for your password and issues an integration key once. Only its hash is stored on the site.
 2. In the central Admin (`npm run admin -- invite EMAIL global`, then `/accept` and multi-factor setup for the first account), open Sites, choose Add site and enter the name, the HTTPS address and the key. The key is verified before anything is saved.
@@ -228,9 +234,7 @@ then check `/cs/docs/architecture/`, `/cs/docs/rest-api/`, and
 `/cs/docs/administration/`. Rebuilding containers alone does not
 apply this content migration to an existing database.
 
-To connect the site to the central WBengine Admin, update to the first WBengine release after 4.1.0
-(not released yet), enable `apiV2`, apply the framework migrations
-`4.0.0/002-api-v2-integrations.sql`, `4.0.0/007-api-integration-last-used.sql` and, with WBengine 4.8.0 or newer, `4.8.0/008-change-log-source.sql` (change log columns, `doctor` fails without it), then
+To connect an existing site to the central WBengine Admin, update to WBengine 5, enable `apiV2`, apply the framework database updates with `sh bin/update-database.sh DATABASE` (the API, analytics, change log and users tables; `doctor` fails without them), then
 back up the database and apply migration 013 once. An administrator then issues the key
 on `/integrations/` over HTTPS:
 
@@ -259,9 +263,10 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/027-site-users-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/028-integrations-install-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/029-api-v2-only-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/030-framework-5-docs.sql
 ```
 
-Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework migration `vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql` (WBengine 4.8.0 or newer) and schedules `audit:prune`; see `/docs/logging/`.
+Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework updates with `sh bin/update-database.sh DATABASE` and schedules `audit:prune`; see `/docs/logging/`.
 
 Then check `/docs/settings/`, `/docs/deployment/`, `/docs/logging/` and their `/cs/` versions. For a production stack use `docker-compose.production.yml` in the command; without Docker pipe the file into `mysql` directly.
 
@@ -281,7 +286,7 @@ The skeleton is a working site that explains WBengine with itself. Every documen
 | `/docs/languages/` | language detection, catalogs, plurals, translated content | the detected locale, plural forms, number and date formats (`Demo::Languages`) |
 | `/docs/caching/` | data cache, page cache, invalidation | build time, query count and the `X-WBengine-Cache` header (`Demo::Caching`) |
 | `/docs/security/` | the defences, the `acl` of a site | `/profile/` redirects to the login |
-| `/docs/rest-api/` | endpoints, roles, conventions | a console that calls the API (`Demo::Api`) |
+| `/docs/rest-api/` | API v2, integration keys and scopes | |
 | `/docs/administration/` | the central WBengine Admin | |
 | `/docs/settings/` | every `Settings.json` key, a production example, Google Analytics | |
 | `/docs/logging/` | what is logged where, the API audit and change log, retention, `audit:prune`, privacy | |
@@ -291,9 +296,9 @@ The skeleton is a working site that explains WBengine with itself. Every documen
 
 The documentation text is content, not code: each page is a `cms_sites` row, a `cms_articles` row and a `cms_boxes` row for the reusable `Docs::Page` box (which adds the sidebar). The Czech text is in `cms_article_translations`, the menu names in `cms_menu_translations`. Article rows set `content_format` explicitly to `markdown`; the demo content lives in `schemas/wbengine_skeletone_app_mysql_template_content.sql`, imported after the schema. This seed is for a fresh database and is not idempotent: it updates some base rows and inserts the demo pages, menu item, and articles. Reimporting it into an existing database can overwrite base content and then fail on duplicate IDs. Do not reimport it into an installed site.
 
-To add a documentation page: insert the three rows (copy one of the seeded pages), add the URL and a catalog key to `Docs::PAGES` for the sidebar, and translate it with `PUT /api/translations/article/{id}/cs`. The `.doc` typography styles apply to rendered Markdown; rebuild the stylesheet only when you add new Tailwind utility classes to templates or seeded content.
+To add a documentation page: insert the three rows (copy one of the seeded pages), add the URL and a catalog key to `Docs::PAGES` for the sidebar, and translate it with `PUT /api/v2/translations/article/{id}/cs` (an integration key with `translations:write` and `articles:write`). The `.doc` typography styles apply to rendered Markdown; rebuild the stylesheet only when you add new Tailwind utility classes to templates or seeded content.
 
-The default `settings.json.default` switches the data cache and the page cache on (file driver, 60 seconds for pages), so the caching page is meaningful. While you edit templates, set `cache.enabled` to `false` or call `POST /api/cache/flush`, otherwise you see the stored copy for up to a minute.
+The default `settings.json.default` switches the data cache and the page cache on (file driver, 60 seconds for pages), so the caching page is meaningful. While you edit templates, set `cache.enabled` to `false` or flush the cache with `POST /api/v2/cache/flush` (an integration key with `cache:write`) or by emptying `cache.dir`, otherwise you see the stored copy for up to a minute.
 
 ## How it works
 
@@ -301,7 +306,7 @@ The page you see is assembled from database rows:
 
 ```
 Site (cms_sites, matched by URL)
-  Sections (cms_sections: header, central, api)
+  Sections (cms_sections: header, central)
     Boxes (cms_boxes: module + method)
       static box  : renders a template only
       dynamic box : loads data through a Model, then renders a template
@@ -406,7 +411,7 @@ the same type twice throws a `LogicException`, so keep the `typeFor()` guard.
 * Set `i18n.baseUrl` in the production `Settings.json` to `"https://www.wbengine.org"`. Keep the site behind HTTPS, and replace or remove the demo administrator before opening the site to the public.
 * On an existing installation, `Settings.json` is preserved during rebuilds. To make the unprefixed live site English, set `i18n.default` to `"en"` and `i18n.detect` to `["url"]` in that file; the tracked `settings.json.default` affects fresh installations only.
 * Build and deploy the reviewed application and database schema, run the documented migrations, then verify `/`, `/cs/`, `/docs/` and `/cs/docs/` over HTTPS. Do not deploy with the demo login `admin@example.com` / `changeme` enabled.
-* API operations require the documented role: user and section administration and cache flushing require an administrator; translation management requires an editor or administrator.
+* API v2 operations require an integration key with the matching scope: a key without the scope receives 403. Issue keys only with the permissions they need, and revoke keys that are no longer used.
 * Do not commit TLS certificates or private keys; terminate TLS in front of the application.
 
 ## Google Analytics and cookie consent
@@ -442,6 +447,16 @@ vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
 vendor/bin/wbengine.php migration:status --config=src/Config/Settings.json --root=src
 ```
 
+Further commands of `vendor/bin/wbengine.php` (all take `--config` and `--root`):
+
+```bash
+vendor/bin/wbengine.php analytics:prune --config=src/Config/Settings.json   # remove expired analytics rows, run daily from cron
+vendor/bin/wbengine.php audit:prune [--days=N] [--dry-run] --config=src/Config/Settings.json
+vendor/bin/wbengine.php audit:list [--limit=N] [--resource=NAME] [--actor=ACTOR] --config=src/Config/Settings.json
+vendor/bin/wbengine.php integrations:install --root=src [--apply] --config=src/Config/Settings.json
+vendor/bin/wbengine.php generate:box --root=src --namespace=App --section=Central --module=Welcome --method=welcome [--write]
+```
+
 Account management has its own wrapper, `bin/wbe user:create`, `user:password`, `user:list` and
 `user:delete`; see [Users and the first login](#users-and-the-first-login).
 
@@ -462,19 +477,15 @@ The WBengine library and this sample application are open source and a volunteer
 MIT, see [LICENSE](docs/LICENSE.md).
 
 
-## WBengine 4.0 migration and HTTP verification
+## HTTP smoke test
 
-This branch targets WBengine ^4.0. Production Composer installation requires the
-4.0 release; the isolated development profile uses a path checkout with an explicit
-4.0.x-dev version. It never replaces the normal deployment configuration.
-
-The application root now owns a lazy App\Site service. Layout user data is prepared
+The application root owns a lazy `App\Site` service. Layout user data is prepared
 after framework routes and the page-cache gate, so anonymous public pages can reach
 HIT without starting a session. Logged-in navigation uses a POST logout form and
 its own purpose CSRF token. Production diagnostics are displayed only when supplied.
 
 For repeatable local smoke testing, build the framework test image, set
-WBENGINE_FRAMEWORK_PATH to its 4.0 checkout, and run:
+WBENGINE_FRAMEWORK_PATH to a checkout of the framework, and run:
 
 ```sh
 docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/setup-smoke.php
@@ -487,15 +498,15 @@ docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml down --remove-orp
 
 This creates only the isolated Compose database and ignored Settings/vendor files.
 The fixture password is test-only. No ports are published by this
-profile. The 20 checks cover native page output, anonymous HIT, locale, 404, article,
+profile. The checks cover native page output, anonymous HIT, locale, 404, article,
 real login/CSRF/profile, rejected GET/invalid POST logout, successful POST logout,
-public API v2 discovery and unchanged API v1 authorization. CI executes the same
-workflow against the framework development branch.
+public API v2 discovery, the integrations page and the absence of the former API v1
+routes. CI executes the same workflow against the framework release the skeleton requires.
 
 [Migration checkpoint and remaining work](docs/plan-wbengine-4.0-migration.md).
 
 
-## Isolated CMS benchmark for WBengine 4.0
+## Isolated CMS benchmark
 
 After preparing the same smoke environment, you can run:
 

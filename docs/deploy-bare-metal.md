@@ -200,7 +200,7 @@ It works when the host offers PHP 8.3 or newer with the extensions above, MySQL 
 
 ## Built images
 
-Version tags (`v*`) run the workflow `.github/workflows/image.yml`, which builds `Dockerfile.production` and pushes `ghcr.io/rrsoftcz/wbengine-skeleton-app` tagged with the version (`1.2.3`, `1.2`) and `latest`. The image contains the code and the production Composer dependencies and no secrets. Pull and run it with `Settings.json` mounted read-only and a volume for the compiled templates:
+Build the image from a checkout with `docker build -f Dockerfile.production -t wbengine-skeleton-app .`. Pushing a version tag (`v*`) also runs the workflow `.github/workflows/image.yml`, which builds `Dockerfile.production` and pushes `ghcr.io/rrsoftcz/wbengine-skeleton-app` tagged with the version (`1.2.3`, `1.2`) and `latest`. The image contains the code and the production Composer dependencies and no secrets. Pull and run it with `Settings.json` mounted read-only and a volume for the compiled templates:
 
 ```sh
 docker pull ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3

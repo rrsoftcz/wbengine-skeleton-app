@@ -29,10 +29,10 @@ the installer uses `https://www.wbengine.org`. It also detects the Docker networ
 writes it to `http.trustedProxies` with the forwarded headers `x-forwarded-for` and
 `x-forwarded-proto`, so the framework recognises HTTPS behind the host Nginx.
 
-The script generates `.env` and `src/Config/Settings.json` with server-only
-random secrets, builds the production PHP image, creates an empty MySQL volume,
-imports the tracked schema and current content seed, applies the framework API
-and analytics table migrations, and disables the public demo account by
+The script generates `.env` with random database passwords and `src/Config/Settings.json` for
+the server, builds the production PHP image, creates an empty MySQL volume,
+imports the tracked schema and current content seed, applies the framework database
+updates (API, analytics, change log and users tables), and disables the public demo account by
 replacing its password with an unknown random value. It does not enable native
 analytics collection. Keep `.env` and `Settings.json` private; both are ignored
 by Git.
@@ -54,7 +54,7 @@ docker compose -f docker-compose.production.yml exec web php bin/wbe user:list
 docker compose -f docker-compose.production.yml exec web php bin/wbe user:delete --example
 ```
 
-The commands require WBengine 4.3 or newer. To manage the site from the central WBengine
+To manage the site from the central WBengine
 Admin, continue with "Connecting the site to WBengine Admin" in the README.
 
 ## Nginx and HTTPS
@@ -95,6 +95,13 @@ docker compose -f docker-compose.production.yml ps
 docker compose -f docker-compose.production.yml logs --tail=100 web db
 ```
 
-Check `/`, `/cs/`, `/docs/`, `/cs/docs/` and the API capabilities endpoint over
+After a framework update also apply its database updates (safe to run again):
+
+```sh
+docker compose -f docker-compose.production.yml exec -T web sh bin/update-database.sh --print \
+  | docker compose -f docker-compose.production.yml exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot wbengine_skeleton_app'
+```
+
+Check `/`, `/cs/`, `/docs/`, `/cs/docs/` and the API capabilities endpoint (`/api/v2/capabilities`) over
 HTTPS. Do not restore the demo password or expose port 3306. The database volume
 is persistent, but this clean-install guide does not configure backups.
