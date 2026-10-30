@@ -8,6 +8,6 @@
   "license": "MIT",
   "require": {
     "php": ">=8.3",
-    "wbengine/wbengine": "^5.2"
+    "wbengine/wbengine": "^6.0"
   }
 }

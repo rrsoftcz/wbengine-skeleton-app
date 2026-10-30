@@ -1,9 +1,5 @@
 {
   "timeZone": "Europe/Prague",
-  "codePage": "utf8",
-  "minimizeHtml": false,
-  "minimizeCss": false,
-  "minimizeJs": false,
   "debug": false,
   "apiV2": {
     "enabled": true
@@ -11,7 +7,6 @@
   "googleAnalytics": {
     "measurementId": ""
   },
-  "cdnPath": "",
   "renderer": {
     "adapterName": "NativeRenderer",
     "autoEscape": true,
@@ -49,7 +44,5 @@
     "default": "en",
     "locales": ["en", "cs"],
     "detect": ["url"]
-  },
-  "cssFiles": [],
-  "ipAdmins": []
+  }
 }
