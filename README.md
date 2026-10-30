@@ -32,10 +32,9 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 * Composer
 * Docker (optional, the quickest way to try it)
 
-The Composer application requirement is `wbengine/wbengine:^4.0`. The framework's
-runtime Composer dependency is `firebase/php-jwt`. Its native template engine and
-Markdown parser are included in WBengine. Composer
-also checks PHP platform requirements for the installed release.
+The Composer application requirement is `wbengine/wbengine:^5.0`. The framework has no
+runtime Composer dependency: its native template engine and Markdown parser are included in
+WBengine. Composer also checks PHP platform requirements for the installed release.
 
 ## Quick start with Docker
 
@@ -48,7 +47,7 @@ cd wbengine-skeleton-app
 docker compose up --build             # http://localhost:8080, MySQL seeded from schemas/
 ```
 
-The web container runs `bin/wbe install` before Apache starts. It creates `src/Config/Settings.json` with fresh JWT secrets when missing, validates the JSON, prepares the writable compiled-template directory, and runs `composer install` from the committed lock file in the PHP 8.4 container. Existing settings are preserved and validated. Every container start reconciles installed packages with the lock file, so a framework version update is applied on restart. You do not need host PHP or Composer. The installer never uses `chmod 777`.
+The web container runs `bin/wbe install` before Apache starts. It creates `src/Config/Settings.json` from the default configuration when missing, validates the JSON, prepares the writable compiled-template directory, and runs `composer install` from the committed lock file in the PHP 8.4 container. Existing settings are preserved and validated. Every container start reconciles installed packages with the lock file, so a framework version update is applied on restart. You do not need host PHP or Composer. The installer never uses `chmod 777`.
 
 To run the installer again manually, use `docker compose exec web php bin/wbe install`. `bin/setup.sh` remains as a backwards-compatible alias. You can also run `bin/wbe install` directly when PHP 8.3+ and Composer 2 are installed locally.
 
@@ -259,6 +258,7 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/026-change-feed-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/027-site-users-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/028-integrations-install-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/029-api-v2-only-docs.sql
 ```
 
 Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework migration `vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql` (WBengine 4.8.0 or newer) and schedules `audit:prune`; see `/docs/logging/`.
@@ -314,7 +314,6 @@ public/index.php          entry point (about ten lines)
 public/.htaccess          routes everything to index.php
 src/Config/               Settings.json (not committed), settings.json.default
 src/Box/<Section>/        box classes, e.g. Central/Blog.php, Central/Profile.php
-src/Box/Api/Restapi.php   REST API box
 src/View/                 native templates and Markdown sources: site.tpl, <Section>/<Method>.tpl
 src/View/Compiled/        template cache, must be writable
 schemas/                  database schema and demo data, migrations/
@@ -370,19 +369,13 @@ The parser is included in WBengine, escapes raw HTML, restricts link schemes, an
 
 Always pass values to SQL as bound parameters: `Db::fetchAssoc('SELECT * FROM cms_articles WHERE id = ?', [$id])`.
 
-## REST API
+## API
 
-Served under `/api/`. Obtain a token, then send it as a bearer token:
+Served under `/api/v2` when `apiV2.enabled` is `true`. It is the only API: server to server, authenticated by an integration key with scopes, which a signed-in administrator issues on `/integrations/`. It covers content, structure, users, translations, the cache flush and the change log. There is no login through the API: people sign in on the web at `/login/`.
 
 ```bash
-curl -X POST -H 'Content-Type: application/json' \
-     -d '{"username":"admin@example.com","password":"changeme"}' \
-     http://localhost:8080/api/auth/login
-
-curl -H "Authorization: Bearer <token>" http://localhost:8080/api/sections
+curl -H "Authorization: Bearer <integration key>" https://example.com/api/v2/identity
 ```
-
-Every route except `/api/auth/login` needs a valid token. Currently available: `auth` (login, logout, identify, revalidate), `users` (list, get, create, patch, delete), `sections` (CRUD), `translations` (content translations, editor role), `cache/flush`.
 
 ## Registered box types
 
@@ -408,9 +401,9 @@ the same type twice throws a `LogicException`, so keep the `typeFor()` guard.
 
 ## Security notes
 
-* The JWT keys and reCAPTCHA secret live in `Settings.json` (or the environment variables `WBENGINE_JWT_KEY`, `WBENGINE_JWT_REFRESH_KEY`, `WBENGINE_RECAPTCHA_SECRET`). Never commit them. `Settings.json` is ignored by git.
+* The reCAPTCHA secret and the database password live in `Settings.json` (or the environment variable `WBENGINE_RECAPTCHA_SECRET`). Never commit them. `Settings.json` is ignored by git.
 * Keep `"debug": false` in production: debug mode prints SQL and error details.
-* Set `i18n.baseUrl` in the production `Settings.json` to `"https://www.wbengine.org"`. Keep the site behind HTTPS, create unique production JWT signing keys, and replace or remove the demo administrator before opening the site to the public.
+* Set `i18n.baseUrl` in the production `Settings.json` to `"https://www.wbengine.org"`. Keep the site behind HTTPS, and replace or remove the demo administrator before opening the site to the public.
 * On an existing installation, `Settings.json` is preserved during rebuilds. To make the unprefixed live site English, set `i18n.default` to `"en"` and `i18n.detect` to `["url"]` in that file; the tracked `settings.json.default` affects fresh installations only.
 * Build and deploy the reviewed application and database schema, run the documented migrations, then verify `/`, `/cs/`, `/docs/` and `/cs/docs/` over HTTPS. Do not deploy with the demo login `admin@example.com` / `changeme` enabled.
 * API operations require the documented role: user and section administration and cache flushing require an administrator; translation management requires an editor or administrator.
@@ -493,7 +486,7 @@ docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml down --remove-orp
 ```
 
 This creates only the isolated Compose database and ignored Settings/vendor files.
-The fixture password and JWT values are test-only. No ports are published by this
+The fixture password is test-only. No ports are published by this
 profile. The 20 checks cover native page output, anonymous HIT, locale, 404, article,
 real login/CSRF/profile, rejected GET/invalid POST logout, successful POST logout,
 public API v2 discovery and unchanged API v1 authorization. CI executes the same

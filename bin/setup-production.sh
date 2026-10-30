@@ -40,13 +40,11 @@ if [ ! -f src/Config/Settings.json ]; then
         $settings["dbAdapterDefinition"]["password"] = getenv("MYSQL_PASSWORD");
         $settings["debug"] = false;
         $settings["analytics"]["enabled"] = false;
-        $settings["jwt"]["accessKey"] = bin2hex(random_bytes(32));
-        $settings["jwt"]["refreshKey"] = bin2hex(random_bytes(32));
         file_put_contents("src/Config/Settings.json", json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n", LOCK_EX);
     '
     chgrp 33 src/Config/Settings.json
     chmod 640 src/Config/Settings.json
-    echo "Created production Settings.json with fresh JWT keys."
+    echo "Created production Settings.json."
 else
     echo "Using existing Settings.json."
 fi
@@ -77,7 +75,7 @@ docker run --rm -e GATEWAY -v "$PWD:/app" -w /app php:8.4-cli php -r '
 docker compose -f docker-compose.production.yml up -d --build --wait
 
 # Prepare framework API, analytics and change log tables from the exact installed release
-for migration in 4.0.0/002-api-v2-integrations.sql 4.0.0/005-api-content.sql 4.0.0/006-analytics.sql 4.0.0/007-api-integration-last-used.sql 4.8.0/008-change-log-source.sql 4.10.0/009-remote-users.sql; do
+for migration in 4.0.0/002-api-v2-integrations.sql 4.0.0/005-api-content.sql 4.0.0/006-analytics.sql 4.0.0/007-api-integration-last-used.sql 4.8.0/008-change-log-source.sql 4.10.0/009-remote-users.sql 5.0.0/010-drop-refresh-tokens.sql; do
     docker compose -f docker-compose.production.yml exec -T web \
         cat "vendor/wbengine/wbengine/migrations/$migration" \
         | docker compose -f docker-compose.production.yml exec -T db \

@@ -19,7 +19,7 @@ git checkout <release tag>
 php bin/wbe install --no-dev
 ```
 
-`bin/wbe install` creates `src/Config/Settings.json` from `settings.json.default` with fresh random JWT keys when the file is missing (an existing file is only validated, never overwritten), creates `src/View/Compiled`, and runs `composer install --no-dev` from the lock file. For a production build you can run `composer install --no-dev --optimize-autoloader` instead.
+`bin/wbe install` creates `src/Config/Settings.json` from `settings.json.default` when the file is missing (an existing file is only validated, never overwritten), creates `src/View/Compiled`, and runs `composer install --no-dev` from the lock file. For a production build you can run `composer install --no-dev --optimize-autoloader` instead.
 
 The document root of the web server is the `public/` directory. Never point it at the project root: `src/`, `vendor/`, `schemas/` and `bin/` must not be reachable from the web.
 
@@ -54,12 +54,11 @@ php bin/wbe user:delete --example
 
 ## 3. Settings.json and secrets
 
-Keep `Settings.json` out of version control and readable only by the deploy user and the PHP user (`chmod 640`, group of the PHP user). Put the secrets in the environment of the PHP process instead of the file: `WBENGINE_JWT_KEY`, `WBENGINE_JWT_REFRESH_KEY` (at least 32 characters each, `openssl rand -hex 32`), `WBENGINE_RECAPTCHA_SECRET`, and optionally `WBENGINE_DEBUG` and `WBENGINE_IMAGE_DIR`. With PHP-FPM, set them in the pool file:
+Keep `Settings.json` out of version control and readable only by the deploy user and the PHP user (`chmod 640`, group of the PHP user). Put the secrets in the environment of the PHP process instead of the file: `WBENGINE_RECAPTCHA_SECRET`, and optionally `WBENGINE_DEBUG` and `WBENGINE_IMAGE_DIR`. With PHP-FPM, set them in the pool file:
 
 ```ini
 ; /etc/php/8.4/fpm/pool.d/wbengine.conf
-env[WBENGINE_JWT_KEY] = "..."
-env[WBENGINE_JWT_REFRESH_KEY] = "..."
+env[WBENGINE_RECAPTCHA_SECRET] = "..."
 ```
 
 A complete production-ready file is shown on the settings page (`/docs/settings/`). The minimum for production: `debug` off, `cache` on, `renderer.compileCheck` false, `i18n.baseUrl` set to the public address, `http.trustedProxies` set when a proxy sits in front, and explicit absolute directories for runtime files (next section). After the first deploy run `php vendor/bin/wbengine.php config:check --config=src/Config/Settings.json --root=src`.
@@ -158,7 +157,7 @@ php vendor/bin/wbengine.php doctor --config=src/Config/Settings.json --root=src
 systemctl reload php8.4-fpm
 ```
 
-Flush the cache with `POST /api/cache/flush` (administrator), or remove the files in `cache.dir`. For APCu cache restart PHP-FPM.
+Flush the cache with `POST /api/v2/cache/flush` (integration key with the `cache:write` scope, for example from the central administration), or remove the files in `cache.dir`. For APCu cache restart PHP-FPM.
 
 Rollback: check out the previous tag, run `composer install --no-dev`, empty the compiled directory, reload PHP-FPM. Migrations are not reversed automatically: if one changed the schema, restore the database dump taken before the deploy. Content migrations only change text and are safe to leave in place.
 
@@ -209,7 +208,7 @@ docker run -d --name wbengine --restart unless-stopped \
   -p 127.0.0.1:8080:80 \
   -v /etc/wbengine/Settings.json:/var/www/html/src/Config/Settings.json:ro \
   -v wbengine_compiled:/var/www/html/src/View/Compiled \
-  -e WBENGINE_JWT_KEY="..." -e WBENGINE_JWT_REFRESH_KEY="..." \
+  -e WBENGINE_RECAPTCHA_SECRET="..." \
   ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3
 ```
 
