@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d754b71bcf6acc66b67abca5132d294",
+    "content-hash": "936d13858c351cf556917bbd2a685b33",
     "packages": [
         {
             "name": "wbengine/wbengine",
-            "version": "v5.0.0",
+            "version": "v5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rrsoftcz/wbengine.git",
-                "reference": "39273f8f2ce3e0787f4e40f023e0355c4314bdf0"
+                "reference": "d7bbf6411ec2253ea025efec455739ec2c215fe3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/39273f8f2ce3e0787f4e40f023e0355c4314bdf0",
-                "reference": "39273f8f2ce3e0787f4e40f023e0355c4314bdf0",
+                "url": "https://api.github.com/repos/rrsoftcz/wbengine/zipball/d7bbf6411ec2253ea025efec455739ec2c215fe3",
+                "reference": "d7bbf6411ec2253ea025efec455739ec2c215fe3",
                 "shasum": ""
             },
             "require": {
@@ -61,10 +61,10 @@
             ],
             "support": {
                 "issues": "https://github.com/rrsoftcz/wbengine/issues",
-                "source": "https://github.com/rrsoftcz/wbengine/tree/v5.0.0"
+                "source": "https://github.com/rrsoftcz/wbengine/tree/v5.1.0"
             },
-            "time": "2026-10-30T16:21:35+00:00",
-            "published-time": "2026-10-30T16:21:44+00:00"
+            "time": "2026-10-30T20:20:33+00:00",
+            "published-time": "2026-10-30T20:20:42+00:00"
         }
     ],
     "packages-dev": [],
