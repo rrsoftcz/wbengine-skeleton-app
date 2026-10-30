@@ -32,7 +32,7 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 * Composer
 * Docker (optional, the quickest way to try it)
 
-The Composer application requirement is `wbengine/wbengine:^6.0`. The framework has no
+The Composer application requirement is `wbengine/wbengine:^6.1`. The framework has no
 runtime Composer dependency: its native template engine and Markdown parser are included in
 WBengine. Composer also checks PHP platform requirements for the installed release.
 
@@ -266,6 +266,7 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/030-framework-5-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/031-key-groups-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/032-unused-settings-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/033-key-address-docs.sql
 ```
 
 Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework updates with `sh bin/update-database.sh DATABASE` and schedules `audit:prune`; see `/docs/logging/`.
