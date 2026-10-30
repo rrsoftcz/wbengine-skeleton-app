@@ -7,7 +7,7 @@
 set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 DIR="$ROOT/vendor/wbengine/wbengine/migrations"
-FILES="4.0.0/002-api-v2-integrations.sql 4.0.0/005-api-content.sql 4.0.0/006-analytics.sql 4.0.0/007-api-integration-last-used.sql 4.8.0/008-change-log-source.sql"
+FILES="4.0.0/002-api-v2-integrations.sql 4.0.0/005-api-content.sql 4.0.0/006-analytics.sql 4.0.0/007-api-integration-last-used.sql 4.8.0/008-change-log-source.sql 4.10.0/009-remote-users.sql"
 
 if [ ! -d "$DIR" ]; then
     echo "Error: $DIR is missing. Run composer install first." >&2
