@@ -258,6 +258,7 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/025-public-docs-cleanup-2.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/026-change-feed-docs.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/027-site-users-docs.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/028-integrations-install-docs.sql
 ```
 
 Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework migration `vendor/wbengine/wbengine/migrations/4.8.0/008-change-log-source.sql` (WBengine 4.8.0 or newer) and schedules `audit:prune`; see `/docs/logging/`.
