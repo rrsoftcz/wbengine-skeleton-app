@@ -245,6 +245,15 @@ The editor handles simultaneous changes safely. Every write includes the version
 
 Supported images are public raster media, not private draft attachments. Box choices come from a site-side allowlist. The central client cannot choose arbitrary PHP classes, methods, SQL statements, templates or filesystem paths.
 
+## Site users and settings
+
+For a site administrator, the central administration also covers the accounts that sign in on the site itself and two server-side actions, when the site allows it.
+
+- **Site users:** list and search the accounts, create an account, change its role (user, editor or administrator), disable and enable it. A new account has no password: the administration shows a one-time link once, and the owner opens it on the login page of the site to choose a password. Passwords are never set, read or stored by the central administration, and the last active administrator of a site cannot be demoted or disabled.
+- **Site settings:** the effective settings of the site, read only, with secret values shown only as set, and a button that flushes the site cache. The settings themselves are changed on the server.
+
+Both pages need an integration key issued with the matching permissions; a key without them asks to be replaced.
+
 ## What it does not replace
 
 The central service is an optional content client. It does not replace WBengine, the site database, source control, deployment pipeline or server administration. Developers still change PHP classes and templates in the site project and deploy them through the normal deployment workflow for that project. Sites continue serving pages independently if the central administration is unavailable.
@@ -491,7 +500,16 @@ Podle možností API daného webu a role centrálního účtu může redaktor sp
 
 Každý zápis uvádí verzi, ze které vychází. Pokud stejný obsah změnil další redaktor nebo místní proces, API nahlásí konflikt místo tichého přepsání. Administrace zachová rozepsaný text a umožní porovnat aktuální vzdálenou verzi před novým výslovným uložením.
 
-Obrázky podporované touto verzí jsou veřejná rastrová média, nikoli soukromé přílohy konceptu. Nabídka boxů pochází z allowlistu na webu. Centrální klient nemůže vybírat libovolné PHP třídy, metody, SQL, šablony ani cesty k souborům.
+Podporované obrázky jsou veřejná rastrová média, nikoli soukromé přílohy konceptu. Nabídka boxů pochází z allowlistu na webu. Centrální klient nemůže vybírat libovolné PHP třídy, metody, SQL, šablony ani cesty k souborům.
+
+## Uživatelé a nastavení webu
+
+Pro správce webu centrální administrace pokrývá také účty, které se přihlašují přímo na webu, a dvě akce na straně serveru, pokud je web povolí.
+
+- **Uživatelé webu:** seznam a hledání účtů, založení účtu, změna role (uživatel, editor nebo administrátor), zakázání a povolení. Nový účet nemá heslo: administrace jednou zobrazí jednorázový odkaz a majitel ho otevře na přihlašovací stránce webu a zvolí si heslo. Hesla centrální administrace nikdy nenastavuje, nečte ani neukládá a posledního aktivního administrátora webu nelze degradovat ani zakázat.
+- **Nastavení webu:** platné nastavení webu pouze ke čtení, s tajnými hodnotami zobrazenými jen jako nastavené, a tlačítko, které vyprázdní cache webu. Samotné nastavení se mění na serveru.
+
+Obě stránky vyžadují integrační klíč vydaný s odpovídajícími oprávněními; klíč bez nich vyzve k výměně.
 
 ## Co administrace nenahrazuje
 

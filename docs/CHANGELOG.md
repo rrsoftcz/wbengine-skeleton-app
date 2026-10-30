@@ -4,6 +4,7 @@
 
 ### Added
 
+- WBengine updated to 4.10.0 (`composer.lock`). `bin/update-database.sh` and `bin/setup-production.sh` also apply the remote user management update. `schemas/migrations/027-site-users-docs.sql` documents the site users and settings pages of the central administration, in English and Czech, and fixes one wording that named a release; mirrored in the content dump.
 - WBengine updated to 4.9.0 (`composer.lock`). `schemas/migrations/026-change-feed-docs.sql` documents the change feed `GET /api/v2/changes` (scope `audit:read`) on the Logging and audit page, in English and Czech, mirrored in the content dump.
 - `bin/update-database.sh` applies the framework database updates (API, analytics and change log tables) from `vendor`, or prints the SQL with `--print` to pipe into another mysql client. The public documentation pages refer to it instead of naming migration files.
 - Public documentation wording: `schemas/migrations/024-public-docs-cleanup.sql` removes release numbers, migration file names and CI details from the documentation pages (mirrored in the content dump); `025-public-docs-cleanup-2.sql` removes the remaining migration numbers from the deployment page of sites that applied the earlier updates one by one.
