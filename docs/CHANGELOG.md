@@ -4,6 +4,7 @@
 
 ### Added
 
+- WBengine updated to 4.9.0 (`composer.lock`). `schemas/migrations/026-change-feed-docs.sql` documents the change feed `GET /api/v2/changes` (scope `audit:read`) on the Logging and audit page, in English and Czech, mirrored in the content dump.
 - `bin/update-database.sh` applies the framework database updates (API, analytics and change log tables) from `vendor`, or prints the SQL with `--print` to pipe into another mysql client. The public documentation pages refer to it instead of naming migration files.
 - Public documentation wording: `schemas/migrations/024-public-docs-cleanup.sql` removes release numbers, migration file names and CI details from the documentation pages (mirrored in the content dump); `025-public-docs-cleanup-2.sql` removes the remaining migration numbers from the deployment page of sites that applied the earlier updates one by one.
 - Settings reference page `/docs/settings/` (every `Settings.json` key, a production example, Google Analytics) and deployment page `/docs/deployment/`, in English and Czech, added by `schemas/migrations/020-settings-reference-docs.sql` and `021-deployment-docs.sql` and mirrored in the content dump. `Docs::PAGES` and the `doc.settings` and `doc.deployment` locale keys list them in the sidebar.
