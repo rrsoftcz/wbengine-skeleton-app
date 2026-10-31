@@ -208,6 +208,8 @@ docker run -d --name wbengine --restart unless-stopped \
   -p 127.0.0.1:8080:80 \
   -v /etc/wbengine/Settings.json:/var/www/html/src/Config/Settings.json:ro \
   -v wbengine_compiled:/var/www/html/src/View/Compiled \
+  -v wbengine_images:/var/lib/wbengine/images \
+  -e WBENGINE_IMAGE_DIR=/var/lib/wbengine/images \
   -e WBENGINE_RECAPTCHA_SECRET="..." \
   ghcr.io/rrsoftcz/wbengine-skeleton-app:1.2.3
 ```
