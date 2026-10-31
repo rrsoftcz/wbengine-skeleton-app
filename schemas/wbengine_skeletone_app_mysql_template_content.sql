@@ -2181,3 +2181,8 @@ UPDATE cms_article_translations SET bodytext = REPLACE(bodytext, 'Web, který st
 
 Web, který stránku integrací ještě nemá, ji získá') WHERE LOCATE('Web, který stránku integrací ještě nemá, ji získá', bodytext) > 0 AND LOCATE('Klíč lze také vázat na adresy, ze kterýc', bodytext) = 0;
 
+-- Hiding articles (schemas/migrations/034-api-hide-docs.sql).
+UPDATE cms_articles SET bodytext = REPLACE(bodytext, 'It covers content, structure, users, translations, the cache flush and the change log.', 'It covers content (including hiding and showing a published article), structure, users, translations, the cache flush and the change log.') WHERE LOCATE('It covers content, structure, users, translations, the cache flush and the change log.', bodytext) > 0;
+
+UPDATE cms_article_translations SET bodytext = REPLACE(bodytext, 'Pokrývá obsah, strukturu, uživatele, překlady, vyprázdnění cache a záznam změn.', 'Pokrývá obsah (včetně skrytí a opětovného zobrazení publikovaného článku), strukturu, uživatele, překlady, vyprázdnění cache a záznam změn.') WHERE LOCATE('Pokrývá obsah, strukturu, uživatele, překlady, vyprázdnění cache a záznam změn.', bodytext) > 0;
+

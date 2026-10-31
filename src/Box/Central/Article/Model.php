@@ -44,8 +44,10 @@ class Model extends ModelAbstract
                           a.views, 
                           a.source  
                         FROM %s a
-                        WHERE  site_id = ? LIMIT 1;"
+                        WHERE  site_id = ?%s LIMIT 1;"
             ,S_TABLE_ARTICLES
+            // A hidden article is not shown (its page is not found at all, this covers custom routes).
+            ,\Wbengine\Content\ArticleVisibility::isSupported() ? ' AND hidden = 0' : ''
         );
         // Title, intro and body in the visitor's language, field by field, default when untranslated.
         return ContentTranslations::overlayRow('article', Db::fetchObject($sql, array((int)$this->site->getSiteId())));
