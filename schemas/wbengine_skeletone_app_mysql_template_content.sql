@@ -2186,3 +2186,12 @@ UPDATE cms_articles SET bodytext = REPLACE(bodytext, 'It covers content, structu
 
 UPDATE cms_article_translations SET bodytext = REPLACE(bodytext, 'Pokrývá obsah, strukturu, uživatele, překlady, vyprázdnění cache a záznam změn.', 'Pokrývá obsah (včetně skrytí a opětovného zobrazení publikovaného článku), strukturu, uživatele, překlady, vyprázdnění cache a záznam změn.') WHERE LOCATE('Pokrývá obsah, strukturu, uživatele, překlady, vyprázdnění cache a záznam změn.', bodytext) > 0;
 
+
+-- MCP server for AI assistants (schemas/migrations/035-mcp-server-docs.sql).
+UPDATE cms_articles SET bodytext = REPLACE(bodytext, 'A site that does not have the integrations page yet gets it with one command', 'An AI assistant that supports the Model Context Protocol, for example Claude Code, can write and publish the articles of a site. The WBengine MCP server is the single file `wbengine-mcp.phar` from the releases of the framework. It runs on the machine of the assistant and calls API v2 of the site with an integration key. The key form offers presets for such a key (Agent for content, Agent drafts only, Read only), and after the key is issued the page shows the client configuration with the key once. Articles are saved as drafts and published only on request, and a published article can be hidden again. Text read from the site is passed to the assistant as data, not as instructions.
+
+A site that does not have the integrations page yet gets it with one command') WHERE LOCATE('A site that does not have the integrations page yet gets it with one command', bodytext) > 0 AND LOCATE('The WBengine MCP server is the single file', bodytext) = 0;
+
+UPDATE cms_article_translations SET bodytext = REPLACE(bodytext, 'Web, který stránku integrací ještě nemá, ji získá', 'AI asistent, který podporuje Model Context Protocol, například Claude Code, může psát a publikovat články webu. MCP server WBengine je jediný soubor `wbengine-mcp.phar` z vydání frameworku. Běží na počítači asistenta a volá API v2 webu s integračním klíčem. Formulář klíče nabízí předvolby pro takový klíč (Agent pro obsah, Agent jen koncepty, Jen čtení) a po vydání klíče stránka jednou ukáže konfiguraci klienta s klíčem. Články se ukládají jako koncepty a publikují se jen na žádost a publikovaný článek lze znovu skrýt. Text přečtený z webu se asistentovi předává jako data, ne jako pokyny.
+
+Web, který stránku integrací ještě nemá, ji získá') WHERE LOCATE('Web, který stránku integrací ještě nemá, ji získá', bodytext) > 0 AND LOCATE('MCP server WBengine je jediný soubor', bodytext) = 0;
