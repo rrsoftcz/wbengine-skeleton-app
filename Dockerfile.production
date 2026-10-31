@@ -16,7 +16,8 @@ COPY . /var/www/html
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
     && mkdir -p src/View/Compiled \
     && chown -R www-data:www-data src/View/Compiled \
-    && chmod 2775 src/View/Compiled
+    && chmod 2775 src/View/Compiled \
+    && install -d -o www-data -g www-data -m 2770 /var/lib/wbengine/images
 
 COPY bin/container-entrypoint-production.sh /usr/local/bin/wbengine-container-entrypoint
 RUN chmod 0755 /usr/local/bin/wbengine-container-entrypoint

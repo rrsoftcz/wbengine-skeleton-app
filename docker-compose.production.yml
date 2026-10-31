@@ -12,6 +12,9 @@ services:
     volumes:
       - ./src/Config/Settings.json:/var/www/html/src/Config/Settings.json:ro
       - compiled_templates:/var/www/html/src/View/Compiled
+      - images_data:/var/lib/wbengine/images
+    environment:
+      WBENGINE_IMAGE_DIR: /var/lib/wbengine/images
     healthcheck:
       test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1/') === false ? 1 : 0);"]
       interval: 30s
@@ -40,3 +43,4 @@ services:
 volumes:
   mysql_data:
   compiled_templates:
+  images_data:
