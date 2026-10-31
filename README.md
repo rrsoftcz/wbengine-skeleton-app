@@ -32,7 +32,7 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 * Composer
 * Docker (optional, the quickest way to try it)
 
-The Composer application requirement is `wbengine/wbengine:^6.4`. The framework has no
+The Composer application requirement is `wbengine/wbengine:^6.5`. The framework has no
 runtime Composer dependency: its native template engine and Markdown parser are included in
 WBengine. Composer also checks PHP platform requirements for the installed release.
 

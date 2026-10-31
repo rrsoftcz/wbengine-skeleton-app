@@ -4,6 +4,7 @@
 
 ### Changed
 
+- WBengine 6.5.0 (`composer.json` `^6.5`, `composer.lock`): the MCP server reads statistics, builds reports from them and analyzes the change log. No database update.
 - WBengine 6.4.1 (`composer.lock`): the MCP server tries IPv4 first, so a broken IPv6 route does not slow every call.
 - WBengine 6.4.0 (`composer.json` `^6.4`, `composer.lock`): the MCP server manages pages, menu, boxes and images and guides an editor who is not technical. `src/Application.php` registers the box type `story` as a renderer of articles (`['renders' => 'article']`), so an agent knows that a page with this box shows its article and can add the box to a new page; the smoke test checks it. `schemas/migrations/036-mcp-editor-docs.sql` names the editor preset in the Connecting a site section of the public documentation, in English and Czech; mirrored in the content dump.
 - `docker-compose.production.yml` and `Dockerfile.production`: the volume `images_data` is mounted at `/var/lib/wbengine/images` and `WBENGINE_IMAGE_DIR` points to it, so images uploaded through API v2 are stored outside the web root and survive a container rebuild. Back this volume up with the database.
