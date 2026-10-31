@@ -4,6 +4,7 @@
 
 ### Changed
 
+- WBengine 6.5.2 (`composer.lock`): the MCP server says on stderr how it started and how it ends.
 - WBengine 6.5.1 (`composer.lock`): the text of an MCP tool result is also in its structured result, so clients that show only that part get the guide texts and warnings.
 - WBengine 6.5.0 (`composer.json` `^6.5`, `composer.lock`): the MCP server reads statistics, builds reports from them and analyzes the change log. No database update.
 - WBengine 6.4.1 (`composer.lock`): the MCP server tries IPv4 first, so a broken IPv6 route does not slow every call.
