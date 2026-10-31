@@ -4,6 +4,7 @@
 
 ### Changed
 
+- WBengine 6.5.3 (`composer.lock`): the MCP server generates cleaner addresses, browser titles and menu names, warns about missing page and menu translations and reports no comparison against a period before counting.
 - WBengine 6.5.2 (`composer.lock`): the MCP server says on stderr how it started and how it ends.
 - WBengine 6.5.1 (`composer.lock`): the text of an MCP tool result is also in its structured result, so clients that show only that part get the guide texts and warnings.
 - WBengine 6.5.0 (`composer.json` `^6.5`, `composer.lock`): the MCP server reads statistics, builds reports from them and analyzes the change log. No database update.
