@@ -18,13 +18,15 @@ class Application extends \Wbengine\Application\Application
     /**
      * Box types that WBengine Admin may add to a page through API v2. Only the website
      * itself registers executable module and method pairs; HTTP input selects a type ID.
-     * Add your own box here: register($type, $module, $method, $settings, $sections).
+     * Add your own box here: register($type, $module, $method, $settings, $sections, $metadata).
+     * The metadata ['renders' => 'article'] tells API v2 that the box shows the article of its page,
+     * which is how an agent knows that a page with this box is not empty.
      */
     public static function registerBoxTypes(BoxRegistry $registry): void
     {
         // The registry throws on a duplicate, so register only what is missing.
         if (null === $registry->typeFor('blog', 'story')) {
-            $registry->register('story', 'blog', 'story', [], ['central']);
+            $registry->register('story', 'blog', 'story', [], ['central'], ['renders' => 'article']);
         }
     }
 
