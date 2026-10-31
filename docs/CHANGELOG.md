@@ -4,6 +4,7 @@
 
 ### Changed
 
+- WBengine 6.4.0 (`composer.json` `^6.4`, `composer.lock`): the MCP server manages pages, menu, boxes and images and guides an editor who is not technical. `src/Application.php` registers the box type `story` as a renderer of articles (`['renders' => 'article']`), so an agent knows that a page with this box shows its article and can add the box to a new page; the smoke test checks it. `schemas/migrations/036-mcp-editor-docs.sql` names the editor preset in the Connecting a site section of the public documentation, in English and Czech; mirrored in the content dump.
 - `docker-compose.production.yml` and `Dockerfile.production`: the volume `images_data` is mounted at `/var/lib/wbengine/images` and `WBENGINE_IMAGE_DIR` points to it, so images uploaded through API v2 are stored outside the web root and survive a container rebuild. Back this volume up with the database.
 - WBengine 6.3.1 (`composer.lock`): the MCP server warns when the page of an article has no box that shows articles.
 - WBengine 6.3.0 (`composer.json` `^6.3`, `composer.lock`): the framework contains an MCP server for AI assistants (`wbengine-mcp.phar`, attached to the framework releases) and the Integrations page offers key presets for agents and a client configuration. No database update is needed. `schemas/migrations/035-mcp-server-docs.sql` describes it in the Connecting a site section of the public documentation, in English and Czech; mirrored in the content dump.

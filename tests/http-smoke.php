@@ -52,6 +52,8 @@ $capabilityBody = json_decode($capabilities['body'], true, 512, JSON_THROW_ON_ER
 $check($capabilities['status'] === 200 && ($capabilityBody['data']['api_version'] ?? '') === '2.0', 'API v2 discovery bypasses layout rendering');
 $boxTypes = array_column($capabilityBody['data']['box_types'] ?? [], 'type');
 $check(in_array('story', $boxTypes, true), 'API v2 capabilities list the registered story box type');
+$storyType = array_values(array_filter($capabilityBody['data']['box_types'] ?? [], static fn($t) => ($t['type'] ?? '') === 'story'))[0] ?? [];
+$check(($storyType['renders'] ?? null) === 'article', 'The story box type is registered as a renderer of articles');
 $check(($capabilityBody['data']['capabilities']['boxes']['write'] ?? false) === true, 'API v2 capabilities allow writing boxes');
 $legacy = $public->request('/api/sections/');
 $check($legacy['status'] === 404, 'The former API routes are gone');
