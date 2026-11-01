@@ -30,12 +30,14 @@
     {* The navigation: its entries are the cms_menu rows of the site, translated per language. *}
     <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur">
         <div class="container-page flex items-center justify-between gap-4 py-3">
-            <a href="{'/'|lurl}" class="flex items-center gap-2.5 no-underline">
-                <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-base font-extrabold text-white shadow-md">W</span>
-                <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
-                {* The version of the framework that renders this page, from Composer. "dev" when it is not a release. *}
-                <span class="hidden text-[11px] font-medium tracking-wide text-slate-400 sm:inline" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</span>
-            </a>
+            <div class="flex items-center gap-2.5">
+                <a href="{'/'|lurl}" class="flex items-center gap-2.5 no-underline">
+                    <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-base font-extrabold text-white shadow-md">W</span>
+                    <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
+                </a>
+                {* The version of the framework that renders this page, from Composer ("dev" when it is not a release), linked to the changelog. *}
+                <a href="{'/changelog/'|lurl}" class="hidden text-[11px] font-medium tracking-wide text-slate-400 no-underline hover:text-slate-600 sm:inline" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
+            </div>
 
             <nav class="hidden md:block" aria-label="{t 'nav.main'}">
                 <ul class="m-0 flex list-none items-center gap-1 p-0">

@@ -39,8 +39,16 @@ $check(substr_count($cs['body'], 'rel="canonical"') === 1 && substr_count($home[
 $installed = is_file(__DIR__ . '/../vendor/composer/installed.php') ? require __DIR__ . '/../vendor/composer/installed.php' : [];
 $pretty = (string) ($installed['versions']['wbengine/wbengine']['pretty_version'] ?? '');
 $expectedVersion = preg_match('/^v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?)$/D', $pretty, $release) ? 'v' . $release[1] : 'dev';
-$check(preg_match('/<span[^>]*sm:inline[^>]*>(v\d+\.\d+\.\d+[^<]*|dev)<\/span>/', $home['body'], $shown) === 1, 'The header shows the framework version');
+$check(preg_match('/<a[^>]*href="\/changelog\/"[^>]*sm:inline[^>]*>(v\d+\.\d+\.\d+[^<]*|dev)<\/a>/', $home['body'], $shown) === 1, 'The header shows the framework version');
 $check($shown[1] === $expectedVersion, 'The header shows the installed framework version: ' . $shown[1] . ' against ' . $expectedVersion . ' (' . $pretty . ')');
+$changelog = $public->request('/changelog/');
+$check($changelog['status'] === 200 && str_contains($changelog['body'], '<h1'), 'The changelog page returns 200: ' . $changelog['status']);
+$changelogFile = (string) @file_get_contents(__DIR__ . '/../vendor/wbengine/wbengine/CHANGELOG.md');
+$check(preg_match('/^## \[(\d+\.\d+\.\d+)\] - /m', $changelogFile, $newest) === 1, 'The installed framework ships a changelog with releases');
+$check(str_contains($changelog['body'], 'id="v' . $newest[1] . '"') && substr_count($changelog['body'], '<section class="card mt-6 sm:p-8" id="v') >= 5, 'The changelog page lists the newest release of the installed framework and several more');
+$check(str_contains($changelog['body'], 'href="/changelog/"') && str_contains($home['body'], 'href="/changelog/"'), 'The menu and the header version link to the changelog');
+$csChangelog = $public->request('/cs/changelog/');
+$check($csChangelog['status'] === 200 && str_contains($csChangelog['body'], '<html lang="cs"') && str_contains($csChangelog['body'], 'Přehled změn') && str_contains($csChangelog['body'], 'Opraveno'), 'The Czech changelog page has Czech headings');
 $robots = $public->request('/robots.txt');
 $check($robots['status'] === 200 && str_contains($robots['headers'], 'Content-Type: text/plain'), 'robots.txt is plain text: ' . $robots['status']);
 $check(str_contains($robots['body'], "Disallow: /login/\n") && str_contains($robots['body'], 'Sitemap: http://127.0.0.1:8080/sitemap.xml'), 'robots.txt lists the disallowed path and names the sitemap');
