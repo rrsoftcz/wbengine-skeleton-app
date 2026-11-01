@@ -35,6 +35,11 @@ $check(preg_match('/<a[^>]*href="([^"]+)"[^>]*hreflang="en"/', $cs['body'], $eng
 $check(preg_match('/<link rel="canonical" href="([^"]+)\/cs\/">/', $cs['body']) === 1, 'Czech home has a canonical link to its own /cs/ address');
 $check(preg_match('/<link rel="canonical" href="https?:\/\/[^"\/]+\/">/', $home['body']) === 1, 'English home has a canonical link to its own address');
 $check(substr_count($cs['body'], 'rel="canonical"') === 1 && substr_count($home['body'], 'rel="canonical"') === 1, 'Exactly one canonical link per page');
+$lock = is_file(__DIR__ . '/../composer.lock') ? json_decode((string) file_get_contents(__DIR__ . '/../composer.lock'), true) : null;
+$locked = null;
+foreach (($lock['packages'] ?? []) as $package) { if (($package['name'] ?? '') === 'wbengine/wbengine') { $locked = ltrim((string) $package['version'], 'v'); } }
+$check(preg_match('/<span[^>]*>(v\d+\.\d+\.\d+[^<]*|dev)<\/span>/', $home['body'], $shown) === 1, 'The header shows the framework version');
+$check(null === $locked || $shown[1] === 'v' . $locked, 'The header shows the locked framework version: ' . ($shown[1] ?? '?') . ' against ' . ($locked ?? '?'));
 $robots = $public->request('/robots.txt');
 $check($robots['status'] === 200 && str_contains($robots['headers'], 'Content-Type: text/plain'), 'robots.txt is plain text: ' . $robots['status']);
 $check(str_contains($robots['body'], "Disallow: /login/\n") && str_contains($robots['body'], 'Sitemap: http://127.0.0.1:8080/sitemap.xml'), 'robots.txt lists the disallowed path and names the sitemap');
