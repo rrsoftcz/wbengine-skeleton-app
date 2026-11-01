@@ -42,6 +42,7 @@ return [
     'nav.menu' => 'Otevřít hlavní menu',
     'footer.about' => 'Rychlý PHP framework řízený databází pro weby, intranety a administrace. Tento web je ukázková aplikace: každá stránka je postavená na funkci, kterou popisuje.',
     'footer.docs' => 'Dokumentace',
+    'footer.admin' => 'Centrální administrace (GitHub)',
     'footer.project' => 'Projekt',
     'footer.rights' => 'Vydáno pod licencí MIT',
     'cookies.settings' => 'Nastavení cookies',

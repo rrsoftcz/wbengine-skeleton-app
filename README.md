@@ -276,6 +276,7 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/040-mcp-docs-pages.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/041-seo-analytics-docs-pages.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/042-docs-extensions.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/043-changelog-menu-order.sql
 ```
 
 Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework updates with `sh bin/update-database.sh DATABASE` and schedules `audit:prune`; see `/docs/logging/`.
