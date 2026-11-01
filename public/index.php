@@ -12,4 +12,7 @@ try {
     die($e->Show());
 }
 
+// robots.txt and sitemap.xml, generated from the pages and the "seo" settings.
+\Wbengine\Seo\Crawlers::register($App);
+
 $App->run();
