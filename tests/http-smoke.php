@@ -35,6 +35,17 @@ $check(preg_match('/<a[^>]*href="([^"]+)"[^>]*hreflang="en"/', $cs['body'], $eng
 $check(preg_match('/<link rel="canonical" href="([^"]+)\/cs\/">/', $cs['body']) === 1, 'Czech home has a canonical link to its own /cs/ address');
 $check(preg_match('/<link rel="canonical" href="https?:\/\/[^"\/]+\/">/', $home['body']) === 1, 'English home has a canonical link to its own address');
 $check(substr_count($cs['body'], 'rel="canonical"') === 1 && substr_count($home['body'], 'rel="canonical"') === 1, 'Exactly one canonical link per page');
+$robots = $public->request('/robots.txt');
+$check($robots['status'] === 200 && str_contains($robots['headers'], 'Content-Type: text/plain'), 'robots.txt is plain text: ' . $robots['status']);
+$check(str_contains($robots['body'], "Disallow: /login/\n") && str_contains($robots['body'], 'Sitemap: http://127.0.0.1:8080/sitemap.xml'), 'robots.txt lists the disallowed path and names the sitemap');
+$sitemap = $public->request('/sitemap.xml');
+$check($sitemap['status'] === 200 && str_contains($sitemap['headers'], 'Content-Type: application/xml'), 'sitemap.xml is XML: ' . $sitemap['status']);
+$sitemapDoc = new DOMDocument();
+$check($sitemapDoc->loadXML($sitemap['body']) && $sitemapDoc->getElementsByTagName('url')->length > 1, 'sitemap.xml is well-formed and lists pages');
+$check(str_contains($sitemap['body'], '<loc>http://127.0.0.1:8080/</loc>'), 'sitemap.xml lists the home page with the address of the request');
+$check(str_contains($sitemap['body'], 'hreflang="cs" href="http://127.0.0.1:8080/cs/'), 'sitemap.xml lists a translated page in Czech with alternates');
+$check(!str_contains($sitemap['body'], '/login/'), 'sitemap.xml leaves out the excluded login page');
+$check(!str_contains($sitemap['headers'], 'X-WBengine-Cache: HIT'), 'sitemap.xml is not served from the page cache');
 $check($englishSwitch[1] === '/?_wb_locale=en', 'English switch explicitly selects the default locale');
 $englishSelection = $public->request($englishSwitch[1]);
 $check($englishSelection['status'] === 302 && preg_match('/^Location: \/$/mi', $englishSelection['headers']), 'English locale selection redirects to canonical home');

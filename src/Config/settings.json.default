@@ -44,5 +44,9 @@
     "default": "en",
     "locales": ["en", "cs"],
     "detect": ["url"]
+  },
+  "seo": {
+    "disallow": ["/login/"],
+    "sitemapExclude": ["/login/"]
   }
 }
