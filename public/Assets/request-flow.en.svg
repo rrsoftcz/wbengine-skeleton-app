@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 716" width="400" height="716" role="img" aria-labelledby="t d" font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<title id="t">One request from URL to HTML</title><desc id="d">One request from URL to HTML. 1: public/index.php loads Composer and the bootstrap. 2: the Application serves an application route or API route first, then resolves the language and the Site. 3: a gate checks access and the full-page cache; a cache hit sends the stored copy and skips straight to the response, a miss continues. 4: every Section and every Box is built: the Box calls its Model for database content and the Renderer processes a .tpl or .md source. 5: the section output is joined in the site layout. 6: the HTTP response is returned and a safe public copy is optionally stored.</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker><marker id="g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#047857"/></marker></defs>
+<rect width="400" height="716" rx="14" fill="#ffffff"/>
+<line x1="20" y1="40" x2="20" y2="642" stroke="#e2e8f0" stroke-width="2"/>
+<line x1="201.0" y1="96" x2="201.0" y2="119" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="201.0" y1="206" x2="201.0" y2="229" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="201.0" y1="334" x2="201.0" y2="357" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="201.0" y1="502" x2="201.0" y2="525" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="201.0" y1="592" x2="201.0" y2="615" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="46" y="16" width="310" height="78" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="1.4"/>
+<rect x="46" y="26" width="4" height="58" rx="2" fill="#4f46e5"/>
+<circle cx="20" cy="40" r="12" fill="#4f46e5"/><text x="20" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1</text>
+<text x="66" y="44" font-size="16.5" font-weight="700" fill="#0f172a">Entry</text>
+<text x="66" y="65" font-size="13" fill="#4f46e5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">public/index.php</text>
+<text x="66" y="83" font-size="13" fill="#475569">loads Composer and the bootstrap</text>
+<rect x="46" y="122" width="310" height="82" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="1.4"/>
+<rect x="46" y="132" width="4" height="62" rx="2" fill="#4f46e5"/>
+<circle cx="20" cy="146" r="12" fill="#4f46e5"/><text x="20" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2</text>
+<text x="66" y="150" font-size="16.5" font-weight="700" fill="#0f172a">Application</text>
+<text x="66" y="172" font-size="13" fill="#475569">Application route or API route first</text>
+<text x="66" y="190" font-size="13" fill="#475569">Resolves the language and the Site</text>
+<rect x="46" y="232" width="310" height="100" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="1.4"/>
+<rect x="46" y="242" width="4" height="80" rx="2" fill="#047857"/>
+<circle cx="20" cy="256" r="12" fill="#047857"/><text x="20" y="261" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3</text>
+<text x="66" y="260" font-size="16.5" font-weight="700" fill="#0f172a">Gate</text>
+<text x="66" y="282" font-size="13" fill="#475569">Access check, then full-page cache</text>
+<rect x="66" y="294" width="113" height="28" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/><text x="122" y="312.5" text-anchor="middle" font-size="12.5" font-weight="600" fill="#475569">MISS: continue</text>
+<rect x="189" y="294" width="126" height="28" rx="14" fill="#ecfdf5" stroke="#047857" stroke-width="1.2"/><text x="252" y="312.5" text-anchor="middle" font-size="12.5" font-weight="600" fill="#047857">HIT: stored copy</text>
+<rect x="46" y="360" width="310" height="140" rx="12" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.4"/>
+<rect x="46" y="370" width="4" height="120" rx="2" fill="#7c3aed"/>
+<circle cx="20" cy="384" r="12" fill="#7c3aed"/><text x="20" y="389" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">4</text>
+<text x="66" y="388" font-size="16.5" font-weight="700" fill="#0f172a">Build the page</text>
+<text x="66" y="410" font-size="13" fill="#475569">for every Section and every Box</text>
+<rect x="66" y="426" width="69" height="34" rx="9" fill="#fff" stroke="#7c3aed" stroke-width="1.4"/><text x="100.5" y="447.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7c3aed">Section</text>
+<text x="100.5" y="478" text-anchor="middle" font-size="10.5" fill="#475569">region</text>
+<line x1="137" y1="443" x2="145" y2="443" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="147" y="426" width="46" height="34" rx="9" fill="#fff" stroke="#7c3aed" stroke-width="1.4"/><text x="170.0" y="447.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7c3aed">Box</text>
+<text x="170.0" y="478" text-anchor="middle" font-size="10.5" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">cms_boxes</text>
+<line x1="195" y1="443" x2="203" y2="443" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="205" y="426" width="54" height="34" rx="9" fill="#fff" stroke="#7c3aed" stroke-width="1.4"/><text x="232.0" y="447.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7c3aed">Model</text>
+<text x="232.0" y="478" text-anchor="middle" font-size="10.5" fill="#475569">database</text>
+<line x1="261" y1="443" x2="269" y2="443" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="271" y="426" width="77" height="34" rx="9" fill="#fff" stroke="#7c3aed" stroke-width="1.4"/><text x="309.5" y="447.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7c3aed">Renderer</text>
+<text x="309.5" y="478" text-anchor="middle" font-size="10.5" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">.tpl / .md</text>
+<rect x="46" y="528" width="310" height="62" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="1.4"/>
+<rect x="46" y="538" width="4" height="42" rx="2" fill="#4f46e5"/>
+<circle cx="20" cy="552" r="12" fill="#4f46e5"/><text x="20" y="557" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">5</text>
+<text x="66" y="556" font-size="16.5" font-weight="700" fill="#0f172a">Layout</text>
+<text x="66" y="578" font-size="13" fill="#475569">Section output joins the site layout</text>
+<rect x="46" y="618" width="310" height="82" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="1.4"/>
+<rect x="46" y="628" width="4" height="62" rx="2" fill="#4f46e5"/>
+<circle cx="20" cy="642" r="12" fill="#4f46e5"/><text x="20" y="647" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">6</text>
+<text x="66" y="646" font-size="16.5" font-weight="700" fill="#0f172a">Response</text>
+<text x="66" y="668" font-size="13" fill="#475569">Returns the HTTP response</text>
+<text x="66" y="686" font-size="13" fill="#475569">Optionally stores a safe public copy</text>
+<path d="M315 308 H386 V659 H360" fill="none" stroke="#047857" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#g)"/>
+</svg>
