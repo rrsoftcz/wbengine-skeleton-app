@@ -14,7 +14,7 @@ A minimal application built on the [WBengine](https://packagist.org/packages/wbe
 - [Local HTTPS certificates](etc/cert/README.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Contribution guide](docs/CONTRIBUTING.md)
-- [License](docs/LICENSE.md)
+- [License](LICENSE)
 - [Live site documentation](https://www.wbengine.org/docs/)
 
 ### WBengine framework
@@ -487,7 +487,7 @@ The WBengine library and this sample application are open source and a volunteer
 
 ## License
 
-MIT, see [LICENSE](docs/LICENSE.md).
+MIT, see [LICENSE](LICENSE).
 
 
 ## HTTP smoke test
