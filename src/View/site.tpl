@@ -36,7 +36,7 @@
                     <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
                 </a>
                 {* The version of the framework that renders this page, from Composer ("dev" when it is not a release), linked to the changelog. *}
-                <a href="{'/changelog/'|lurl}" class="hidden text-[11px] font-medium tracking-wide text-slate-400 no-underline hover:text-slate-600 sm:inline" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
+                <a href="{'/changelog/'|lurl}" class="hidden text-[11px] font-medium tracking-wide text-slate-400 no-underline hover:text-slate-600 min-[360px]:inline" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
             </div>
 
             <nav class="hidden md:block" aria-label="{t 'nav.main'}">
@@ -91,8 +91,8 @@
     </main>
 
     <footer class="border-t border-slate-200 bg-white">
-        <div class="container-page grid grid-cols-1 gap-8 py-12 md:grid-cols-4">
-            <div class="md:col-span-2">
+        <div class="container-page grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
+            <div class="col-span-2">
                 <div class="flex items-center gap-2.5">
                     <span class="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-sm font-extrabold text-white">W</span>
                     <span class="font-bold text-slate-900">WBengine</span>
@@ -111,6 +111,7 @@
             <div>
                 <h2 class="mb-3 mt-0 text-sm font-semibold uppercase tracking-wider text-slate-900">{t 'footer.project'}</h2>
                 <ul class="m-0 list-none space-y-2 p-0 text-sm">
+                    <li><a class="no-underline hover:underline" href="{'/docs/administration/'|lurl}">{t 'doc.administration'}</a></li>
                     <li><a class="no-underline hover:underline" href="https://github.com/rrsoftcz/wbengine">GitHub</a></li>
                     <li><a class="no-underline hover:underline" href="https://packagist.org/packages/wbengine/wbengine">Packagist</a></li>
                     <li><a class="no-underline hover:underline" href="https://www.rrsoft.cz">RRSOFT</a></li>
