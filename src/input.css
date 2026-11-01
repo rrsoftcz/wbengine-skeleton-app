@@ -85,6 +85,8 @@
         @apply bg-transparent p-0 text-slate-100;
         overflow-wrap: normal;
     }
+    /* A picture in an article (a diagram) is as wide as its column at most and keeps its proportions. */
+    .doc img, .story img { @apply mx-auto block h-auto max-w-full; }
     .doc table, .story table {
         @apply w-full overflow-hidden rounded-xl border border-slate-200 text-left text-sm;
     }

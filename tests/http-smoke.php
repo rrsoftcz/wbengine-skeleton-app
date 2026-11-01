@@ -76,6 +76,14 @@ foreach ([['/docs/boxes/', 'Strict and dynamic pages'], ['/docs/caching/', 'The 
 }
 $boxesDoc = $public->request('/docs/boxes/');
 $check(substr_count($boxesDoc['body'], 'Strict and dynamic pages') === 1, 'The new section appears once, not twice');
+$architecture = $public->request('/docs/architecture/');
+$check(str_contains($architecture['body'], 'src="/Assets/request-flow.en.svg"') && !str_contains($architecture['body'], 'language-text">public/index.php'), 'The architecture page shows the request diagram instead of the text block');
+$csArchitecture = $public->request('/cs/docs/architecture/');
+$check(str_contains($csArchitecture['body'], 'src="/Assets/request-flow.cs.svg"') && str_contains($csArchitecture['body'], '<ol>'), 'The Czech architecture page shows the Czech diagram and the steps');
+foreach (['en', 'cs'] as $flowLang) {
+    $svg = $public->request('/Assets/request-flow.' . $flowLang . '.svg');
+    $check($svg['status'] === 200 && str_contains($svg['headers'], 'image/svg+xml') && str_starts_with(ltrim($svg['body']), '<svg') && str_contains($svg['body'], '<title') && !preg_match('/<script|onload=|javascript:/i', $svg['body']), 'The ' . $flowLang . ' diagram is served as an SVG image with a title and no script: ' . $svg['status']);
+}
 $seoDoc = $public->request('/docs/seo/');
 $check(str_contains($seoDoc['body'], 'canonical') && str_contains($seoDoc['body'], '/sitemap.xml') && str_contains($seoDoc['body'], 'seo.allowIndexing'), 'The search engines page has its content');
 $analyticsDoc = $public->request('/cs/docs/analytics/');

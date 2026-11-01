@@ -24,6 +24,7 @@
 
 ### Changed
 
+- The section One request from URL to HTML of the Architecture page shows the path of a request as a diagram (`public/Assets/request-flow.en.svg` and `request-flow.cs.svg`) with the same steps as a numbered list under it, instead of a text block: six steps, the chain Section, Box, Model, Renderer, and the shortcut of a full-page cache hit. The diagram is an image with a text alternative and a description inside; articles cannot embed HTML or SVG. Pictures in articles are as wide as their column at most (`.doc img`), the stylesheet was rebuilt. Migration `044-request-flow-diagram.sql` replaces the old text block once (guarded, mirrored in the content dump).
 - The license text moved from `docs/LICENSE.md` to `LICENSE` in the root of the repository, where GitHub looks for it, so the repository page now shows the MIT license. The text is unchanged and the same as in the framework.
 - WBengine 6.5.3 (`composer.lock`): the MCP server generates cleaner addresses, browser titles and menu names, warns about missing page and menu translations and reports no comparison against a period before counting.
 - WBengine 6.5.2 (`composer.lock`): the MCP server says on stderr how it started and how it ends.
