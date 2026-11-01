@@ -36,7 +36,7 @@
                     <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
                 </a>
                 {* The version of the framework that renders this page, from Composer ("dev" when it is not a release), linked to the changelog. *}
-                <a href="{'/changelog/'|lurl}" class="text-[11px] font-medium tracking-wide text-slate-400 no-underline hover:text-slate-600" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
+                <a href="{'/changelog/'|lurl}" class="text-[11px] font-medium tracking-wide text-slate-600 no-underline hover:text-slate-900" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
             </div>
 
             <nav class="hidden md:block" aria-label="{t 'nav.main'}">
