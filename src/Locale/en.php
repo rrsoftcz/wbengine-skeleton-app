@@ -43,6 +43,7 @@ return [
     'footer.about' => 'A fast, database driven PHP framework for websites, intranets and back ends. This site is the skeleton application: every page you read is built with the feature it describes.',
     'footer.docs' => 'Documentation',
     'footer.project' => 'Project',
+    'footer.admin' => 'Central administration (GitHub)',
     'footer.rights' => 'Released under the MIT license',
     'cookies.settings' => 'Cookie settings',
     'cookies.title' => 'Your privacy choices',

@@ -41,7 +41,8 @@ $pretty = (string) ($installed['versions']['wbengine/wbengine']['pretty_version'
 $expectedVersion = preg_match('/^v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?)$/D', $pretty, $release) ? 'v' . $release[1] : 'dev';
 $check(preg_match('/<a[^>]*href="\/changelog\/"[^>]*>(v\d+\.\d+\.\d+[^<]*|dev)<\/a>/', $home['body'], $shown) === 1, 'The header shows the framework version');
 $check($shown[1] === $expectedVersion, 'The header shows the installed framework version: ' . $shown[1] . ' against ' . $expectedVersion . ' (' . $pretty . ')');
-$check(preg_match('/<footer.*href="\/docs\/administration\/".*<\/footer>/s', $home['body']) === 1, 'The footer links to the central administration');
+$check(preg_match('/<footer.*href="https:\/\/github\.com\/rrsoftcz\/wbengine-admin".*<\/footer>/s', $home['body']) === 1, 'The footer links to the GitHub project of the central administration');
+$check(preg_match('/data-nav="\/blog\/".*?data-nav="\/changelog\/".*?data-nav="\/about\/"/s', $home['body']) === 1, 'The changelog is in the menu right after the blog and before About');
 $changelog = $public->request('/changelog/');
 $check($changelog['status'] === 200 && str_contains($changelog['body'], '<h1'), 'The changelog page returns 200: ' . $changelog['status']);
 $changelogFile = (string) @file_get_contents(__DIR__ . '/../vendor/wbengine/wbengine/CHANGELOG.md');

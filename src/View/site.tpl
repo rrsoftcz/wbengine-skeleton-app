@@ -111,7 +111,7 @@
             <div>
                 <h2 class="mb-3 mt-0 text-sm font-semibold uppercase tracking-wider text-slate-900">{t 'footer.project'}</h2>
                 <ul class="m-0 list-none space-y-2 p-0 text-sm">
-                    <li><a class="no-underline hover:underline" href="{'/docs/administration/'|lurl}">{t 'doc.administration'}</a></li>
+                    <li><a class="no-underline hover:underline" href="https://github.com/rrsoftcz/wbengine-admin">{t 'footer.admin'}</a></li>
                     <li><a class="no-underline hover:underline" href="https://github.com/rrsoftcz/wbengine">GitHub</a></li>
                     <li><a class="no-underline hover:underline" href="https://packagist.org/packages/wbengine/wbengine">Packagist</a></li>
                     <li><a class="no-underline hover:underline" href="https://www.rrsoft.cz">RRSOFT</a></li>

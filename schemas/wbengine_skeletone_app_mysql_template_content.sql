@@ -3027,3 +3027,22 @@ WHERE id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT 
 
 UPDATE cms_article_translations SET bodytext = CONCAT(bodytext, '\n\n## Předvolby a MCP server\n\nPři vydání klíče formulář nabízí předvolby pro běžná použití: plnou správu pro centrální administraci, redaktora, agenta pro obsah, agenta, který píše jen koncepty, a jen čtení. AI asistent pracuje přes [MCP server](/cs/docs/mcp/) s takovým klíčem a smí jen to, co klíč dovoluje.')
 WHERE article_id = (SELECT id FROM (SELECT id FROM cms_articles WHERE site_id = (SELECT site_id FROM cms_sites WHERE link = '/docs/rest-api/' ORDER BY site_id LIMIT 1) ORDER BY id LIMIT 1) AS a) AND locale = 'cs' AND LOCATE('## Předvolby a MCP server', bodytext) = 0;
+
+-- Changelog menu entry right after Blog (schemas/migrations/043-changelog-menu-order.sql).
+START TRANSACTION;
+
+SET @blog_site_id = (SELECT site_id FROM cms_sites WHERE link = '/blog/' ORDER BY site_id LIMIT 1);
+SET @changelog_site_id = (SELECT site_id FROM cms_sites WHERE link = '/changelog/' ORDER BY site_id LIMIT 1);
+SET @blog_menu_id = (SELECT menu_id FROM cms_menu WHERE site_id = @blog_site_id AND type = 1 AND parent = 0 ORDER BY menu_id LIMIT 1);
+SET @changelog_menu_id = (SELECT menu_id FROM cms_menu WHERE site_id = @changelog_site_id AND type = 1 AND parent = 0 ORDER BY menu_id LIMIT 1);
+SET @blog_order = (SELECT `order` FROM cms_menu WHERE menu_id = @blog_menu_id);
+SET @changelog_order = (SELECT `order` FROM cms_menu WHERE menu_id = @changelog_menu_id);
+
+UPDATE cms_menu SET `order` = `order` + 1
+WHERE @blog_order IS NOT NULL AND @changelog_order IS NOT NULL AND @changelog_order > @blog_order + 1
+  AND type = 1 AND parent = 0 AND `order` > @blog_order AND `order` < @changelog_order AND menu_id <> @changelog_menu_id;
+
+UPDATE cms_menu SET `order` = @blog_order + 1
+WHERE @blog_order IS NOT NULL AND @changelog_order IS NOT NULL AND @changelog_order > @blog_order + 1 AND menu_id = @changelog_menu_id;
+
+COMMIT;
