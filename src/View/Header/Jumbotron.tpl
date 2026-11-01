@@ -18,10 +18,11 @@
             </div>
             <dl class="mt-10 grid max-w-xl grid-cols-2 gap-6 sm:grid-cols-4">
                 <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_php'}</dt><dd class="m-0 text-xl font-bold text-white">8.3 &ndash; 8.5</dd></div>
-                <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_tests'}</dt><dd class="m-0 text-xl font-bold text-white">0</dd></div>
-                <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_cached'}</dt><dd class="m-0 text-xl font-bold text-white">0 SQL</dd></div>
+                <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_nocache'}</dt><dd class="m-0 text-xl font-bold text-white">7 ms</dd></div>
+                <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_cached'}</dt><dd class="m-0 text-xl font-bold text-white">2 ms</dd></div>
                 <div><dt class="text-xs uppercase tracking-wider text-slate-400">{t 'hero.stat_license'}</dt><dd class="m-0 text-xl font-bold text-white">MIT</dd></div>
             </dl>
+            <p class="mt-4 max-w-xl py-0 text-xs leading-5 text-slate-400">{t 'hero.stat_note'} <a class="text-slate-300 underline decoration-slate-500 underline-offset-2 hover:text-white" href="{'/docs/performance/'|lurl}">{t 'hero.stat_note_link'}</a></p>
         </div>
 
         <div class="relative min-w-0">

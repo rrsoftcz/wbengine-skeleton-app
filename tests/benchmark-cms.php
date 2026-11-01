@@ -21,6 +21,7 @@ function benchmarkHttp(string $url, string $cookie = '', array $form = []): arra
         if (preg_match('/^Set-Cookie:\s*([^=]+)=([^;]*)/i', $line, $m)) { $cookies[$m[1]] = $m[2]; }
     }
     $sample = ['ms'=>$elapsed, 'status'=>(int) ($status[1] ?? 0)];
+    if (isset($values['x-wb-benchmark-php-ms'])) { $sample['php_ms'] = (float) $values['x-wb-benchmark-php-ms']; }
     foreach (['queries','connections','memory'] as $name) { if (isset($values['x-wb-benchmark-' . $name])) { $sample[$name] = (int) $values['x-wb-benchmark-' . $name]; } }
     $sample['page_cache'] = $values['x-wbengine-cache'] ?? 'none';
     return ['sample'=>$sample, 'body'=>$body, 'cookies'=>$cookies, 'headers'=>$values];
@@ -48,6 +49,9 @@ function benchmarkBatch(string $url, string $cookie, string $directory, string $
         $samples = array_merge($samples, json_decode(file_get_contents($file), true, 512, JSON_THROW_ON_ERROR)); unlink($file);
     }
     $report = \Wbengine\Console\RequestMatrix::summarize($samples, (hrtime(true) - $start) / 1e9);
+    // The time in PHP until the response is ready, without the connection and the transfer: what the framework itself needs.
+    $phpMs = array_column($samples, 'php_ms'); sort($phpMs);
+    if ($phpMs) { $rank = static fn (float $p): float => $phpMs[max(0, (int) ceil($p * count($phpMs)) - 1)]; $report['php_ms'] = ['p50'=>$rank(.5), 'p95'=>$rank(.95), 'min'=>$phpMs[0], 'max'=>end($phpMs)]; }
     $report['page_cache_responses'] = array_count_values(array_column($samples, 'page_cache'));
     $report['http_statuses'] = array_count_values(array_column($samples, 'status'));
     $report['concurrency'] = 4;
@@ -59,7 +63,9 @@ try {
     $data = [];
     foreach (['cms_sites','cms_articles','cms_boxes','cms_users'] as $table) { $data[$table] = (int) $db->query('SELECT COUNT(*) FROM ' . $table)->fetch_row()[0]; }
     $version = $db->server_info; $db->close(); unset($db);
-    $server = proc_open([PHP_BINARY,'-S','127.0.0.1:8081','-t','public','tests/benchmark-router.php'],
+    // OPcache keeps the compiled framework between requests, as on a production server; WB_BENCHMARK_OPCACHE=0 measures without it.
+    $opcache = getenv('WB_BENCHMARK_OPCACHE') === '0' ? '0' : '1';
+    $server = proc_open([PHP_BINARY,'-d','opcache.enable_cli=' . $opcache,'-S','127.0.0.1:8081','-t','public','tests/benchmark-router.php'],
         [0=>['pipe','r'],1=>['file',$directory . '/server.log','a'],2=>['file',$directory . '/server.log','a']], $pipes, dirname(__DIR__));
     if (!is_resource($server)) { throw new RuntimeException('Cannot start isolated benchmark server.'); }
     for ($attempt = 0; $attempt < 100; $attempt++) {
