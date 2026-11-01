@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- The changelog page printed "This site runs WBengine v" without the number, because a box template does not see the layout variable `wbengine_version`: the box now passes the version. `tests/http-smoke.php` checks it.
+- On a phone, long inline code (names of settings, files and classes) widened documentation pages and the changelog beyond the screen (`/docs/`, `/docs/settings/`, `/docs/deployment/`, `/docs/logging/`, `/docs/mcp-clients/`, `/changelog/`). Inline code now wraps, wide tables scroll inside themselves, and the changelog entries get the code style of the documentation. Measured in Chrome at 390 pixels with the new stylesheet: the five documentation pages no longer overflow. The stylesheet was rebuilt.
+
 ### Added
 
 - Sections added to five documentation pages, English and Czech: Boxes (strict and dynamic pages and how a box refuses an address, sections, order and device limits, managing boxes without code), Caching (the page cache per path, language and device, what is never stored, the header `X-WBengine-Cache`), Languages (addresses, `alternates` and `hreflangs`, translations, statistics per language), Templates (a table of the layout variables including `wbengine_version`) and API (hiding and showing an article, limiting a key to addresses, the change feed, images, statistics, presets and the MCP server). Migration `042-docs-extensions.sql` appends each section once (guarded, mirrored in the content dump).
