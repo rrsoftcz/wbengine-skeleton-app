@@ -63,7 +63,7 @@ $csBlog = $public->request('/cs/blog/');
 $check($csBlog['status'] === 200 && str_contains($csBlog['body'], 'Co WBengine webu dává') && str_contains($csBlog['body'], 'Nejnovější') && str_contains($csBlog['body'], 'href="/cs/blog/what-wbengine-gives-a-site/"'), 'The Czech overview has Czech texts and Czech links');
 $csPost = $public->request('/cs/blog/what-wbengine-gives-a-site/');
 $check($csPost['status'] === 200 && str_contains($csPost['body'], 'Jazyky jsou součástí'), 'The Czech demo post is translated');
-foreach (['/docs/', '/docs/architecture/', '/docs/boxes/', '/docs/templates/', '/docs/languages/', '/docs/caching/', '/docs/seo/', '/docs/security/', '/docs/rest-api/', '/docs/administration/', '/docs/mcp/', '/docs/mcp-clients/', '/docs/settings/', '/docs/deployment/', '/docs/logging/', '/docs/analytics/'] as $docPath) {
+foreach (['/docs/', '/docs/architecture/', '/docs/boxes/', '/docs/templates/', '/docs/languages/', '/docs/caching/', '/docs/performance/', '/docs/seo/', '/docs/security/', '/docs/rest-api/', '/docs/administration/', '/docs/mcp/', '/docs/mcp-clients/', '/docs/settings/', '/docs/deployment/', '/docs/logging/', '/docs/analytics/'] as $docPath) {
     $en = $public->request($docPath);
     $check($en['status'] === 200 && str_contains($en['body'], '<html lang="en"') && str_contains($en['body'], '<h1'), 'Documentation page ' . $docPath . ' in English: ' . $en['status']);
     $csDoc = $public->request('/cs' . $docPath);
@@ -76,6 +76,16 @@ foreach ([['/docs/boxes/', 'Strict and dynamic pages'], ['/docs/caching/', 'The 
 }
 $boxesDoc = $public->request('/docs/boxes/');
 $check(substr_count($boxesDoc['body'], 'Strict and dynamic pages') === 1, 'The new section appears once, not twice');
+// The numbers on the home page and in the Performance page are the recorded benchmark, not numbers typed by hand.
+$bench = json_decode((string) file_get_contents(__DIR__ . '/benchmark-cms-result.json'), true);
+$coreNoCache = (float) $bench['cases']['off']['anonymous']['php_ms']['p50'];
+$coreCached = (float) $bench['cases']['page-warm']['anonymous']['php_ms']['p50'];
+$check(preg_match('/>' . round($coreNoCache) . ' ms<\/dd>/', $home['body']) === 1 && preg_match('/>' . round($coreCached) . ' ms<\/dd>/', $home['body']) === 1, 'The hero shows the recorded core times: ' . round($coreNoCache) . ' ms and ' . round($coreCached) . ' ms');
+$check(!str_contains($home['body'], 'Runtime packages') && str_contains($home['body'], 'href="/docs/performance/"'), 'The hero links to the method and no longer shows the runtime packages');
+$perfDoc = $public->request('/docs/performance/');
+$check(str_contains($perfDoc['body'], sprintf('%.1f ms', $coreNoCache)) && str_contains($perfDoc['body'], sprintf('%.1f ms', $coreCached)) && str_contains($perfDoc['body'], 'What is measured'), 'The Performance page has the recorded numbers: ' . sprintf('%.1f ms', $coreNoCache) . ' and ' . sprintf('%.1f ms', $coreCached));
+$csPerfDoc = $public->request('/cs/docs/performance/');
+$check(str_contains($csPerfDoc['body'], 'Co se měří') && str_contains($csPerfDoc['body'], str_replace('.', ',', sprintf('%.1f ms', $coreNoCache))), 'The Czech Performance page has its text and the number with a decimal comma');
 $architecture = $public->request('/docs/architecture/');
 $check(str_contains($architecture['body'], 'src="/Assets/request-flow.en.svg"') && !str_contains($architecture['body'], 'language-text">public/index.php'), 'The architecture page shows the request diagram instead of the text block');
 $csArchitecture = $public->request('/cs/docs/architecture/');

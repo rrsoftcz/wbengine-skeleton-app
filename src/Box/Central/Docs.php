@@ -21,6 +21,7 @@ class Docs extends WbengineBoxAbstract
         array('/docs/templates/', 'doc.templates'),
         array('/docs/languages/', 'doc.languages'),
         array('/docs/caching/', 'doc.caching'),
+        array('/docs/performance/', 'doc.performance'),
         array('/docs/seo/', 'doc.seo'),
         array('/docs/security/', 'doc.security'),
         array('/docs/rest-api/', 'doc.rest_api'),

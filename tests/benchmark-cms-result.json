@@ -1,14 +1,14 @@
 {
-    "recorded_at": "2026-10-26T02:03:59+00:00",
+    "recorded_at": "2026-11-01T21:55:49+00:00",
     "environment": {
         "php": "8.4.27",
         "server": "PHP built-in HTTP server, PHP_CLI_SERVER_WORKERS=4; loopback in isolated smoke Compose container",
         "database": "8.4.13",
-        "opcache_cli": "0",
+        "opcache_cli": "1",
         "data": {
-            "cms_sites": 14,
-            "cms_articles": 9,
-            "cms_boxes": 20,
+            "cms_sites": 24,
+            "cms_articles": 17,
+            "cms_boxes": 29,
             "cms_users": 2
         },
         "template": "App native site.tpl and real CMS home/profile; file data/page cache",
@@ -30,10 +30,10 @@
         "off": {
             "anonymous": {
                 "requests": 20,
-                "p50_ms": 6.241709,
-                "p95_ms": 7.020541,
-                "requests_per_second": 551.4344713047562,
-                "elapsed_seconds": 0.036269042,
+                "p50_ms": 7.550708,
+                "p95_ms": 11.466083,
+                "requests_per_second": 427.5689351756965,
+                "elapsed_seconds": 0.046776083,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -50,6 +50,12 @@
                     "max": 1,
                     "mean": 1
                 },
+                "php_ms": {
+                    "p50": 7.106,
+                    "p95": 10.744,
+                    "min": 4.638,
+                    "max": 11.701
+                },
                 "page_cache_responses": {
                     "none": 20
                 },
@@ -60,10 +66,10 @@
             },
             "anonymous-session": {
                 "requests": 20,
-                "p50_ms": 7.287125,
-                "p95_ms": 7.697958,
-                "requests_per_second": 484.66587449645033,
-                "elapsed_seconds": 0.041265542,
+                "p50_ms": 8.365625,
+                "p95_ms": 11.38175,
+                "requests_per_second": 408.279224938234,
+                "elapsed_seconds": 0.048986083,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -71,14 +77,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 7,
-                    "max": 7,
-                    "mean": 7
+                    "min": 8,
+                    "max": 8,
+                    "mean": 8
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 7.956,
+                    "p95": 10.782,
+                    "min": 7.314,
+                    "max": 11.835
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -90,10 +102,10 @@
             },
             "logged": {
                 "requests": 20,
-                "p50_ms": 10.896667,
-                "p95_ms": 11.518167,
-                "requests_per_second": 319.6179466052331,
-                "elapsed_seconds": 0.062574709,
+                "p50_ms": 12.698917,
+                "p95_ms": 13.306625,
+                "requests_per_second": 283.749824873155,
+                "elapsed_seconds": 0.070484625,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -101,14 +113,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 8,
-                    "max": 9,
-                    "mean": 8.1
+                    "min": 10,
+                    "max": 10,
+                    "mean": 10
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 12.431,
+                    "p95": 13.044,
+                    "min": 6.589,
+                    "max": 15.702
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -120,10 +138,10 @@
             },
             "custom-api": {
                 "requests": 20,
-                "p50_ms": 1.696792,
-                "p95_ms": 2.010041,
-                "requests_per_second": 1557.1573687372786,
-                "elapsed_seconds": 0.012843917,
+                "p50_ms": 2.038292,
+                "p95_ms": 2.281125,
+                "requests_per_second": 1466.1322712280191,
+                "elapsed_seconds": 0.013641334,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -139,6 +157,12 @@
                     "min": 0,
                     "max": 0,
                     "mean": 0
+                },
+                "php_ms": {
+                    "p50": 1.562,
+                    "p95": 1.816,
+                    "min": 1.383,
+                    "max": 1.899
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -150,10 +174,10 @@
             },
             "same-session": {
                 "requests": 20,
-                "p50_ms": 10.542042,
-                "p95_ms": 11.022958,
-                "requests_per_second": 333.1868699384229,
-                "elapsed_seconds": 0.060026375,
+                "p50_ms": 12.602333,
+                "p95_ms": 15.820333,
+                "requests_per_second": 274.0372041951643,
+                "elapsed_seconds": 0.072982791,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -161,14 +185,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 8,
-                    "max": 9,
-                    "mean": 8.05
+                    "min": 10,
+                    "max": 10,
+                    "mean": 10
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 12.351,
+                    "p95": 15.485,
+                    "min": 6.547,
+                    "max": 15.528
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -182,40 +212,10 @@
         "data-warm": {
             "anonymous": {
                 "requests": 20,
-                "p50_ms": 5.019875,
-                "p95_ms": 5.975125,
-                "requests_per_second": 670.0719275309169,
-                "elapsed_seconds": 0.029847542,
-                "errors": 0,
-                "server_memory_bytes": {
-                    "min": 2097152,
-                    "max": 2097152,
-                    "mean": 2097152
-                },
-                "sql_queries": {
-                    "min": 1,
-                    "max": 1,
-                    "mean": 1
-                },
-                "sql_connections": {
-                    "min": 1,
-                    "max": 1,
-                    "mean": 1
-                },
-                "page_cache_responses": {
-                    "none": 20
-                },
-                "http_statuses": {
-                    "200": 20
-                },
-                "concurrency": 4
-            },
-            "anonymous-session": {
-                "requests": 20,
-                "p50_ms": 6.694,
-                "p95_ms": 7.234708,
-                "requests_per_second": 525.2192836465912,
-                "elapsed_seconds": 0.038079333,
+                "p50_ms": 6.155375,
+                "p95_ms": 8.261542,
+                "requests_per_second": 487.6012153460292,
+                "elapsed_seconds": 0.041017125,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -232,6 +232,48 @@
                     "max": 1,
                     "mean": 1
                 },
+                "php_ms": {
+                    "p50": 5.711,
+                    "p95": 7.573,
+                    "min": 5.119,
+                    "max": 7.631
+                },
+                "page_cache_responses": {
+                    "none": 20
+                },
+                "http_statuses": {
+                    "200": 20
+                },
+                "concurrency": 4
+            },
+            "anonymous-session": {
+                "requests": 20,
+                "p50_ms": 7.189875,
+                "p95_ms": 8.6695,
+                "requests_per_second": 479.79081504296784,
+                "elapsed_seconds": 0.041684833,
+                "errors": 0,
+                "server_memory_bytes": {
+                    "min": 2097152,
+                    "max": 2097152,
+                    "mean": 2097152
+                },
+                "sql_queries": {
+                    "min": 4,
+                    "max": 4,
+                    "mean": 4
+                },
+                "sql_connections": {
+                    "min": 1,
+                    "max": 1,
+                    "mean": 1
+                },
+                "php_ms": {
+                    "p50": 6.815,
+                    "p95": 8.123,
+                    "min": 5.193,
+                    "max": 8.131
+                },
                 "page_cache_responses": {
                     "none": 20
                 },
@@ -242,10 +284,10 @@
             },
             "logged": {
                 "requests": 20,
-                "p50_ms": 7.531875,
-                "p95_ms": 9.38075,
-                "requests_per_second": 450.49103522839897,
-                "elapsed_seconds": 0.044396,
+                "p50_ms": 10.571042,
+                "p95_ms": 11.685125,
+                "requests_per_second": 345.43930561448894,
+                "elapsed_seconds": 0.057897291,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -253,14 +295,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 3,
-                    "max": 3,
-                    "mean": 3
+                    "min": 6,
+                    "max": 6,
+                    "mean": 6
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 10.328,
+                    "p95": 11.376,
+                    "min": 6.07,
+                    "max": 13.543
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -272,10 +320,10 @@
             },
             "custom-api": {
                 "requests": 20,
-                "p50_ms": 1.759375,
-                "p95_ms": 2.028833,
-                "requests_per_second": 1586.7926802205736,
-                "elapsed_seconds": 0.012604041,
+                "p50_ms": 2.416125,
+                "p95_ms": 2.988208,
+                "requests_per_second": 1200.5162219754493,
+                "elapsed_seconds": 0.0166595,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -291,6 +339,12 @@
                     "min": 0,
                     "max": 0,
                     "mean": 0
+                },
+                "php_ms": {
+                    "p50": 1.822,
+                    "p95": 2.52,
+                    "min": 1.363,
+                    "max": 2.781
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -302,10 +356,10 @@
             },
             "same-session": {
                 "requests": 20,
-                "p50_ms": 8.481042,
-                "p95_ms": 9.605,
-                "requests_per_second": 412.41612564372747,
-                "elapsed_seconds": 0.048494709,
+                "p50_ms": 11.253458,
+                "p95_ms": 12.528083,
+                "requests_per_second": 311.1722523097266,
+                "elapsed_seconds": 0.064273083,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -313,14 +367,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 3,
-                    "max": 4,
-                    "mean": 3.05
+                    "min": 6,
+                    "max": 6,
+                    "mean": 6
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 10.944,
+                    "p95": 12.018,
+                    "min": 6.571,
+                    "max": 15.102
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -334,10 +394,10 @@
         "page-warm": {
             "anonymous": {
                 "requests": 20,
-                "p50_ms": 1.475125,
-                "p95_ms": 1.786917,
-                "requests_per_second": 1753.2452789268598,
-                "elapsed_seconds": 0.011407417,
+                "p50_ms": 2.162917,
+                "p95_ms": 2.697375,
+                "requests_per_second": 1308.058760354021,
+                "elapsed_seconds": 0.015289833,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -353,6 +413,12 @@
                     "min": 0,
                     "max": 0,
                     "mean": 0
+                },
+                "php_ms": {
+                    "p50": 1.81,
+                    "p95": 2.208,
+                    "min": 1.32,
+                    "max": 2.592
                 },
                 "page_cache_responses": {
                     "HIT": 20
@@ -364,10 +430,10 @@
             },
             "anonymous-session": {
                 "requests": 20,
-                "p50_ms": 6.54025,
-                "p95_ms": 7.836959,
-                "requests_per_second": 525.0877060559021,
-                "elapsed_seconds": 0.038088875,
+                "p50_ms": 7.93475,
+                "p95_ms": 9.676,
+                "requests_per_second": 441.49053916678906,
+                "elapsed_seconds": 0.045301084,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -375,14 +441,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 3,
-                    "max": 3,
-                    "mean": 3
+                    "min": 5,
+                    "max": 5,
+                    "mean": 5
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 7.629,
+                    "p95": 9.314,
+                    "min": 6.989,
+                    "max": 10.728
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -394,10 +466,10 @@
             },
             "logged": {
                 "requests": 20,
-                "p50_ms": 8.056375,
-                "p95_ms": 9.313042,
-                "requests_per_second": 429.55941830180427,
-                "elapsed_seconds": 0.046559333,
+                "p50_ms": 10.138,
+                "p95_ms": 10.689084,
+                "requests_per_second": 361.75278267023293,
+                "elapsed_seconds": 0.055286375,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -405,14 +477,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 4,
-                    "max": 4,
-                    "mean": 4
+                    "min": 7,
+                    "max": 7,
+                    "mean": 7
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 9.788,
+                    "p95": 10.396,
+                    "min": 6.038,
+                    "max": 11.054
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -424,10 +502,10 @@
             },
             "custom-api": {
                 "requests": 20,
-                "p50_ms": 1.409334,
-                "p95_ms": 1.772791,
-                "requests_per_second": 1845.160241557308,
-                "elapsed_seconds": 0.010839167,
+                "p50_ms": 1.873875,
+                "p95_ms": 2.612,
+                "requests_per_second": 1427.0551824400861,
+                "elapsed_seconds": 0.014014875,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -443,6 +521,12 @@
                     "min": 0,
                     "max": 0,
                     "mean": 0
+                },
+                "php_ms": {
+                    "p50": 1.49,
+                    "p95": 2.071,
+                    "min": 1.285,
+                    "max": 2.123
                 },
                 "page_cache_responses": {
                     "none": 20
@@ -454,10 +538,10 @@
             },
             "same-session": {
                 "requests": 20,
-                "p50_ms": 8.07175,
-                "p95_ms": 8.9795,
-                "requests_per_second": 426.55860515336116,
-                "elapsed_seconds": 0.046886875,
+                "p50_ms": 10.43575,
+                "p95_ms": 11.498875,
+                "requests_per_second": 340.1177354954368,
+                "elapsed_seconds": 0.058803167,
                 "errors": 0,
                 "server_memory_bytes": {
                     "min": 2097152,
@@ -465,14 +549,20 @@
                     "mean": 2097152
                 },
                 "sql_queries": {
-                    "min": 4,
-                    "max": 4,
-                    "mean": 4
+                    "min": 7,
+                    "max": 8,
+                    "mean": 7.05
                 },
                 "sql_connections": {
                     "min": 1,
                     "max": 1,
                     "mean": 1
+                },
+                "php_ms": {
+                    "p50": 10.121,
+                    "p95": 10.99,
+                    "min": 5.886,
+                    "max": 13.517
                 },
                 "page_cache_responses": {
                     "none": 20

@@ -1,6 +1,8 @@
 <?php
 /** Test-only instrumented entry point for the isolated smoke Compose project. */
 if (getenv('WBENGINE_SMOKE') !== '1' || !is_dir((string) getenv('WB_BENCHMARK_DIR'))) { http_response_code(404); exit; }
+// The time the framework needs, from here (before the autoloader) to the moment the response is ready to be sent.
+$benchmarkStart = hrtime(true);
 require dirname(__DIR__) . '/vendor/autoload.php';
 use Wbengine\Config;
 use Wbengine\Db;
@@ -13,7 +15,8 @@ $_REQUEST['link'] = trim((string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PAT
 $connections = function_exists('mysqli_get_client_stats') ? (int) (mysqli_get_client_stats()['connect_success'] ?? 0) : null;
 // An outer buffer delays header commit until output-buffer/shutdown processing, including HIT exits.
 ob_start();
-header_register_callback(static function () use ($connections): void {
+header_register_callback(static function () use ($connections, $benchmarkStart): void {
+    header('X-WB-Benchmark-PHP-Ms: ' . sprintf('%.3f', (hrtime(true) - $benchmarkStart) / 1e6));
     header('X-WB-Benchmark-Run: ' . hash('sha256', getenv('WB_BENCHMARK_DIR')));
     header('X-WB-Benchmark-Queries: ' . Db::getQueriesCount());
     if ($connections !== null) { header('X-WB-Benchmark-Connections: ' . ((int) (mysqli_get_client_stats()['connect_success'] ?? 0) - $connections)); }

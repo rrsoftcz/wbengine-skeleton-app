@@ -278,6 +278,7 @@ docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_D
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/042-docs-extensions.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/043-changelog-menu-order.sql
 docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/044-request-flow-diagram.sql
+docker compose exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < schemas/migrations/045-performance-docs-page.sql
 ```
 
 Apply 023 after 020 and 021; it only edits those pages while its text is missing. A site that uses API v2 also applies the framework updates with `sh bin/update-database.sh DATABASE` and schedules `audit:prune`; see `/docs/logging/`.
@@ -525,8 +526,10 @@ routes. CI executes the same workflow against the framework release the skeleton
 After preparing the same smoke environment, you can run:
 
 ```sh
-docker compose -p wbengine-skeleton-modernization -f compose.smoke.yml run --rm tools php tests/benchmark-cms.php
+docker compose -p wbengine-skeleton-modernization -f compose.smoke.yml run --rm -T tools php tests/benchmark-cms.php > result.json
 ```
+
+The result is printed to standard output, so redirect it to keep it. The server runs with OPcache on, as in production; `-e WB_BENCHMARK_OPCACHE=0` switches it off. Besides the time of the whole HTTP request, every case reports `php_ms`: the time in PHP from the start of the request script until the response is ready, which is the time of the framework core without the connection and the transfer. The Performance page of the documentation explains the numbers and their limits, and the home page shows two of them.
 
 The runner requires the WBENGINE_SMOKE marker and its own existing seed DB. It starts only its own four-process HTTP server on the internal loopback 8081, and uses a real CSRF login and DB sessions. It changes only the configuration of individual test requests and cleans only its own random cache directory before each cohort; it does not change the main configuration or server. The test router adds measurement headers only here, not in production.
 
