@@ -35,6 +35,8 @@ class Changelog extends WbengineBoxAbstract
             $view[$release['recent'] ? 'recent' : 'older'][] = ['version' => $release['version'], 'date' => $release['date'], 'groups' => $groups];
         }
         $view['available'] = [] !== $releases;
+        // The layout variable is not visible inside a box template, so the box passes the version itself.
+        $view['version'] = \Wbengine\Version::current();
         return $this->getRenderer()->render($this->getBoxTemplatePath(), $view);
     }
 

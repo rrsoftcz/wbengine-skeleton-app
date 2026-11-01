@@ -73,17 +73,24 @@
     .doc a, .story a { @apply font-medium underline decoration-indigo-300 underline-offset-2 hover:decoration-indigo-600; }
     .doc ul, .story ul { @apply list-disc space-y-1.5 pl-6 marker:text-indigo-400; }
     .doc ol, .story ol { @apply list-decimal space-y-1.5 pl-6 marker:font-semibold marker:text-indigo-500; }
-    .doc code, .story code {
+    .doc code, .story code, .changelog-entries code {
         @apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-indigo-700;
+        /* A long name must not widen the page on a phone. */
+        overflow-wrap: anywhere;
     }
     .doc pre, .story pre {
         @apply overflow-x-auto rounded-xl bg-slate-900 p-4 text-sm leading-6 text-slate-100 shadow-inner ring-1 ring-slate-800;
     }
     .doc pre code, .story pre code {
         @apply bg-transparent p-0 text-slate-100;
+        overflow-wrap: normal;
     }
     .doc table, .story table {
         @apply w-full overflow-hidden rounded-xl border border-slate-200 text-left text-sm;
+    }
+    /* A wide table scrolls inside itself on a phone instead of widening the page. */
+    @media (max-width: 640px) {
+        .doc table, .story table { display: block; overflow-x: auto; }
     }
     .doc th, .story th { @apply bg-slate-100 px-4 py-2 font-semibold text-slate-900; }
     .doc td, .story td { @apply border-t border-slate-200 px-4 py-2 align-top; }

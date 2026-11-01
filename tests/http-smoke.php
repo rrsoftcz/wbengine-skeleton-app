@@ -47,6 +47,7 @@ $changelogFile = (string) @file_get_contents(__DIR__ . '/../vendor/wbengine/wben
 $check(preg_match('/^## \[(\d+\.\d+\.\d+)\] - /m', $changelogFile, $newest) === 1, 'The installed framework ships a changelog with releases');
 $check(str_contains($changelog['body'], 'id="v' . $newest[1] . '"') && substr_count($changelog['body'], '<section class="card mt-6 sm:p-8" id="v') >= 5, 'The changelog page lists the newest release of the installed framework and several more');
 $check(str_contains($changelog['body'], 'href="/changelog/"') && str_contains($home['body'], 'href="/changelog/"'), 'The menu and the header version link to the changelog');
+$check(preg_match('/WBengine <strong>(v\d+\.\d+\.\d+[^<]*|dev)<\/strong>/', $changelog['body'], $runningVersion) === 1 && $runningVersion[1] === $expectedVersion, 'The changelog page names the running version, not an empty one: ' . ($runningVersion[1] ?? 'missing'));
 $csChangelog = $public->request('/cs/changelog/');
 $check($csChangelog['status'] === 200 && str_contains($csChangelog['body'], '<html lang="cs"') && str_contains($csChangelog['body'], 'Přehled změn') && str_contains($csChangelog['body'], 'Opraveno'), 'The Czech changelog page has Czech headings');
 $blog = $public->request('/blog/');
