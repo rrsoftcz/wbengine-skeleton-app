@@ -29,14 +29,14 @@
 
     {* The navigation: its entries are the cms_menu rows of the site, translated per language. *}
     <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur">
-        <div class="container-page flex items-center justify-between gap-4 py-3">
+        <div class="container-page flex items-center justify-between gap-2 py-3 sm:gap-4">
             <div class="flex items-center gap-2.5">
                 <a href="{'/'|lurl}" class="flex items-center gap-2.5 no-underline">
                     <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-base font-extrabold text-white shadow-md">W</span>
                     <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
                 </a>
                 {* The version of the framework that renders this page, from Composer ("dev" when it is not a release), linked to the changelog. *}
-                <a href="{'/changelog/'|lurl}" class="hidden text-[11px] font-medium tracking-wide text-slate-400 no-underline hover:text-slate-600 min-[360px]:inline" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
+                <a href="{'/changelog/'|lurl}" class="text-[11px] font-medium tracking-wide text-slate-400 no-underline hover:text-slate-600" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</a>
             </div>
 
             <nav class="hidden md:block" aria-label="{t 'nav.main'}">
@@ -51,7 +51,7 @@
                 {* Language switcher: the same page in every language *}
                 <ul class="m-0 flex list-none items-center rounded-lg bg-slate-100 p-0.5 text-xs font-semibold" aria-label="{t 'nav.language'}">
                     {foreach $alternates as $code => $url}
-                    <li><a class="block rounded-md px-2.5 py-1 no-underline {if $code == $locale}bg-white text-indigo-700 shadow-sm{else}text-slate-600 hover:text-slate-900{/if}" href="{if $code == 'en'}{$url}?_wb_locale=en{else}{$url}{/if}" hreflang="{$code}" lang="{$code}">{$code|upper}</a></li>
+                    <li><a class="block rounded-md px-2 py-1 no-underline min-[360px]:px-2.5 {if $code == $locale}bg-white text-indigo-700 shadow-sm{else}text-slate-600 hover:text-slate-900{/if}" href="{if $code == 'en'}{$url}?_wb_locale=en{else}{$url}{/if}" hreflang="{$code}" lang="{$code}">{$code|upper}</a></li>
                     {/foreach}
                 </ul>
                 {if $user && $user->isLogged() === true}
@@ -59,10 +59,10 @@
                 <form method="post" action="{$loginUrl}" class="inline-flex">
                     <input type="hidden" name="a" value="logout">
                     <input type="hidden" name="token" value="{$logoutToken}">
-                    <button type="submit" class="btn-primary px-3 sm:px-5" title="{t 'nav.logout_title'}">{t 'nav.logout'}</button>
+                    <button type="submit" class="btn-primary whitespace-nowrap px-3 sm:px-5" title="{t 'nav.logout_title'}">{t 'nav.logout'}</button>
                 </form>
                 {else}
-                <a class="btn-primary px-3 sm:px-5" href="{$loginUrl}" title="{t 'nav.signin_title'}">{t 'nav.signin'}</a>
+                <a class="btn-primary whitespace-nowrap px-3 sm:px-5" href="{$loginUrl}" title="{t 'nav.signin_title'}">{t 'nav.signin'}</a>
                 {/if}
 
                 <button id="toggle-menu" type="button" class="grid h-10 w-10 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 md:hidden" aria-controls="navbar" aria-expanded="false">

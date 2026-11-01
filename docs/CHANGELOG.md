@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- On a phone the version of the framework was hidden in the header; it is now shown from 360 pixels of width (below that the sign in button would wrap), and the two footer columns, Documentation and Project, stand side by side instead of one under the other. Checked in Chrome at 320, 390 and 1280 pixels.
+- On a phone the version of the framework was hidden in the header; it is now always shown, right after the logo icon, and the header is tighter on a narrow phone so that the sign in button stays on one line (checked from 300 to 390 pixels), and the two footer columns, Documentation and Project, stand side by side instead of one under the other. Checked in Chrome at 320, 390 and 1280 pixels.
 - The changelog page printed "This site runs WBengine v" without the number, because a box template does not see the layout variable `wbengine_version`: the box now passes the version. `tests/http-smoke.php` checks it.
 - On a phone, long inline code (names of settings, files and classes) widened documentation pages and the changelog beyond the screen (`/docs/`, `/docs/settings/`, `/docs/deployment/`, `/docs/logging/`, `/docs/mcp-clients/`, `/changelog/`). Inline code now wraps, wide tables scroll inside themselves, and the changelog entries get the code style of the documentation. Measured in Chrome at 390 pixels with the new stylesheet: the five documentation pages no longer overflow. The stylesheet was rebuilt.
 
