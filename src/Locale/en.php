@@ -111,6 +111,8 @@ return [
     'doc.settings' => 'Settings reference',
     'doc.deployment' => 'Deployment',
     'doc.logging' => 'Logging and audit',
+    'doc.seo' => 'Search engines',
+    'doc.analytics' => 'Statistics',
     'doc.sidebar' => 'Documentation',
     'doc.pager' => 'Previous and next page',
     'doc.prev' => 'Previous',

@@ -111,6 +111,8 @@ return [
     'doc.settings' => 'Přehled nastavení',
     'doc.deployment' => 'Nasazení',
     'doc.logging' => 'Logování a audit',
+    'doc.seo' => 'Vyhledávače',
+    'doc.analytics' => 'Statistiky',
     'doc.sidebar' => 'Dokumentace',
     'doc.pager' => 'Předchozí a další stránka',
     'doc.prev' => 'Předchozí',

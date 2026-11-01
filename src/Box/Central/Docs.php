@@ -21,6 +21,7 @@ class Docs extends WbengineBoxAbstract
         array('/docs/templates/', 'doc.templates'),
         array('/docs/languages/', 'doc.languages'),
         array('/docs/caching/', 'doc.caching'),
+        array('/docs/seo/', 'doc.seo'),
         array('/docs/security/', 'doc.security'),
         array('/docs/rest-api/', 'doc.rest_api'),
         array('/docs/administration/', 'doc.administration'),
@@ -29,6 +30,7 @@ class Docs extends WbengineBoxAbstract
         array('/docs/settings/', 'doc.settings'),
         array('/docs/deployment/', 'doc.deployment'),
         array('/docs/logging/', 'doc.logging'),
+        array('/docs/analytics/', 'doc.analytics'),
     );
 
     /**
