@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- `src/View/site.tpl`: every page has a `<link rel="canonical">` with the absolute address of the page in its own language, the same address as its `hreflang` link. `tests/http-smoke.php` checks it for the English and Czech home page.
+
 ### Changed
 
 - WBengine 6.5.3 (`composer.lock`): the MCP server generates cleaner addresses, browser titles and menu names, warns about missing page and menu translations and reports no comparison against a period before counting.

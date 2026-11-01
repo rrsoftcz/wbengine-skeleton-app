@@ -17,6 +17,7 @@
     {* hreflang URLs must be absolute: $hreflangs holds them, with x-default *}
     {foreach $hreflangs as $code => $url}
     <link rel="alternate" hreflang="{$code}" href="{$url}">
+    {if $code == $lang}<link rel="canonical" href="{$url}">{/if}
     {/foreach}
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="/Css/output.min.css">
