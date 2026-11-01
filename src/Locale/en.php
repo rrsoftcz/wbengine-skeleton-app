@@ -106,6 +106,8 @@ return [
     'doc.security' => 'Security',
     'doc.rest_api' => 'API',
     'doc.administration' => 'Central administration',
+    'doc.mcp' => 'MCP server',
+    'doc.mcp_clients' => 'Connect an MCP client',
     'doc.settings' => 'Settings reference',
     'doc.deployment' => 'Deployment',
     'doc.logging' => 'Logging and audit',

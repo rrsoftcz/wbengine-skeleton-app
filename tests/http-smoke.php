@@ -60,6 +60,17 @@ $csBlog = $public->request('/cs/blog/');
 $check($csBlog['status'] === 200 && str_contains($csBlog['body'], 'Co WBengine webu dává') && str_contains($csBlog['body'], 'Nejnovější') && str_contains($csBlog['body'], 'href="/cs/blog/what-wbengine-gives-a-site/"'), 'The Czech overview has Czech texts and Czech links');
 $csPost = $public->request('/cs/blog/what-wbengine-gives-a-site/');
 $check($csPost['status'] === 200 && str_contains($csPost['body'], 'Jazyky jsou součástí'), 'The Czech demo post is translated');
+foreach (['/docs/', '/docs/architecture/', '/docs/boxes/', '/docs/templates/', '/docs/languages/', '/docs/caching/', '/docs/security/', '/docs/rest-api/', '/docs/administration/', '/docs/mcp/', '/docs/mcp-clients/', '/docs/settings/', '/docs/deployment/', '/docs/logging/'] as $docPath) {
+    $en = $public->request($docPath);
+    $check($en['status'] === 200 && str_contains($en['body'], '<html lang="en"') && str_contains($en['body'], '<h1'), 'Documentation page ' . $docPath . ' in English: ' . $en['status']);
+    $csDoc = $public->request('/cs' . $docPath);
+    $check($csDoc['status'] === 200 && str_contains($csDoc['body'], '<html lang="cs"') && str_contains($csDoc['body'], '<h1'), 'Documentation page ' . $docPath . ' in Czech: ' . $csDoc['status']);
+    $check(!preg_match('/doc\.[a-z_]+</', $en['body'] . $csDoc['body']), 'No untranslated catalog key in the sidebar of ' . $docPath);
+}
+$mcpDoc = $public->request('/docs/mcp/');
+$check(str_contains($mcpDoc['body'], 'What it never does') && str_contains($mcpDoc['body'], 'Editor with structure and statistics'), 'The MCP page has its content');
+$mcpClients = $public->request('/cs/docs/mcp-clients/');
+$check(str_contains($mcpClients['body'], 'WSL2') && str_contains($mcpClients['body'], 'Co bylo ověřeno'), 'The Czech client page names WSL2 and what was checked');
 $robots = $public->request('/robots.txt');
 $check($robots['status'] === 200 && str_contains($robots['headers'], 'Content-Type: text/plain'), 'robots.txt is plain text: ' . $robots['status']);
 $check(str_contains($robots['body'], "Disallow: /login/\n") && str_contains($robots['body'], 'Sitemap: http://127.0.0.1:8080/sitemap.xml'), 'robots.txt lists the disallowed path and names the sitemap');

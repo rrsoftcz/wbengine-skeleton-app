@@ -106,6 +106,8 @@ return [
     'doc.security' => 'Zabezpečení',
     'doc.rest_api' => 'API',
     'doc.administration' => 'Centrální administrace',
+    'doc.mcp' => 'MCP server',
+    'doc.mcp_clients' => 'Připojení MCP klienta',
     'doc.settings' => 'Přehled nastavení',
     'doc.deployment' => 'Nasazení',
     'doc.logging' => 'Logování a audit',
