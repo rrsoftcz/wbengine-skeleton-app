@@ -6,6 +6,7 @@
  */
 return [
     'nav.skip' => 'Přeskočit na obsah',
+    'nav.version' => 'Verze frameworku WBengine, který tento web vykresluje',
     'nav.main' => 'Hlavní navigace',
     'nav.language' => 'Jazyk',
     'nav.signin' => 'Přihlásit',

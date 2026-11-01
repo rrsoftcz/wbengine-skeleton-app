@@ -33,6 +33,8 @@
             <a href="{'/'|lurl}" class="flex items-center gap-2.5 no-underline">
                 <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-base font-extrabold text-white shadow-md">W</span>
                 <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
+                {* The version of the framework that renders this page, from Composer. "dev" when it is not a release. *}
+                <span class="hidden text-[11px] font-medium tracking-wide text-slate-400 sm:inline" title="{t 'nav.version'}">{if $wbengine_version == 'dev'}dev{else}v{$wbengine_version}{/if}</span>
             </a>
 
             <nav class="hidden md:block" aria-label="{t 'nav.main'}">

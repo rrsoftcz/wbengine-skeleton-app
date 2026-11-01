@@ -4,6 +4,7 @@
 
 ### Added
 
+- WBengine 6.7.0 (`composer.json` `^6.7`, `composer.lock`): the header shows the version of the framework that renders the site in a small font beside the site name (`src/View/site.tpl`, the layout variable `wbengine_version`, `dev` when it is not a release), with the string `nav.version` in English and Czech. `bin/update-database.sh` and `bin/setup-production.sh` apply `6.7.0/013-analytics-locale.sql`, which records the views of a page per language. A site that has analytics switched on applies it once (`sh bin/update-database.sh DATABASE`, safe to rerun); counting continues without it. `tests/http-smoke.php` checks that the shown version equals the locked one.
 - WBengine 6.6.0 (`composer.json` `^6.6`, `composer.lock`): `public/index.php` registers `/robots.txt` and `/sitemap.xml`, and `settings.json.default` gets `seo.disallow` and `seo.sitemapExclude` for the login page. The sitemap lists the visible public pages once per language with links to the other languages. `tests/http-smoke.php` checks both files. Migration `037-seo-settings-docs.sql` documents the `seo` settings in the settings reference (English and Czech, mirrored in the content dump). A site with its own `Settings.json` adds the `seo` keys if it wants the login page left out.
 - `src/View/site.tpl`: every page has a `<link rel="canonical">` with the absolute address of the page in its own language, the same address as its `hreflang` link. `tests/http-smoke.php` checks it for the English and Czech home page.
 

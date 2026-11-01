@@ -7,6 +7,7 @@
 return [
     'nav.skip' => 'Skip to content',
     'nav.main' => 'Main navigation',
+    'nav.version' => 'Version of the WBengine framework that renders this site',
     'nav.language' => 'Language',
     'nav.signin' => 'Sign in',
     'nav.signin_title' => 'Sign in to the system',
