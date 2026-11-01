@@ -60,13 +60,17 @@ $csBlog = $public->request('/cs/blog/');
 $check($csBlog['status'] === 200 && str_contains($csBlog['body'], 'Co WBengine webu dává') && str_contains($csBlog['body'], 'Nejnovější') && str_contains($csBlog['body'], 'href="/cs/blog/what-wbengine-gives-a-site/"'), 'The Czech overview has Czech texts and Czech links');
 $csPost = $public->request('/cs/blog/what-wbengine-gives-a-site/');
 $check($csPost['status'] === 200 && str_contains($csPost['body'], 'Jazyky jsou součástí'), 'The Czech demo post is translated');
-foreach (['/docs/', '/docs/architecture/', '/docs/boxes/', '/docs/templates/', '/docs/languages/', '/docs/caching/', '/docs/security/', '/docs/rest-api/', '/docs/administration/', '/docs/mcp/', '/docs/mcp-clients/', '/docs/settings/', '/docs/deployment/', '/docs/logging/'] as $docPath) {
+foreach (['/docs/', '/docs/architecture/', '/docs/boxes/', '/docs/templates/', '/docs/languages/', '/docs/caching/', '/docs/seo/', '/docs/security/', '/docs/rest-api/', '/docs/administration/', '/docs/mcp/', '/docs/mcp-clients/', '/docs/settings/', '/docs/deployment/', '/docs/logging/', '/docs/analytics/'] as $docPath) {
     $en = $public->request($docPath);
     $check($en['status'] === 200 && str_contains($en['body'], '<html lang="en"') && str_contains($en['body'], '<h1'), 'Documentation page ' . $docPath . ' in English: ' . $en['status']);
     $csDoc = $public->request('/cs' . $docPath);
     $check($csDoc['status'] === 200 && str_contains($csDoc['body'], '<html lang="cs"') && str_contains($csDoc['body'], '<h1'), 'Documentation page ' . $docPath . ' in Czech: ' . $csDoc['status']);
     $check(!preg_match('/doc\.[a-z_]+</', $en['body'] . $csDoc['body']), 'No untranslated catalog key in the sidebar of ' . $docPath);
 }
+$seoDoc = $public->request('/docs/seo/');
+$check(str_contains($seoDoc['body'], 'canonical') && str_contains($seoDoc['body'], '/sitemap.xml') && str_contains($seoDoc['body'], 'seo.allowIndexing'), 'The search engines page has its content');
+$analyticsDoc = $public->request('/cs/docs/analytics/');
+$check(str_contains($analyticsDoc['body'], 'Co se nepočítá') && str_contains($analyticsDoc['body'], 'analytics:prune'), 'The Czech statistics page has its content');
 $mcpDoc = $public->request('/docs/mcp/');
 $check(str_contains($mcpDoc['body'], 'What it never does') && str_contains($mcpDoc['body'], 'Editor with structure and statistics'), 'The MCP page has its content');
 $mcpClients = $public->request('/cs/docs/mcp-clients/');
