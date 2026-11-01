@@ -49,6 +49,17 @@ $check(str_contains($changelog['body'], 'id="v' . $newest[1] . '"') && substr_co
 $check(str_contains($changelog['body'], 'href="/changelog/"') && str_contains($home['body'], 'href="/changelog/"'), 'The menu and the header version link to the changelog');
 $csChangelog = $public->request('/cs/changelog/');
 $check($csChangelog['status'] === 200 && str_contains($csChangelog['body'], '<html lang="cs"') && str_contains($csChangelog['body'], 'Přehled změn') && str_contains($csChangelog['body'], 'Opraveno'), 'The Czech changelog page has Czech headings');
+$blog = $public->request('/blog/');
+$check($blog['status'] === 200 && str_contains($blog['body'], 'id="blog-newest"') && str_contains($blog['body'], 'id="blog-all"'), 'The blog overview lists the newest posts and all posts: ' . $blog['status']);
+$check(str_contains($blog['body'], 'href="/blog/what-wbengine-gives-a-site/"') && str_contains($blog['body'], 'What WBengine gives a site'), 'The overview links the demo post with its title');
+$check(str_contains($blog['body'], 'id="blog-popular"') && preg_match('/\d+ views/', $blog['body']) === 1, 'The most read block shows a post that has views');
+$check(!str_contains($blog['body'], '<h1 class="mb-4 mt-0 text-3xl sm:text-4xl">Articles with the bundled box'), 'The overview does not show one article any more');
+$post = $public->request('/blog/what-wbengine-gives-a-site/');
+$check($post['status'] === 200 && str_contains($post['body'], 'Pages and boxes live in the database') && str_contains($post['body'], 'Languages are built in'), 'The demo post is on its own page with its new text: ' . $post['status']);
+$csBlog = $public->request('/cs/blog/');
+$check($csBlog['status'] === 200 && str_contains($csBlog['body'], 'Co WBengine webu dává') && str_contains($csBlog['body'], 'Nejnovější') && str_contains($csBlog['body'], 'href="/cs/blog/what-wbengine-gives-a-site/"'), 'The Czech overview has Czech texts and Czech links');
+$csPost = $public->request('/cs/blog/what-wbengine-gives-a-site/');
+$check($csPost['status'] === 200 && str_contains($csPost['body'], 'Jazyky jsou součástí'), 'The Czech demo post is translated');
 $robots = $public->request('/robots.txt');
 $check($robots['status'] === 200 && str_contains($robots['headers'], 'Content-Type: text/plain'), 'robots.txt is plain text: ' . $robots['status']);
 $check(str_contains($robots['body'], "Disallow: /login/\n") && str_contains($robots['body'], 'Sitemap: http://127.0.0.1:8080/sitemap.xml'), 'robots.txt lists the disallowed path and names the sitemap');
