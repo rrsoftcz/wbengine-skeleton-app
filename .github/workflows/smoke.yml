@@ -40,8 +40,8 @@ jobs:
       - name: Verify the Google Analytics setting gates the consent banner
         working-directory: app
         run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/analytics-setting.php
-
       - name: Changelog parser
+        working-directory: app
         run: docker compose -p wbengine-skeleton-smoke -f compose.smoke.yml run --rm tools php tests/changelog-parser.php
       - name: Verify dependency profile and clear smoke caches
         working-directory: app
