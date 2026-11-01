@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- `package-lock.json`: `npm audit fix` updated the build tooling of the stylesheet (postcss, minimatch, glob, brace-expansion, nanoid, picomatch, source-map-js) and removed packages that are no longer needed; 14 reported vulnerabilities in development packages are gone (`npm audit` reports none). `package.json` is unchanged, Tailwind stays at 3.4.17 and the compiled `public/Css/output.min.css` is byte-identical. The packages were never part of the running site.
 - The Changelog menu entry stands right after Blog instead of after About (migration `043-changelog-menu-order.sql`, guarded and mirrored in the content dump). `tests/http-smoke.php` checks the order.
 - On a phone the version of the framework was hidden in the header; it is now always shown, right after the logo icon, and the header is tighter on a narrow phone so that the sign in button stays on one line (checked from 300 to 390 pixels), and the two footer columns, Documentation and Project, stand side by side instead of one under the other. Checked in Chrome at 320, 390 and 1280 pixels.
 - The changelog page printed "This site runs WBengine v" without the number, because a box template does not see the layout variable `wbengine_version`: the box now passes the version. `tests/http-smoke.php` checks it.
