@@ -23,6 +23,7 @@
 
 ### Changed
 
+- The license text moved from `docs/LICENSE.md` to `LICENSE` in the root of the repository, where GitHub looks for it, so the repository page now shows the MIT license. The text is unchanged and the same as in the framework.
 - WBengine 6.5.3 (`composer.lock`): the MCP server generates cleaner addresses, browser titles and menu names, warns about missing page and menu translations and reports no comparison against a period before counting.
 - WBengine 6.5.2 (`composer.lock`): the MCP server says on stderr how it started and how it ends.
 - WBengine 6.5.1 (`composer.lock`): the text of an MCP tool result is also in its structured result, so clients that show only that part get the guide texts and warnings.

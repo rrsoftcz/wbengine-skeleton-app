@@ -1,0 +1,8 @@
+[mcp_servers.wbengine-www-wbengine-org]
+command = "php"
+args = ["/path/to/wbengine-mcp.phar"]
+
+[mcp_servers.wbengine-www-wbengine-org.env]
+WBENGINE_MCP_URL = "https://www.wbengine.org"
+WBENGINE_MCP_KEY = "wbv2_8a55d740d974ca4351ddcccfe1ee73dabbaa9109b654e9108420baa42a9788e1"
+WBENGINE_MCP_MODE = "full"
