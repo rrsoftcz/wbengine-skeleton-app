@@ -1,7 +1,9 @@
 # Plan: audit of the skeleton documentation
 
-Status: audit done 2026-11-01, pages not written yet. Waiting for the owner to approve the table and
-the page list below. Part of `plan-release-6-7-0.md` in the framework repository (part E).
+Status: done 2026-11-01. The owner approved the table and the page list; the four new pages (MCP server,
+Connect an MCP client, Search engines, Statistics) and the sections added to Boxes, Caching, Languages,
+Templates and API are live in English and Czech (migrations 040 to 042). The table below is the state
+before the work. Part of `plan-release-6-7-0.md` in the framework repository (part E).
 
 ## Method
 
