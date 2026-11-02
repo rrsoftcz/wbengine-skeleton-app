@@ -27,6 +27,7 @@
 
 ### Changed
 
+- The documentation page `/docs/administration/` (English and Czech) describes the SQLite database of the central administration: the settings table without database passwords, the start without a database container, the backup command and the rule of one instance (migration `047-administration-sqlite-docs.sql`, guarded and mirrored in the content dump).
 - WBengine 6.7.1 (`composer.lock`, the smoke workflow ref): the Composer package metadata has the live site as its homepage, and the stale built MCP phar is no longer in the package. No database update and no setting. The changelog page lists the new release.
 - The statistic Runtime packages (0) of the hero on the home page is replaced by the time the core needs to assemble the home page without any cache (7 ms, median), the cached page shows its time (2 ms) instead of 0 SQL, and a note says what is measured, that it is not a website speed test and links to the method. Both numbers come from `tests/benchmark-cms-result.json`, which the smoke test compares with the home page and the Performance page.
 - `tests/benchmark-cms.php` runs its server with OPcache on (`WB_BENCHMARK_OPCACHE=0` for off) and reports `php_ms`, the time in PHP until the response is ready, next to the HTTP time (`tests/benchmark-router.php` adds the header `X-WB-Benchmark-PHP-Ms`). The recorded result was renewed on 2026-11-01 with WBengine 6.7.0: anonymous page without any cache 7.1 ms median, with the data cache warm 5.7 ms, from the full-page cache 1.8 ms.
