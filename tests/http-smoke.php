@@ -70,6 +70,10 @@ foreach (['/docs/', '/docs/architecture/', '/docs/boxes/', '/docs/templates/', '
     $check($csDoc['status'] === 200 && str_contains($csDoc['body'], '<html lang="cs"') && str_contains($csDoc['body'], '<h1'), 'Documentation page ' . $docPath . ' in Czech: ' . $csDoc['status']);
     $check(!preg_match('/doc\.[a-z_]+</', $en['body'] . $csDoc['body']), 'No untranslated catalog key in the sidebar of ' . $docPath);
 }
+foreach ([['/docs/administration/', 'MAIL_SMTP_HOST'], ['/docs/administration/', 'Invitation by email'], ['/cs/docs/administration/', 'MAIL_SMTP_PASSWORD'], ['/cs/docs/administration/', 'Pozvánka emailem']] as [$setupPath, $setupText]) {
+    $setupPage = $public->request($setupPath);
+    $check($setupPage['status'] === 200 && str_contains($setupPage['body'], $setupText), 'The page ' . $setupPath . ' mentions: ' . $setupText);
+}
 foreach ([['/docs/boxes/', 'Strict and dynamic pages'], ['/docs/caching/', 'The page cache in detail'], ['/docs/languages/', 'Addresses, links and statistics'], ['/docs/templates/', 'wbengine_version'], ['/docs/rest-api/', 'Hiding and showing an article'], ['/cs/docs/boxes/', 'Striktní a dynamické stránky'], ['/cs/docs/rest-api/', 'Omezení klíče na adresy']] as [$extendedPath, $extendedText]) {
     $extended = $public->request($extendedPath);
     $check($extended['status'] === 200 && substr_count($extended['body'], $extendedText) >= 1, 'The extended page ' . $extendedPath . ' has its new section: ' . $extendedText);
