@@ -21,7 +21,9 @@
     {/foreach}
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="/Css/output.min.css?v={$assets_version}">
-    <link rel="icon" type="image/png" href="/Assets/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/Assets/favicon.svg?v={$assets_version}">
+    <link rel="icon" sizes="48x48" href="/Assets/favicon.ico?v={$assets_version}">
+    <link rel="apple-touch-icon" href="/Assets/apple-touch-icon.png?v={$assets_version}">
 </head>
 
 <body class="flex min-h-screen flex-col">

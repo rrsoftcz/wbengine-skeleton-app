@@ -1,21 +1,26 @@
 {
-  "name": "Wbengine Skeleton App",
-  "short_name": "Wbengine",
+  "name": "WBengine Skeleton App",
+  "short_name": "WBengine",
   "icons": [
     {
-      "src": "/Assets/192x192.jpg",
+      "src": "/Assets/192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/Assets/512x512.jpg",
+      "src": "/Assets/512x512.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "/Assets/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     }
   ],
   "start_url": "./",
   "background_color": "#2C2C2C",
-  "theme_color": "#3F51B5",
+  "theme_color": "#4f46e5",
   "display": "standalone",
   "orientation": "portrait"
 }
