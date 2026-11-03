@@ -10,7 +10,7 @@
     <meta name="keywords" content="{$meta.keywords}">
     <meta name="author" content="Radek Roža">
     <meta name="robots" content="index,follow">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#5723FC">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{$meta.title}">
     <meta property="og:description" content="{$meta.description}">
