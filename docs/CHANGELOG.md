@@ -9,6 +9,7 @@
 
 ### Fixed
 
+- The logo link in the header has an accessible name (`aria-label="WBengine"`). On small screens the word is hidden, so the link had no name and Lighthouse reported "Links do not have a discernible name".
 - The header and the footer show the official WBengine logo (`Assets/favicon.svg`) instead of a hand-drawn indigo W tile, so the logo on every page matches the favicon.
 - A browser that had cached the stylesheet before a deployment kept showing the old one for a while (the footer with the version stacked in the middle instead of three columns). The stylesheet and the scripts of the layout are now requested with a fingerprint of their content (`?v=`, `Site::assetsVersion()`), so a changed file is loaded immediately. `tests/http-smoke.php` checks the fingerprint.
 
