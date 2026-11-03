@@ -13,6 +13,7 @@ class Site extends \Wbengine\Site
         $this->setVariable('user', $user);
         $this->setVariable('gaId', self::analyticsMeasurementId());
         $this->setVariable('skeleton_version', self::skeletonVersion());
+        $this->setVariable('assets_version', self::assetsVersion());
         if ($user && $user->getUserIsLogged()) {
             $this->setVariable('logoutToken', $app->getCsrf()->token('auth.logout'));
         }
@@ -41,6 +42,25 @@ class Site extends \Wbengine\Site
         if ($version === null) {
             $raw = is_file(dirname(__DIR__) . '/VERSION') ? trim((string) file_get_contents(dirname(__DIR__) . '/VERSION')) : '';
             $version = preg_match('/^\d+\.\d+\.\d+$/D', $raw) === 1 ? $raw : '';
+        }
+        return $version;
+    }
+
+    /**
+     * A short fingerprint of the stylesheet and the scripts of the layout, appended to their addresses (`?v=`) so a browser
+     * that cached an older file loads the new one as soon as a file changes. Without a long cache time the browser would
+     * otherwise keep a file for a while after a deployment.
+     */
+    public static function assetsVersion(): string
+    {
+        static $version = null;
+        if ($version === null) {
+            $parts = [];
+            foreach (['Css/output.min.css', 'menu.js', 'code-highlight.js', 'cookie-consent.js'] as $file) {
+                $path = dirname(__DIR__) . '/public/' . $file;
+                $parts[] = is_file($path) ? (string) md5_file($path) : '-';
+            }
+            $version = substr(md5(implode('|', $parts)), 0, 10);
         }
         return $version;
     }
