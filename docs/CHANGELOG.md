@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- The icon of the site is the W of the logo (the rounded square with the indigo to fuchsia gradient): `Assets/favicon.svg`, a multi size `favicon.ico` (16, 32 and 48 px, also copied to the root for clients that ask for `/favicon.ico`), `apple-touch-icon.png` and the 192 and 512 px PNG icons of the web manifest, which replace the old bird icon and two JPEG files. The manifest name and theme colour match the layout. The icons are requested with the content fingerprint, so a browser replaces a cached icon. `tests/http-smoke.php` checks the links, the served types and the manifest.
+
 ### Fixed
 
 - A browser that had cached the stylesheet before a deployment kept showing the old one for a while (the footer with the version stacked in the middle instead of three columns). The stylesheet and the scripts of the layout are now requested with a fingerprint of their content (`?v=`, `Site::assetsVersion()`), so a changed file is loaded immediately. `tests/http-smoke.php` checks the fingerprint.

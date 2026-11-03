@@ -47,7 +47,7 @@ class Site extends \Wbengine\Site
     }
 
     /**
-     * A short fingerprint of the stylesheet and the scripts of the layout, appended to their addresses (`?v=`) so a browser
+     * A short fingerprint of the stylesheet, the scripts and the icons of the layout, appended to their addresses (`?v=`) so a browser
      * that cached an older file loads the new one as soon as a file changes. Without a long cache time the browser would
      * otherwise keep a file for a while after a deployment.
      */
@@ -56,7 +56,7 @@ class Site extends \Wbengine\Site
         static $version = null;
         if ($version === null) {
             $parts = [];
-            foreach (['Css/output.min.css', 'menu.js', 'code-highlight.js', 'cookie-consent.js'] as $file) {
+            foreach (['Css/output.min.css', 'menu.js', 'code-highlight.js', 'cookie-consent.js', 'Assets/favicon.svg', 'Assets/favicon.ico', 'Assets/apple-touch-icon.png'] as $file) {
                 $path = dirname(__DIR__) . '/public/' . $file;
                 $parts[] = is_file($path) ? (string) md5_file($path) : '-';
             }

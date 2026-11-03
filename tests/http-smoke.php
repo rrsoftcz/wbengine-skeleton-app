@@ -42,9 +42,16 @@ $expectedVersion = preg_match('/^v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?)$/D', $pret
 $check(preg_match('/<a[^>]*href="\/changelog\/"[^>]*>(v\d+\.\d+\.\d+[^<]*|dev)<\/a>/', $home['body'], $shown) === 1, 'The header shows the framework version');
 $check($shown[1] === $expectedVersion, 'The header shows the installed framework version: ' . $shown[1] . ' against ' . $expectedVersion . ' (' . $pretty . ')');
 $check(preg_match('/<footer.*href="https:\/\/github\.com\/rrsoftcz\/wbengine-admin".*<\/footer>/s', $home['body']) === 1, 'The footer links to the GitHub project of the central administration');
-$assetParts = array_map(static fn ($f) => (string) md5_file(__DIR__ . '/../public/' . $f), ['Css/output.min.css', 'menu.js', 'code-highlight.js', 'cookie-consent.js']);
+$assetParts = array_map(static fn ($f) => (string) md5_file(__DIR__ . '/../public/' . $f), ['Css/output.min.css', 'menu.js', 'code-highlight.js', 'cookie-consent.js', 'Assets/favicon.svg', 'Assets/favicon.ico', 'Assets/apple-touch-icon.png']);
 $assetsVersion = substr(md5(implode('|', $assetParts)), 0, 10);
 $check(str_contains($home['body'], 'href="/Css/output.min.css?v=' . $assetsVersion . '"') && str_contains($home['body'], 'src="/menu.js?v=' . $assetsVersion . '"'), 'The stylesheet and scripts carry a fingerprint of their content, so a browser never keeps an outdated copy: ?v=' . $assetsVersion);
+$check(str_contains($home['body'], 'rel="icon" type="image/svg+xml" href="/Assets/favicon.svg?v=' . $assetsVersion . '"') && str_contains($home['body'], 'rel="apple-touch-icon" href="/Assets/apple-touch-icon.png?v=' . $assetsVersion . '"'), 'The page declares the W icon of the logo (SVG, ICO fallback, Apple touch icon)');
+foreach (['/Assets/favicon.svg' => 'image/svg+xml', '/Assets/favicon.ico' => 'image', '/Assets/apple-touch-icon.png' => 'image/png', '/Assets/192x192.png' => 'image/png', '/Assets/512x512.png' => 'image/png'] as $iconPath => $iconType) {
+    $icon = $public->request($iconPath);
+    $check($icon['status'] === 200 && stripos($icon['headers'], 'content-type: ' . $iconType) !== false, 'The icon ' . $iconPath . ' is served as ' . $iconType . ': ' . $icon['status']);
+}
+$webManifest = json_decode((string) file_get_contents(__DIR__ . '/../public/manifest.json'), true);
+$check(is_array($webManifest) && array_column($webManifest['icons'] ?? [], 'src') === ['/Assets/192x192.png', '/Assets/512x512.png', '/Assets/favicon.svg'] && ($webManifest['theme_color'] ?? '') === '#4f46e5', 'The web manifest lists the W icons and the theme colour of the layout');
 $skeletonVersion = trim((string) file_get_contents(__DIR__ . '/../VERSION'));
 $check(preg_match('/^\d+\.\d+\.\d+$/D', $skeletonVersion) === 1, 'VERSION holds a release number: ' . $skeletonVersion);
 $check(preg_match('/<footer.*&copy; 2008.*<span id="skeleton-version">WBengine Skeleton App v' . preg_quote($skeletonVersion, '/') . '<\/span><\/span>\s*<\/div>\s*<\/div>\s*<\/footer>/s', $home['body']) === 1, 'The footer ends at the bottom right with the version of the skeleton application: v' . $skeletonVersion);
