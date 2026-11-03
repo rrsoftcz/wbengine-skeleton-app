@@ -33,7 +33,7 @@
     <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur">
         <div class="container-page flex items-center justify-between gap-2 py-3 sm:gap-4">
             <div class="flex items-center gap-2.5">
-                <a href="{'/'|lurl}" class="flex items-center gap-2.5 no-underline">
+                <a href="{'/'|lurl}" aria-label="WBengine" class="flex items-center gap-2.5 no-underline">
                     <img src="/Assets/favicon.svg?v={$assets_version}" width="36" height="36" alt="" class="h-9 w-9 shrink-0">
                     <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
                 </a>
