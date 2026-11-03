@@ -34,7 +34,7 @@
         <div class="container-page flex items-center justify-between gap-2 py-3 sm:gap-4">
             <div class="flex items-center gap-2.5">
                 <a href="{'/'|lurl}" class="flex items-center gap-2.5 no-underline">
-                    <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-base font-extrabold text-white shadow-md">W</span>
+                    <img src="/Assets/favicon.svg?v={$assets_version}" width="36" height="36" alt="" class="h-9 w-9 shrink-0">
                     <span class="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">WBengine</span>
                 </a>
                 {* The version of the framework that renders this page, from Composer ("dev" when it is not a release), linked to the changelog. *}
@@ -96,7 +96,7 @@
         <div class="container-page grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
             <div class="col-span-2">
                 <div class="flex items-center gap-2.5">
-                    <span class="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-sm font-extrabold text-white">W</span>
+                    <img src="/Assets/favicon.svg?v={$assets_version}" width="32" height="32" alt="" class="h-8 w-8 shrink-0">
                     <span class="font-bold text-slate-900">WBengine</span>
                 </div>
                 <p class="mt-3 max-w-md text-sm text-slate-600">{t 'footer.about'}</p>
