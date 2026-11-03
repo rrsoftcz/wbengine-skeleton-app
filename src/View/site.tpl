@@ -119,10 +119,11 @@
             </div>
         </div>
         <div class="border-t border-slate-100">
-            <div class="container-page flex flex-col gap-2 py-4 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <div class="container-page flex flex-col gap-2 py-4 text-xs text-slate-600 sm:grid sm:grid-cols-3 sm:items-center">
                 <span>{t 'footer.rights'} &middot; &copy; 2008&ndash;2026 RRSOFT</span>
-                {if $gaId}<button id="cookie-settings" type="button" aria-controls="cookie-banner" aria-expanded="false" class="rounded-md text-indigo-700 underline underline-offset-2 hover:text-indigo-900">{t 'cookies.settings'}</button>{/if}
-                {if $dbinfo}<span>{$server} &middot; MySQL {$dbinfo} &middot; PHP {$phpversion}</span>{/if}
+                <span class="sm:text-center">{if $gaId}<button id="cookie-settings" type="button" aria-controls="cookie-banner" aria-expanded="false" class="rounded-md text-indigo-700 underline underline-offset-2 hover:text-indigo-900">{t 'cookies.settings'}</button>{/if}</span>
+                {* The version of this skeleton application, from the VERSION file (see Site::skeletonVersion). *}
+                <span class="sm:text-right">{if $dbinfo}{$server} &middot; MySQL {$dbinfo} &middot; PHP {$phpversion}{if $skeleton_version} &middot; {/if}{/if}{if $skeleton_version}<span id="skeleton-version">Skeleton App v{$skeleton_version}</span>{/if}</span>
             </div>
         </div>
     </footer>

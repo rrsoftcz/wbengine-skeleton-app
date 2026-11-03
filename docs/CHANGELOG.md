@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-03
+
 ### Fixed
 
 - The version in the header had too little contrast (light grey on white, 2.6 to 1 where 4.5 to 1 is required), which Lighthouse reported as the only accessibility finding of the home page (96). It is now `text-slate-600`. Found by running Lighthouse on the live site.
@@ -13,6 +15,7 @@
 
 ### Added
 
+- The footer shows the version of the skeleton application at the bottom right (`Skeleton App v1.1.0`), the cookie settings button stays in the middle. The number comes from the new `VERSION` file in the project root (`Site::skeletonVersion()`, hidden when the file is missing or malformed) and is raised by hand with each release. The compiled stylesheet gets the three layout utilities of the footer. `tests/http-smoke.php` checks the shown version against the file.
 - The documentation page `/docs/administration/` (Central administration, English and Czech) is extended with the installation and operation of the central administration WBengine Admin: a short list of its sections at the top and three new parts. Installing and configuring (requirements, every environment variable including the `MAIL_*` settings, the start with Docker Compose and the migrations, the HTTPS reverse proxy, the first administrator), Accounts and access (signing in with two-step verification, roles, users and invitations, the optional invitation email through SMTP with the steps for a Google account and an app password, what "sent" means and the failure reasons) and Operating the administration (the master key and backups, the command line, updating). The page also says now that the source of the administration is public under the MIT license, that the first account is created on the server and later people are invited on the Users page, and the start page of the documentation points to it. Migration `046-administration-docs-extension.sql` (guarded, mirrored in the content dump). `tests/http-smoke.php` checks the settings and the invitation section on the page in both languages.
 - The documentation page `/docs/performance/` (English and Czech): what is measured (the time of the core, not the speed of a website), the results per case, how and in what environment it was measured, how to repeat it and what to keep in mind. Migration `045-performance-docs-page.sql` (guarded, mirrored in the content dump).
 - The footer links to the GitHub project of the central administration, next to the framework, Packagist and RRSOFT.
