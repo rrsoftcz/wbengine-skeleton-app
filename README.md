@@ -437,6 +437,10 @@ The site uses Google Analytics 4 property `G-PRGMM4N3S6`. The localized cookie b
 
 The banner explains the analytics purpose and links to Google's privacy policy. It is a technical consent control, not a complete privacy notice. Before treating the site as legally ready, publish the site's own privacy and cookie information with the controller identity, purposes, legal basis, retention, recipients and any international transfers. See [Google's Consent Mode documentation](https://developers.google.com/tag-platform/security/concepts/consent-mode) and the [Czech Data Protection Authority's cookie guidance](https://uoou.gov.cz/verejnost/qa-otazky-a-odpovedi/cookies).
 
+## Versions
+
+The header shows the version of the framework that renders the site (from Composer). The footer shows the version of this application, read from the `VERSION` file in the project root. On a release raise `VERSION`, move the `[Unreleased]` entries of `docs/CHANGELOG.md` under the new number and tag it `vX.Y.Z`.
+
 ## TailwindCSS
 
 The stylesheet is built from `src/input.css` with Tailwind (`tailwind.config.js`):
