@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-03
+
 ### Fixed
 
 - The version in the header had too little contrast (light grey on white, 2.6 to 1 where 4.5 to 1 is required), which Lighthouse reported as the only accessibility finding of the home page (96). It is now `text-slate-600`. Found by running Lighthouse on the live site.
