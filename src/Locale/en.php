@@ -61,7 +61,7 @@ return [
     'hero.cta_start' => 'Get started',
     'hero.cta_how' => 'How it works',
     'hero.stat_php' => 'PHP',
-    'hero.stat_nocache' => 'Page, no cache',
+    'hero.stat_nocache' => 'No cache',
     'hero.stat_note' => 'Median time the core needs to assemble the home page of this skeleton, with every cache off and from the full-page cache, measured in an isolated local environment. Not a website speed test.',
     'hero.stat_note_link' => 'Method and results',
     'hero.stat_cached' => 'Cached page',
