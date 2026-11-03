@@ -51,7 +51,7 @@ foreach (['/Assets/favicon.svg' => 'image/svg+xml', '/Assets/favicon.ico' => 'im
     $check($icon['status'] === 200 && stripos($icon['headers'], 'content-type: ' . $iconType) !== false, 'The icon ' . $iconPath . ' is served as ' . $iconType . ': ' . $icon['status']);
 }
 $webManifest = json_decode((string) file_get_contents(__DIR__ . '/../public/manifest.json'), true);
-$check(is_array($webManifest) && array_column($webManifest['icons'] ?? [], 'src') === ['/Assets/192x192.png', '/Assets/512x512.png', '/Assets/favicon.svg'] && ($webManifest['theme_color'] ?? '') === '#4f46e5', 'The web manifest lists the W icons and the theme colour of the layout');
+$check(is_array($webManifest) && array_column($webManifest['icons'] ?? [], 'src') === ['/Assets/192x192.png', '/Assets/512x512.png', '/Assets/favicon.svg'] && ($webManifest['theme_color'] ?? '') === '#5723FC', 'The web manifest lists the W icons and the theme colour of the layout');
 $skeletonVersion = trim((string) file_get_contents(__DIR__ . '/../VERSION'));
 $check(preg_match('/^\d+\.\d+\.\d+$/D', $skeletonVersion) === 1, 'VERSION holds a release number: ' . $skeletonVersion);
 $check(preg_match('/<footer.*&copy; 2008.*<span id="skeleton-version">WBengine Skeleton App v' . preg_quote($skeletonVersion, '/') . '<\/span><\/span>\s*<\/div>\s*<\/div>\s*<\/footer>/s', $home['body']) === 1, 'The footer ends at the bottom right with the version of the skeleton application: v' . $skeletonVersion);

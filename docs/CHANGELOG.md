@@ -4,6 +4,7 @@
 
 ### Changed
 
+- The site uses the official WBengine logo, the light icon from `Assets/svg/wbengine-03-icon-light.svg` on the logo purple (`#5723FC`): `Assets/favicon.svg` on a square canvas, a multi size `favicon.ico` (16, 32 and 48 px, also copied to the root), `apple-touch-icon.png` and the 192 and 512 px PNG icons of the web manifest. The browser theme colour and the manifest use the logo purple. The full set of logo files (SVG, PNG and favicon sets) is committed under `public/Assets/`. Replaces the earlier indigo W icon.
 - The icon of the site is the W of the logo (the rounded square with the indigo to fuchsia gradient): `Assets/favicon.svg`, a multi size `favicon.ico` (16, 32 and 48 px, also copied to the root for clients that ask for `/favicon.ico`), `apple-touch-icon.png` and the 192 and 512 px PNG icons of the web manifest, which replace the old bird icon and two JPEG files. The manifest name and theme colour match the layout. The icons are requested with the content fingerprint, so a browser replaces a cached icon. `tests/http-smoke.php` checks the links, the served types and the manifest.
 
 ### Fixed
