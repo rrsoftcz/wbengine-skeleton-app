@@ -61,7 +61,7 @@ return [
     'hero.cta_start' => 'Začít',
     'hero.cta_how' => 'Jak to funguje',
     'hero.stat_php' => 'PHP',
-    'hero.stat_nocache' => 'Stránka bez cache',
+    'hero.stat_nocache' => 'Bez cache',
     'hero.stat_note' => 'Medián doby, za kterou jádro sestaví úvodní stránku této kostry, s vypnutými cache i z cache celé stránky, změřený v izolovaném lokálním prostředí. Není to test rychlosti webu.',
     'hero.stat_note_link' => 'Postup a výsledky',
     'hero.stat_cached' => 'Stránka z cache',
