@@ -42,9 +42,12 @@ $expectedVersion = preg_match('/^v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?)$/D', $pret
 $check(preg_match('/<a[^>]*href="\/changelog\/"[^>]*>(v\d+\.\d+\.\d+[^<]*|dev)<\/a>/', $home['body'], $shown) === 1, 'The header shows the framework version');
 $check($shown[1] === $expectedVersion, 'The header shows the installed framework version: ' . $shown[1] . ' against ' . $expectedVersion . ' (' . $pretty . ')');
 $check(preg_match('/<footer.*href="https:\/\/github\.com\/rrsoftcz\/wbengine-admin".*<\/footer>/s', $home['body']) === 1, 'The footer links to the GitHub project of the central administration');
+$assetParts = array_map(static fn ($f) => (string) md5_file(__DIR__ . '/../public/' . $f), ['Css/output.min.css', 'menu.js', 'code-highlight.js', 'cookie-consent.js']);
+$assetsVersion = substr(md5(implode('|', $assetParts)), 0, 10);
+$check(str_contains($home['body'], 'href="/Css/output.min.css?v=' . $assetsVersion . '"') && str_contains($home['body'], 'src="/menu.js?v=' . $assetsVersion . '"'), 'The stylesheet and scripts carry a fingerprint of their content, so a browser never keeps an outdated copy: ?v=' . $assetsVersion);
 $skeletonVersion = trim((string) file_get_contents(__DIR__ . '/../VERSION'));
 $check(preg_match('/^\d+\.\d+\.\d+$/D', $skeletonVersion) === 1, 'VERSION holds a release number: ' . $skeletonVersion);
-$check(preg_match('/<footer.*&copy; 2008.*<span id="skeleton-version">Skeleton App v' . preg_quote($skeletonVersion, '/') . '<\/span><\/span>\s*<\/div>\s*<\/div>\s*<\/footer>/s', $home['body']) === 1, 'The footer ends at the bottom right with the version of the skeleton application: v' . $skeletonVersion);
+$check(preg_match('/<footer.*&copy; 2008.*<span id="skeleton-version">WBengine Skeleton App v' . preg_quote($skeletonVersion, '/') . '<\/span><\/span>\s*<\/div>\s*<\/div>\s*<\/footer>/s', $home['body']) === 1, 'The footer ends at the bottom right with the version of the skeleton application: v' . $skeletonVersion);
 $check(preg_match('/data-nav="\/blog\/".*?data-nav="\/changelog\/".*?data-nav="\/about\/"/s', $home['body']) === 1, 'The changelog is in the menu right after the blog and before About');
 $changelog = $public->request('/changelog/');
 $check($changelog['status'] === 200 && str_contains($changelog['body'], '<h1'), 'The changelog page returns 200: ' . $changelog['status']);
